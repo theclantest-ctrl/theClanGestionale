@@ -1,0 +1,39 @@
+PAGINA FUORI DA GOOGLE - risolve "Impossibile aprire il file" con piu' account Google
+=======================================================================================
+
+COSA CAMBIA
+Prima la pagina era servita da script.google.com: se il browser e' collegato a piu' account Google,
+Google prova ad aprirla con quello sbagliato e mostra l'errore di Drive. Ora la pagina (index.html)
+sta su un sito statico gratuito e parla con lo script via fetch, SENZA cookie: per Google e' una
+richiesta anonima, quindi non c'e' nessuna scelta di account. Nessuna scheda privata.
+Il deployment resta "Chiunque", il PIN e i token funzionano come prima. L'indirizzo /exec resta valido.
+
+INSTALLAZIONE (una volta, circa 10 minuti)
+1. Apps Script: incolla il nuovo Code.gs, salva, esegui "setup" (aggiunge la riga url_pagina in Config).
+   Poi Esegui il deployment > Gestisci i deployment > matita > Versione: Nuova versione > Esegui.
+   (Non "Nuovo deployment": l'indirizzo /exec deve restare lo stesso.)
+2. Apri index.html con un editor di testo e cerca:  const GS_EXEC_URL = 'INCOLLA_QUI_L_URL_EXEC';
+   Sostituisci INCOLLA_QUI_L_URL_EXEC con il tuo indirizzo /exec. Salva.
+3. Pubblica index.html su un sito statico gratuito (basta il solo file):
+   - Cloudflare Pages: Workers & Pages > Create > Pages > Upload assets (carichi la cartella con index.html)
+   - oppure Netlify: app.netlify.com/drop (trascini la cartella; crea l'account per non perderla)
+   - oppure GitHub Pages: repository con index.html, Settings > Pages
+   Ti danno un indirizzo https, per esempio https://gestionale-rossi.pages.dev
+4. Nel foglio, scheda Config, riga url_pagina: scrivi quell'indirizzo (https, senza ? e senza spazi).
+   Da quel momento "Manda il link su WhatsApp", le convocazioni e gli inviti Calendar usano il nuovo indirizzo.
+5. Coordinatore: apri il nuovo indirizzo, scrivi il tuo codice, salvalo nei preferiti.
+   Tecnici: da Tecnici rimanda a ciascuno il suo link (ora e' quello nuovo).
+6. Prova: da un telefono con due account Google collegati apri un link tecnico in una scheda NORMALE.
+
+NOTE
+- I link e gli inviti Calendar gia' mandati contengono ancora il vecchio indirizzo /exec: rimanda i link
+  (Tecnici) e gli inviti (Eventi > Invito Calendar) per aggiornarli.
+- La pagina funziona ancora anche aperta dall'indirizzo /exec (utile come riserva).
+- Per aggiornare l'app in futuro: nuovo Code.gs come prima, e se cambia la pagina ricarica anche index.html
+  sul sito statico. EXEC_URL=... ./build.sh dai sorgenti crea web/index.html con l'indirizzo gia' dentro.
+- Sicurezza: lo script accetta solo le funzioni api_ elencate in API_TABLE_ (setup e le funzioni
+  private non si possono chiamare dall'esterno). Rimane vero che chi conosce l'indirizzo /exec puo'
+  provare il PIN: il blocco dopo 5 errori c'e' come prima.
+- VERIFICATO su simulazione (prove automatiche, anche nel browser, con pagina e script su origini diverse);
+  NON ancora sul tuo Google vero. Se al primo giro compare "Risposta inattesa dal server" o "Nessuna
+  connessione" con internet attivo, mandami lo screenshot e la scheda Rete degli strumenti del browser.
