@@ -17,6 +17,7 @@
   --tape:#ffd000; --on-tape:#12151a; --focus:#1a56e8;
   --mast:#12151a;
   --ok:#0c7044; --okbg:#d5f0e3; --warn:#8a5700; --warnbg:#ffefc0; --bad:#b3261e; --badbg:#fbdad6;
+  --ext:#5b3fa8; --extbg:#e8e1fa;
   --go:#0e7a4b; --go-ink:#ffffff; --bad-solid:#b3261e;
   --btn-line:#12151a; --pri-line:#12151a;
   --r-fonico:#2457d6; --r-fonico-bg:#dce6fb;
@@ -32,6 +33,7 @@
     --focus:#ffd000;
     --mast:#000000;
     --ok:#4fd9a0; --okbg:#123528; --warn:#ffc24d; --warnbg:#3a2c0a; --bad:#ff8a80; --badbg:#431b18;
+    --ext:#cdbcff; --extbg:#2b2352;
     --go:#2fbf86; --go-ink:#04180f; --bad-solid:#d9382d;
     --btn-line:#6a7280; --pri-line:#ffd000;
     --r-fonico:#7ea6ff; --r-fonico-bg:#1b2745;
@@ -137,6 +139,8 @@ button.chip{cursor:pointer;min-height:34px}
 .pill.bad{background:var(--badbg);color:var(--bad)}
 .pill.muted{background:var(--line2);color:var(--ink2)}
 .pill.blue{background:var(--r-fonico-bg);color:var(--r-fonico)}
+.pill.ext{background:var(--extbg);color:var(--ext)}
+.pill .ico{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
 
 /* elenco eventi */
 .toolbar{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:14px 0 2px}
@@ -148,6 +152,9 @@ button.chip{cursor:pointer;min-height:34px}
 .dtag{margin-left:auto;font:700 15px/1 var(--cond);padding:5px 9px;border-radius:3px;background:var(--tape);color:#12151a}
 .dtag.soft{background:transparent;color:var(--ink2);border:1px solid var(--line)}
 .ev{--st:var(--st-richiesta);background:var(--card);border-left:7px solid var(--st);border-bottom:1px solid var(--line2)}
+/* più eventi nello stesso giorno: ognuno sta per conto suo, con un po' d'aria in mezzo */
+.day>.ev+.ev,.day>.daybar+.ev{margin-top:12px}
+.day>.ev+.ev{box-shadow:0 -1px 0 var(--line)}
 .st-richiesta{--st:var(--st-richiesta)}
 .st-sopralluogo{--st:var(--st-sopralluogo)}
 .st-preventivo{--st:var(--st-preventivo)}
@@ -162,6 +169,13 @@ button.chip{cursor:pointer;min-height:34px}
 .evsub{display:flex;flex-wrap:wrap;gap:3px 16px;margin-top:6px;color:var(--ink2);font-size:15px}
 .evsub b{color:var(--ink);font-weight:600}
 .evsub .alert{color:var(--bad);font-weight:700}
+.evsub .warnt{color:var(--warn);font-weight:700}
+.evprob{display:flex;align-items:flex-start;gap:8px;margin-top:9px;padding:7px 10px;border-left:5px solid var(--bad);background:var(--badbg);color:var(--bad);font-size:15px;font-weight:700;line-height:1.3}
+.evprob.warn{border-left-color:var(--warn);background:var(--warnbg);color:var(--warn)}
+.evprob.done{border-left-color:var(--ink2);background:var(--line2);color:var(--ink2)}
+.evprob .ico{width:19px;height:19px;flex:none;margin-top:1px}
+.evprob>span{min-width:0}
+.evprob+.evprob{margin-top:5px}
 .evh .slots{margin-top:10px}
 .panel{padding:2px 14px 18px 12px;border-top:1px dashed var(--line)}
 .panel h4{font:700 20px/1.1 var(--cond);margin:18px 0 8px}
@@ -456,6 +470,87 @@ details.mat[open]>summary::after{transform:rotate(-135deg);margin-bottom:-3px}
 .ls{display:flex;align-items:center;gap:5px;flex:0 1 auto;font-size:14px;color:var(--ink2)}
 .ls .ico{width:15px;height:15px}
 .ls.ok{color:var(--ok);font-weight:600}
+.ls.warn{color:var(--warn);font-weight:700}
+.lbtn.miss{border-color:var(--warn);background:var(--warnbg)}
+.lbtn.miss .ls .ico{width:16px;height:16px}
+.lsx{display:flex;flex-wrap:wrap;gap:4px 6px;flex:1 0 100%}
+.lsx .pill{white-space:normal}
+
+/* carico chiuso ma incompleto: giallo, con i pezzi che mancano e da dove arrivano */
+.banner.miss{display:block;border-left-color:var(--warn);background:var(--warnbg)}
+.banner.miss>b{display:block;font:700 23px/1.1 var(--cond);color:var(--warn)}
+.banner.miss>span{display:block;margin-top:2px;font-size:14px;color:var(--ink2)}
+.missbits{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.missbits .pill{white-space:normal}
+.lrow.miss{background:var(--warnbg)}
+.lmiss{flex:1 0 100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:0 10px 10px 55px}
+.lmiss .pill{white-space:normal;line-height:1.15}
+.lmissbtn{flex:none;min-height:44px;padding:0 12px;border:2px solid var(--warn);border-radius:6px;background:transparent;color:var(--warn);font:600 15px/1.1 var(--sans);cursor:pointer}
+.lmissbtn:hover{background:rgba(127,127,127,.14)}
+.lsrc{flex:1 0 100%;padding:8px 12px 14px;background:var(--line2)}
+@supports (background:color-mix(in srgb,red 10%,white)){.lsrc{background:color-mix(in srgb,var(--warn) 9%,var(--card))}}
+.lsrch{font-weight:600}
+.lseg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.lseg button{flex:1 1 auto;min-height:46px;padding:4px 10px;border:2px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:600 15px/1.15 var(--sans);cursor:pointer}
+.lseg button:hover{background:rgba(127,127,127,.12)}
+.lseg button[aria-pressed=true]{border-color:var(--ink);background:var(--tape);color:var(--on-tape)}
+.lseg button.van[aria-pressed=true]{border-color:var(--r-fonico);background:var(--r-fonico-bg);color:var(--r-fonico)}
+.lseg button.ext[aria-pressed=true]{border-color:var(--ext);background:var(--extbg);color:var(--ext)}
+.lsrc .fld{margin-top:10px}
+.lvans{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chipbtn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border:2px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:600 15px/1 var(--sans);cursor:pointer}
+.chipbtn:hover{background:rgba(127,127,127,.12)}
+.chipbtn .ico{width:16px;height:16px}
+.lstay{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.lstay .pill{white-space:normal;line-height:1.15}
+
+/* il giro del furgone: gli eventi che fa, in ordine, e cosa resta a bordo */
+.giro{margin-top:14px;padding:10px 12px 12px;border:2px solid var(--line);border-left:7px solid var(--r-fonico);border-radius:4px;background:var(--card)}
+.giro h4{display:flex;align-items:center;gap:8px;font:700 22px/1.05 var(--cond)}
+.giro h4 .ico{width:22px;height:22px;flex:none}
+.giro h4 small{margin-left:auto;font:500 14px/1 var(--sans);color:var(--ink2)}
+.gstops{margin-top:8px}
+.gstops li{display:flex;align-items:flex-start;gap:10px;padding:5px 0}
+.gstops i{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--line2);font:700 16px/1 var(--cond);font-style:normal}
+.gstops li.me i{background:var(--tape);color:var(--on-tape)}
+.gstops b{font:700 20px/1.15 var(--cond)}
+.gstops small{font-size:14px;color:var(--ink2)}
+.gstops em{margin-left:6px;font:600 13px/1 var(--sans);font-style:normal;color:var(--ink2)}
+.gsum{margin-top:8px;font-size:15px}
+.gstop{margin-top:8px;padding-top:4px;border-top:1px dashed var(--line)}
+.gstop summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;font-weight:600;cursor:pointer}
+.gstop summary small{flex:none;font-weight:400;color:var(--ink2)}
+.gstop ul{padding:2px 0 6px}
+.gstop li{display:flex;align-items:baseline;gap:10px;padding:3px 0;font-size:15px}
+.gstop .lq{min-width:28px;font-size:21px}
+
+/* la squadra dell'evento: chi lavora, con che ruolo, chi ha già confermato */
+.team{margin-top:14px}
+.teamh{display:flex;align-items:baseline;gap:8px;font:700 20px/1 var(--cond)}
+.teamh small{font:600 13px/1 var(--sans);color:var(--ink2)}
+.team ul{margin-top:4px}
+.team li{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:8px 0;border-top:1px solid var(--line2)}
+.team li:first-child{border-top:0}
+.team .tn{flex:1 1 120px;min-width:0;font:700 21px/1.1 var(--cond);overflow-wrap:anywhere}
+.team .tn em{margin-left:2px;font:600 14px/1 var(--sans);font-style:normal;color:var(--ink2)}
+.team li.you .tn{color:var(--ink)}
+.team .trole{display:flex;flex-wrap:wrap;gap:4px;flex:0 1 auto}
+.team .trc{display:inline-flex;align-items:center;min-height:24px;padding:1px 7px;border:2px solid var(--rc);border-radius:3px;background:var(--rb);font:700 14px/1 var(--cond);color:var(--ink)}
+.team .tstat{flex:none;display:inline-block;padding:4px 8px;border-radius:3px;font:700 15px/1 var(--cond);white-space:nowrap}
+.team .tstat .ico{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.team .tstat.ok{background:var(--okbg);color:var(--ok)}
+.team .tstat.muted{background:var(--line2);color:var(--ink2)}
+
+/* gli orari non tornano con la disponibilità segnata dal tecnico */
+.banner.bad{border-left-color:var(--bad);background:var(--badbg)}
+.banner.availwarn{display:grid;gap:3px}
+.banner.availwarn>b{font:700 21px/1.1 var(--cond);color:var(--warn)}
+.banner.availwarn.bad>b{color:var(--bad)}
+.banner.availwarn .avhow{font-size:14px;color:var(--ink2)}
+.banner.availwarn .btn{justify-self:start;margin-top:6px}
+.drow.flash{animation:drowflash 3s ease-out}
+@keyframes drowflash{0%,60%{box-shadow:inset 0 0 0 3px var(--warn)}100%{box-shadow:inset 0 0 0 3px transparent}}
+@media (prefers-reduced-motion:reduce){.drow.flash{animation:none;box-shadow:inset 0 0 0 3px var(--warn)}}
 
 /* furgoni di un evento */
 .vans>li{margin-top:10px;padding:10px 12px 12px;border:2px solid var(--line);border-left:7px solid var(--tape);border-radius:4px;background:var(--card)}
@@ -616,8 +711,7 @@ function cmpCat(a, b) {
 const TIME_FIELDS = [['orarioArrivo', 'Arrivo'], ['orarioMontaggio', 'Montaggio'], ['orarioPausa', 'Pausa'],
   ['orarioInizioEvento', 'Inizio'], ['orarioFineEvento', 'Fine'], ['orarioSmontaggio', 'Smontaggio']];
 
-/* Dentro Apps Script modo e token li scrive il server nel <body>. Nella pagina pubblicata fuori da Google
-   (web/index.html) il <body> e' vuoto e si leggono dall'indirizzo: ?t=TOKEN, ?c=TOKEN o niente. */
+/* Nella pagina esterna il <body> e' vuoto: modo e token si leggono dall'indirizzo (?t=TOKEN, ?c=TOKEN, o niente). */
 const QS = new URLSearchParams(window.location.search);
 const S = {
   mode: document.body.getAttribute('data-mode') || (QS.get('c') ? 'confirm' : QS.get('t') ? 'tech' : 'coord'),
@@ -807,15 +901,14 @@ function cleanErr(e) {
   m = m.replace(/^\s*(Error|Exception|Errore|Eccezione):\s*/i, '').trim();
   return m || 'Qualcosa non ha funzionato. Riprova.';
 }
-/* Indirizzo /exec dello script: lo scrive build.sh nella pagina pubblicata fuori da Google (web/index.html).
-   Dentro Apps Script resta vuoto e si usa google.script.run. */
-const GS_EXEC_URL = 'https://script.google.com/macros/s/AKfycbyIWLUqxw1-62jutdm_7fl_ENpzYYCTOeOH7HqB9y-jnrdt7lW3OSjjwFm0De8pz_iIvw/exec';
+/* Indirizzo /exec dello script: lo scrive build.sh (o si cambia a mano qui sotto). */
+const GS_EXEC_URL = 'INCOLLA_QUI_L_URL_EXEC';
 const REMOTE_TIMEOUT_MS = 90000;   // un avvio a freddo di Apps Script puo' durare diversi secondi
 
 /* Chiamata via fetch, senza cookie: per Google e' una richiesta anonima, quindi non scatta la scelta dell'account.
    Content-Type text/plain: cosi' il browser non fa la richiesta preliminare (OPTIONS), che Apps Script non gestisce. */
 async function callRemote(fn, args) {
-  if (/^INCOLLA/.test(GS_EXEC_URL)) throw new Error("Pagina non configurata: manca l'indirizzo /exec in GS_EXEC_URL (vedi LEGGI-PAGINA-ESTERNA.txt).");
+  if (!GS_EXEC_URL || /^INCOLLA/.test(GS_EXEC_URL)) throw new Error("Pagina non configurata: manca l'indirizzo /exec in GS_EXEC_URL (vedi LEGGI-GITHUB-PAGES.txt).");
   const ctl = (typeof AbortController === 'function') ? new AbortController() : null;
   const timer = ctl ? setTimeout(() => ctl.abort(), REMOTE_TIMEOUT_MS) : 0;
   let txt;
@@ -840,21 +933,8 @@ async function callRemote(fn, args) {
 }
 function call(fn) {
   const args = Array.prototype.slice.call(arguments, 1);
-  if (GS_EXEC_URL && !(window.google && google.script && google.script.run)) {
-    bar(1);
-    return callRemote(fn, args).finally(() => bar(-1));
-  }
-  return new Promise((resolve, reject) => {
-    if (!window.google || !google.script || !google.script.run) {
-      reject(new Error("Questa pagina funziona solo aperta dal link dell'app."));
-      return;
-    }
-    bar(1);
-    let r = google.script.run
-      .withSuccessHandler(v => { bar(-1); resolve(v); })
-      .withFailureHandler(e => { bar(-1); reject(new Error(cleanErr(e))); });
-    try { r[fn].apply(r, args); } catch (e) { bar(-1); reject(new Error(cleanErr(e))); }
-  });
+  bar(1);
+  return callRemote(fn, args).finally(() => bar(-1));
 }
 /* Esegue un'azione che scrive sul foglio, una per volta. Restituisce {ok, err}. */
 async function mutate(fn, quiet) {
@@ -1050,6 +1130,28 @@ function loadUsedL(lines) { return lines.some(l => toI(l.caricato) > 0); }
 function retBaseL(l, used) { const q = toI(l.quantita); return used ? Math.min(q, toI(l.caricato)) : q; }
 function retDoneL(l) { return toI(l.scaricato) + toI(l.danneggiato) + toI(l.mancante); }
 
+/* Quanti pezzi mancano al carico, e da dove si dice che arrivano: ext = fornitore esterno, van = un altro furgone, unk = non si sa ancora */
+function loadMissing(lines) {
+  const m = { pieces: 0, lines: 0, ext: 0, van: 0, unk: 0 };
+  lines.forEach(l => {
+    const q = toI(l.quantita);
+    if (q < 1) return;
+    const n = q - Math.min(q, toI(l.caricato));
+    if (!n) return;
+    m.pieces += n; m.lines++;
+    if (l.mancaDa === 'fornitore') m.ext += n; else if (l.mancaDa === 'furgone') m.van += n; else m.unk += n;
+  });
+  return m;
+}
+/* "1 da fornitore esterno · 2 da un altro furgone · 1 da trovare", per l'avviso e per il pulsante */
+function missWhere(m, withPills) {
+  const bits = [];
+  if (m.ext) bits.push(withPills ? '<span class="pill ext">' + ico('box') + m.ext + ' da fornitore esterno</span>' : m.ext + ' da fornitore esterno');
+  if (m.van) bits.push(withPills ? '<span class="pill blue">' + ico('truck') + m.van + ' da un altro furgone</span>' : m.van + ' da un altro furgone');
+  if (m.unk) bits.push(withPills ? '<span class="pill muted">' + m.unk + ' da trovare</span>' : m.unk + ' da trovare');
+  return bits;
+}
+
 function lprogress(lines, kind) {
   const ls = lines.filter(l => toI(l.quantita) >= 1);
   if (kind === 'carico') {
@@ -1073,7 +1175,7 @@ function progBar(pct, label) {
 /* ---------------------------------------------------------------------
    Dove sono i dati: nella pagina del coordinatore (S.car, S.evById...) o in quella del tecnico (T.mie, T.recenti)
    --------------------------------------------------------------------- */
-const L = { evId: '', kind: 'carico', view: 'list', probOpen: '', plan: null, planErr: '' };
+const L = { evId: '', kind: 'carico', view: 'list', probOpen: '', plan: null, planErr: '', missOpen: '', draft: null };
 const LQ = { items: [], running: false, gen: 0 };   // gen cresce a ogni tocco: una lettura partita prima non deve cancellare i tocchi fatti dopo
 
 function techItem(evId) {
@@ -1114,7 +1216,23 @@ function listLocked(src, kind) {
 /* Come cambia una riga con il tocco (stessa regola del server: così la spunta si vede subito) */
 function localPatch(l, lines, kind, vals) {
   const q = toI(l.quantita);
-  if (kind === 'carico') return { caricato: Math.max(0, Math.min(q, toI(vals.caricato))) };
+  if (kind === 'carico') {
+    const have = Math.min(q, toI(l.caricato));
+    if (vals.arrivato) {   // i pezzi che mancavano sono arrivati; se venivano da un fornitore esterno contano tra quelli a noleggio
+      const p = { caricato: q, mancaDa: '', mancaNota: '' };
+      if (l.mancaDa === 'fornitore') p.subnoleggio = Math.min(q, Math.max(toI(l.subnoleggio), q - have));
+      return p;
+    }
+    const p = {};
+    let n = have;
+    if (vals.caricato !== undefined) { n = Math.max(0, Math.min(q, toI(vals.caricato))); p.caricato = n; }
+    if (n >= q) { p.mancaDa = ''; p.mancaNota = ''; }
+    else if (vals.mancaDa !== undefined) {
+      p.mancaDa = vals.mancaDa === 'furgone' || vals.mancaDa === 'fornitore' ? vals.mancaDa : '';
+      p.mancaNota = p.mancaDa ? String(vals.mancaNota || '').trim().replace(/\s+/g, ' ').slice(0, 60) : '';
+    }
+    return p;
+  }
   const base = retBaseL(l, loadUsedL(lines));
   if (vals.reset) return { scaricato: 0, danneggiato: 0, mancante: 0 };
   if (vals.tutto) return { scaricato: base, danneggiato: 0, mancante: 0 };
@@ -1129,9 +1247,16 @@ function qList(evId, kind, lineId, vals) {
   LQ.gen++;
   const key = evId + '|' + kind + '|' + lineId;
   const ex = LQ.items.filter(x => x.key === key && !x.started)[0];
-  if (ex) ex.vals = vals;
+  if (ex) ex.vals = kind === 'carico' ? mergeCarico(ex.vals, vals) : vals;
   else LQ.items.push({ key: key, evId: evId, kind: kind, lineId: lineId, vals: vals, started: false });
   runLQ();
+}
+/* Due tocchi sulla stessa riga del carico, non ancora partiti: restano tutti e due (i pezzi caricati e da dove arriva il resto) */
+function mergeCarico(a, b) {
+  const o = Object.assign({}, a, b);
+  if (b.arrivato) delete o.caricato;
+  if (b.caricato !== undefined) delete o.arrivato;
+  return o;
 }
 function qBulk(evId, kind, mode) {
   LQ.gen++;
@@ -1193,7 +1318,7 @@ async function pollList() {
   if (JSON.stringify(listSrc(evId)) !== before) lrender();
 }
 function openList(evId, kind) {
-  L.evId = evId; L.kind = kind; L.view = 'list'; L.probOpen = ''; L.plan = null; L.planErr = '';
+  L.evId = evId; L.kind = kind; L.view = 'list'; L.probOpen = ''; L.plan = null; L.planErr = ''; L.missOpen = ''; L.draft = null;
   if (!listSrc(evId)) return;
   openSheet(kind === 'carico' ? 'Lista di carico' : 'Lista di scarico', '<div id="lbody"></div>', { noFocus: true });
   S.onClose = () => { stopPoll(); L.evId = ''; paint(); };
@@ -1207,9 +1332,15 @@ function lrender() {
   const src = listSrc();
   if (!src) { box.innerHTML = '<p class="empty">Questo evento non c\'è più. Chiudi e aggiorna la pagina.</p>'; return; }
   const foc = document.activeElement;
-  const key = (foc && box.contains(foc)) ? [foc.getAttribute('data-act'), foc.getAttribute('data-id'), foc.getAttribute('data-f'), foc.getAttribute('data-d')] : null;
+  const inBox = !!(foc && box.contains(foc));
+  const key = inBox ? [foc.getAttribute('data-act'), foc.getAttribute('data-id'), foc.getAttribute('data-f'), foc.getAttribute('data-d')] : null;
+  // il campo dove si scrive da dove arriva il pezzo: si rimette il cursore dov'era, senza perdere quello che si è scritto
+  const note = inBox && foc.getAttribute('data-inp') === 'lmissText' ? { id: foc.getAttribute('data-id'), a: foc.selectionStart, b: foc.selectionEnd } : null;
   box.innerHTML = L.view === 'close' ? unloadReviewHtml(src) : listBodyHtml(src);
-  if (key && key[0]) {
+  if (note) {
+    const n = $('#lbody [data-inp="lmissText"][data-id="' + note.id + '"]');
+    if (n) { n.focus({ preventScroll: true }); try { n.setSelectionRange(note.a, note.b); } catch (e) { /* ok */ } }
+  } else if (key && key[0]) {
     const sel = '#lbody [data-act="' + key[0] + '"]' + (key[1] ? '[data-id="' + key[1] + '"]' : '') + (key[2] ? '[data-f="' + key[2] + '"]' : '') + (key[3] ? '[data-d="' + key[3] + '"]' : '');
     const n = $(sel);
     if (n && !n.disabled) n.focus({ preventScroll: true });
@@ -1227,6 +1358,117 @@ function vanGroups(lines, vans) {
 function sortLines(lines) {
   return lines.slice().sort((a, b) => cmpCat(a.categoria, b.categoria) || String(a.nome).localeCompare(String(b.nome), 'it', { sensitivity: 'base' }));
 }
+/* ---------------------------------------------------------------------
+   Il giro del furgone. Se lo stesso furgone fa più eventi (nello stesso giorno o in quello prima/dopo) le liste dicono:
+   - nello scarico, quali pezzi possono restare a bordo per l'evento dopo e quali si scaricano;
+   - nel carico, quali pezzi possono essere già a bordo dall'evento prima;
+   - per ogni altro evento del furgone, cosa c'è sopra (non va scaricato qui).
+   Ogni tappa: {id, cliente, data, ora, me, righe: [{key, nome, q}]}. Il coordinatore le ricava dai suoi dati, il tecnico le riceve dal server.
+   --------------------------------------------------------------------- */
+const STAY_DAYS = 1;
+function lineKeyOf(l) { return l.key || (l.equipment_id ? 'e:' + l.equipment_id : 'n:' + String(l.nome || l.materiale || '').trim().toLowerCase()); }
+function coordStops(evId, vanId) {
+  const e0 = S.evById[evId];
+  if (!e0) return [];
+  const d0 = dayNum(e0.data);
+  const stops = [];
+  (S.feByVan[vanId] || []).forEach(f => {
+    const o = S.evById[f.event_id];
+    if (!o || o.stato === 'annullato') return;
+    const me = o.id === evId;
+    if (!me && (o.scaricoQuando || isNaN(dayNum(o.data)) || Math.abs(dayNum(o.data) - d0) > STAY_DAYS)) return;
+    const nVans = (S.feByEv[o.id] || []).length;
+    const righe = eventLines(o.id).filter(c => nVans === 1 || c.van_id === vanId)
+      .map(c => ({ key: c.equipment_id ? 'e:' + c.equipment_id : 'n:' + String(lineName(c)).trim().toLowerCase(), nome: lineName(c), q: toI(c.quantita) }));
+    const w = evWin(o);
+    stops.push({ id: o.id, cliente: o.cliente, data: o.data, ora: w && w.s !== null ? hhmm(w.s) : '', me: me, righe: righe, _s: w && w.s !== null ? w.s : 99999 });
+  });
+  if (stops.length < 2) return [];
+  stops.sort((a, b) => String(a.data).localeCompare(String(b.data)) || (a._s - b._s) || String(a.cliente).localeCompare(String(b.cliente), 'it'));
+  return stops;
+}
+function vanStops(evId, vanId) {
+  if (S.mode === 'tech') { const it = techItem(evId); return (it && it.giro && it.giro[vanId]) || []; }
+  return coordStops(evId, vanId);
+}
+/* Per ogni furgone dell'evento che fa anche altri eventi: la sua fila di tappe, con quella prima e quella dopo di questo evento */
+function giroGroups(src) {
+  const out = [];
+  (src.vans || []).forEach(v => {
+    const stops = vanStops(L.evId, v.id);
+    const i = stops.findIndex(s => s.me);
+    if (i < 0 || stops.length < 2) return;
+    out.push({ van: v, stops: stops, i: i, prev: i > 0 ? stops[i - 1] : null, next: stops[i + 1] || null });
+  });
+  return out;
+}
+let GIRO = [];   // i giri dell'evento della lista aperta, calcolati a ogni disegno
+function giroOf(l) { return GIRO.filter(g => g.van.id === l.van_id)[0] || null; }
+function stopQty(stop, key) { return stop ? stop.righe.reduce((n, r) => n + (r.key === key ? r.q : 0), 0) : 0; }
+function stopWhen(s, me) {
+  const t = s.ora ? 'ore ' + s.ora : '';
+  return s.data !== me.data ? fmtShort(s.data) + (s.ora ? ' ' + s.ora : '') : t;
+}
+/* Scarico: quanti pezzi della riga possono restare a bordo per l'evento che il furgone fa dopo */
+function stayAfter(l, base) {
+  const g = giroOf(l);
+  if (!g || !g.next) return null;
+  return { keep: Math.min(base, stopQty(g.next, lineKeyOf(l))), to: g.next };
+}
+/* Carico: quanti pezzi della riga possono essere già a bordo dall'evento che il furgone ha fatto prima */
+function stayBefore(l) {
+  const g = giroOf(l);
+  if (!g || !g.prev) return null;
+  return { keep: Math.min(toI(l.quantita), stopQty(g.prev, lineKeyOf(l))), from: g.prev };
+}
+function stayChip(l, kind, base) {
+  if (kind === 'carico') {
+    const s = stayBefore(l);
+    if (!s || !s.keep) return '';
+    return '<span class="lstay"><span class="pill blue">' + ico('truck') + (s.keep >= toI(l.quantita) ? 'Può essere già a bordo' : s.keep + ' già a bordo') +
+      ' da «' + esc(s.from.cliente) + '»</span></span>';
+  }
+  const s = stayAfter(l, base);
+  if (!s) return '';
+  const to = ' per «' + esc(s.to.cliente) + '»';
+  if (s.keep >= base) return '<span class="lstay"><span class="pill blue">' + ico('truck') + 'Resta a bordo' + to + '</span></span>';
+  if (s.keep > 0) return '<span class="lstay"><span class="pill blue">' + ico('truck') + s.keep + (s.keep === 1 ? ' resta' : ' restano') + ' a bordo' + to +
+    '</span><span class="pill muted">' + (base - s.keep) + (base - s.keep === 1 ? ' si scarica' : ' si scaricano') + '</span></span>';
+  return '<span class="lstay"><span class="pill muted">Si scarica</span></span>';
+}
+function giroHtml(kind, lines) {
+  if (!GIRO.length) return '';
+  const me = (GIRO[0].stops.filter(s => s.me)[0]) || {};
+  return GIRO.map(g => {
+    const mine = lines.filter(l => g.van.id === l.van_id);
+    let h = '<section class="giro" aria-label="Giro del furgone ' + esc(g.van.nome) + '"><h4>' + ico('truck') + '<span>' + esc(g.van.nome) +
+      '</span><small>fa più eventi</small></h4><ol class="gstops">' + g.stops.map((s, k) =>
+      '<li class="' + (s.me ? 'me' : '') + '"><i>' + (k + 1) + '</i><span><b>' + esc(s.cliente) + '</b>' +
+      (stopWhen(s, me) ? ' <small>' + esc(stopWhen(s, me)) + '</small>' : '') + (s.me ? ' <em>questo evento</em>' : '') + '</span></li>').join('') + '</ol>';
+    if (kind === 'scarico') {
+      if (g.next) {
+        let n = 0, pcs = 0;
+        mine.forEach(l => { const b = retBaseL(l, loadUsedL(lines)); if (b < 1) return; const k = Math.min(b, stopQty(g.next, lineKeyOf(l))); if (k) { n++; pcs += k; } });
+        h += '<p class="gsum">Dopo questo evento il furgone va a «' + esc(g.next.cliente) + '»' + (stopWhen(g.next, me) ? ' (' + esc(stopWhen(g.next, me)) + ')' : '') + '. ' +
+          (n ? '<b>' + plural(n, 'voce', 'voci') + ' (' + plural(pcs, 'pezzo', 'pezzi') + (n === 1 ? ') può' : ') possono') + ' restare a bordo</b>; il resto si scarica.' : 'Niente di quello che rientra serve lì: si scarica tutto.') + '</p>';
+      } else h += '<p class="gsum">Questo è l\'ultimo evento del furgone: si scarica tutto.</p>';
+    } else if (g.prev) {
+      let n = 0;
+      mine.forEach(l => { if (Math.min(toI(l.quantita), stopQty(g.prev, lineKeyOf(l)))) n++; });
+      h += '<p class="gsum">Il furgone viene da «' + esc(g.prev.cliente) + '»' + (stopWhen(g.prev, me) ? ' (' + esc(stopWhen(g.prev, me)) + ')' : '') + '. ' +
+        (n ? '<b>' + plural(n, 'voce', 'voci') + (n === 1 ? ' può' : ' possono') + ' essere già a bordo</b>: controlla prima di ricaricare.' : 'Niente di quello che serve qui c\'è già a bordo.') + '</p>';
+    }
+    // cosa c'è sul furgone per gli altri eventi: non va scaricato qui
+    g.stops.filter(s => !s.me && s.righe.length).forEach(s => {
+      const pcs = s.righe.reduce((n, r) => n + r.q, 0);
+      h += '<details class="gstop"><summary>' + (g.stops.indexOf(s) > g.i ? 'Sul furgone per «' : 'Dall\'evento «') + esc(s.cliente) + '»' +
+        '<small>' + plural(s.righe.length, 'voce', 'voci') + ', ' + plural(pcs, 'pezzo', 'pezzi') + '</small></summary><ul>' +
+        s.righe.map(r => '<li><span class="lq">' + r.q + '</span><span class="ln">' + esc(r.nome) + '</span></li>').join('') + '</ul></details>';
+    });
+    return h + '</section>';
+  }).join('');
+}
+
 function lineSmall(l) {
   const sub = Math.min(toI(l.quantita), toI(l.subnoleggio));
   const bits = [];
@@ -1242,19 +1484,54 @@ function lstepHtml(l, field, val, max, label, noMax) {
     '<button type="button" data-act="lstep" data-id="' + id + '" data-f="' + field + '" data-d="1" aria-label="Uno in più: ' + esc(label) + '"' + (val >= max ? ' disabled' : '') + '>+</button></span>';
 }
 
-function rowCarico(l, locked) {
+/* La fascia gialla sotto una voce del carico chiuso a cui mancano dei pezzi: quanti, da dove arrivano, e come dirlo */
+function srcPill(l) {
+  const note = l.mancaNota ? ' · ' + esc(l.mancaNota) : '';
+  if (l.mancaDa === 'fornitore') return '<span class="pill ext">' + ico('box') + 'Fornitore esterno' + note + '</span>';
+  if (l.mancaDa === 'furgone') return '<span class="pill blue">' + ico('truck') + 'Altro furgone' + note + '</span>';
+  return '<span class="pill muted">Da dove arriva? Non detto</span>';
+}
+function missHtml(l, miss, src) {
+  const id = esc(l.id), vans = src.vans || [];
+  const ro = src.ev.stato === 'annullato' || !!src.lists.scaricoQuando;      // evento annullato o scarico già chiuso: si guarda e basta
+  const open = !ro && L.missOpen === l.id;
+  let h = '<div class="lmiss"><span class="pill warn">' + (miss === 1 ? 'Manca 1 pezzo' : 'Mancano ' + miss + ' pezzi') + '</span>' + srcPill(l) +
+    (ro ? '' : '<button type="button" class="lmissbtn" data-act="lmiss" data-id="' + id + '" aria-expanded="' + open + '">' + (l.mancaDa ? 'Cambia' : 'Da dove arriva?') + '</button>') + '</div>';
+  if (!open) return h;
+  const draft = L.draft && L.draft.id === l.id ? L.draft.text : (l.mancaNota || '');
+  const seg = (v, label, cls) => '<button type="button" class="' + cls + '" data-act="lsrc" data-id="' + id + '" data-v="' + v + '" aria-pressed="' + ((l.mancaDa || '') === v) + '">' + label + '</button>';
+  h += '<div class="lsrc" role="group" aria-label="Da dove arriva quello che manca">' +
+    '<p class="lsrch">' + (miss === 1 ? 'Il pezzo che manca arriva…' : 'I ' + miss + ' pezzi che mancano arrivano…') + '</p>' +
+    '<div class="lseg">' + seg('', 'Non so ancora', 'unk') + seg('furgone', 'Da un altro furgone', 'van') + seg('fornitore', 'Da un fornitore esterno', 'ext') + '</div>';
+  if (l.mancaDa) {
+    h += '<label class="fld"><span>' + (l.mancaDa === 'fornitore' ? 'Quale fornitore? (facoltativo)' : 'Quale furgone? (facoltativo)') + '</span>' +
+      '<input type="text" maxlength="60" autocomplete="off" data-inp="lmissText" data-chg="lmissNote" data-id="' + id + '" value="' + esc(draft) + '" placeholder="' +
+      (l.mancaDa === 'fornitore' ? 'es. Audio Rent' : 'es. Mercedes') + '"></label>';
+    const others = (vans || []).filter(v => v.id !== l.van_id);
+    if (l.mancaDa === 'furgone' && others.length) {
+      h += '<div class="lvans">' + others.map(v => '<button type="button" class="chipbtn" data-act="lvan" data-id="' + id + '" data-name="' + esc(v.nome) + '">' + ico('truck') + esc(v.nome) + '</button>').join('') + '</div>';
+    }
+  }
+  h += '<div class="row" style="margin-top:12px"><button type="button" class="btn sm go" data-act="larrived" data-id="' + id + '">' + ico('check') +
+    (miss === 1 ? ' È arrivato' : ' Sono arrivati tutti') + '</button></div>' +
+    (l.mancaDa === 'fornitore' ? '<p class="hint">Quando arriva, conta tra i pezzi a noleggio: non tocca il tuo magazzino.</p>' : '') + '</div>';
+  return h;
+}
+function rowCarico(l, locked, closed, src) {
   const q = toI(l.quantita), c = Math.min(q, toI(l.caricato));
   const st = c >= q ? 'done' : c > 0 ? 'part' : 'none';
   const nm = esc(l.nome), id = esc(l.id);
-  let h = '<li class="lrow ' + st + '" data-line="' + id + '">' +
+  const miss = closed && c < q ? q - c : 0;      // carico chiuso e questa voce non è completa
+  let h = '<li class="lrow ' + st + (miss ? ' miss' : '') + '" data-line="' + id + '">' +
     '<button type="button" class="lchk" data-act="lchk" data-id="' + id + '" aria-pressed="' + (st === 'done' ? 'true' : st === 'part' ? 'mixed' : 'false') + '"' + (locked ? ' disabled' : '') +
     ' aria-label="' + (st === 'done' ? 'Caricato' : 'Da caricare') + ': ' + nm + ', ' + q + (q === 1 ? ' pezzo' : ' pezzi') + (st === 'part' ? ', ' + c + ' caricati' : '') + '">' +
     '<span class="lbox">' + (st === 'done' ? ico('check') : st === 'part' ? ico('minus') : '') + '</span>' +
-    '<span class="lq">' + q + '</span><span class="ln">' + nm + lineSmall(l) + '</span></button>';
+    '<span class="lq">' + q + '</span><span class="ln">' + nm + lineSmall(l) + stayChip(l, 'carico') + '</span></button>';
   if (q > 1) {
     h += locked ? (st === 'done' ? '' : '<span class="lcnt">' + c + '/' + q + '</span>')
       : lstepHtml(l, 'caricato', c, q, 'Pezzi caricati di ' + l.nome);
   }
+  if (miss) h += missHtml(l, miss, src);
   return h + '</li>';
 }
 
@@ -1274,7 +1551,7 @@ function rowScarico(l, used, locked) {
     '<button type="button" class="lchk" data-act="lchk" data-id="' + id + '" aria-pressed="' + (st === 'done' || st === 'prob' ? 'true' : st === 'part' ? 'mixed' : 'false') + '"' + (locked ? ' disabled' : '') +
     ' aria-label="' + (done >= base ? 'Rientrato' : 'Da controllare') + ': ' + nm + ', ' + base + (base === 1 ? ' pezzo' : ' pezzi') + '">' +
     '<span class="lbox">' + (st === 'done' ? ico('check') : st === 'prob' ? ico('warn') : st === 'part' ? ico('minus') : '') + '</span>' +
-    '<span class="lq">' + base + '</span><span class="ln">' + nm + (pills ? '<span class="lpills">' + pills + '</span>' : '') + lineSmall(l) + '</span></button>';
+    '<span class="lq">' + base + '</span><span class="ln">' + nm + (pills ? '<span class="lpills">' + pills + '</span>' : '') + lineSmall(l) + stayChip(l, 'scarico', base) + '</span></button>';
   if (!locked) {
     h += '<button type="button" class="lprobbtn" data-act="lprob" data-id="' + id + '" aria-expanded="' + open + '">' + ((d || m) ? 'Cambia' : 'Problema') + '</button>';
   }
@@ -1298,9 +1575,16 @@ function listBodyHtml(src) {
   let h = '<p class="lev"><b>' + esc(ev.cliente) + '</b> · ' + esc(fmtShort(ev.data)) + '</p>';
   h += '<div class="lprog"><span class="lcount"><b>' + pr.done + '</b> di ' + pr.total + (pr.total === 1 ? ' voce' : ' voci') +
     '</span>' + progBar(pr.pct, 'Avanzamento') + '</div>';
+  const lm = kind === 'carico' ? loadMissing(lines) : null;
   if (closed) {
-    h += '<p class="banner ok">' + (kind === 'carico' ? 'Carico chiuso' : 'Scarico chiuso') + (who ? ' da ' + esc(who) : '') +
-      (fmtStamp(when) ? ' il ' + esc(fmtStamp(when)) : '') + '.</p>';
+    const by = (who ? ' da ' + esc(who) : '') + (fmtStamp(when) ? ' il ' + esc(fmtStamp(when)) : '');
+    if (lm && lm.pieces) {
+      // chiuso ma incompleto: non è «fatto», è giallo e dice quanto manca e da dove si dice che arriva
+      h += '<div class="banner miss" role="status"><b>Carico chiuso, ma ' + (lm.pieces === 1 ? 'manca 1 pezzo' : 'mancano ' + lm.pieces + ' pezzi') + '</b><span>Chiuso' + by + '.</span>' +
+        '<div class="missbits">' + missWhere(lm, true).join('') + '</div></div>';
+    } else {
+      h += '<p class="banner ok">' + (kind === 'carico' ? 'Carico chiuso' : 'Scarico chiuso') + by + '.</p>';
+    }
   } else if (kind === 'carico' && ev.stato === 'annullato') {
     h += '<p class="banner">L\'evento è annullato: il carico non si può più cambiare.</p>';
   } else if (kind === 'carico' && STAGES_PROVVISORIE.indexOf(ev.stato) >= 0) {
@@ -1314,6 +1598,8 @@ function listBodyHtml(src) {
   if (!pr.total) {
     return h + '<p class="empty">' + (kind === 'carico' ? 'Non c\'è materiale in elenco.' : 'Non c\'è niente da far rientrare: il materiale non è stato caricato.') + '</p>' + listFootHtml(src, pr, closed);
   }
+  GIRO = giroGroups(src);
+  h += giroHtml(kind, lines);
   if (!locked) {
     const none = !lines.some(l => (kind === 'carico' ? toI(l.caricato) : retDoneL(l)) > 0);
     h += '<div class="row lbulk">' + (kind === 'carico'
@@ -1334,7 +1620,7 @@ function listBodyHtml(src) {
       const c = catKey(l.categoria) || 'altro';
       if (c !== lastCat && (items.length > 6 || !g.title)) { h += '</ul><h5 class="lcat">' + esc(catLabel(c)) + '</h5><ul class="llist">'; }
       lastCat = c;
-      h += kind === 'carico' ? rowCarico(l, locked) : rowScarico(l, used, locked);
+      h += kind === 'carico' ? rowCarico(l, locked, closed, src) : rowScarico(l, used, locked);
     });
     h += '</ul>';
   });
@@ -1347,7 +1633,8 @@ function listFootHtml(src, pr, closed) {
   if (kind === 'carico') {
     if (closed) h += '<button type="button" class="btn" data-act="lloadReopen" data-confirm="Riapro il carico? Tocca di nuovo">Riapri il carico</button>';
     else if (src.ev.stato !== 'annullato' && pr.total) {
-      h += '<button type="button" class="btn pri" data-act="lloadClose"' + (pr.done < pr.total ? ' data-confirm="Mancano ' + (pr.total - pr.done) + '. Chiudo? Tocca di nuovo"' : '') + '>Carico finito</button>';
+      const lm = loadMissing(src.lines.filter(l => toI(l.quantita) >= 1));
+      h += '<button type="button" class="btn pri" data-act="lloadClose"' + (lm.pieces ? ' data-confirm="' + (lm.pieces === 1 ? 'Manca 1 pezzo' : 'Mancano ' + lm.pieces + ' pezzi') + '. Chiudo? Tocca di nuovo"' : '') + '>Carico finito</button>';
     }
   } else if (!closed && S.mode !== 'tech' && pr.total) {
     h += '<button type="button" class="btn pri" data-act="lunloadReview">Chiudi lo scarico…</button>';
@@ -1404,7 +1691,11 @@ ACT.lbulk = el => {
   lines.forEach(l => {
     const raw = rawLine(L.evId, l.id);
     if (!raw) return;
-    if (L.kind === 'carico') { raw.caricato = mode === 'all' ? toI(l.quantita) : 0; return; }
+    if (L.kind === 'carico') {
+      raw.caricato = mode === 'all' ? toI(l.quantita) : 0;
+      if (mode === 'all') { raw.mancaDa = ''; raw.mancaNota = ''; }
+      return;
+    }
     const base = retBaseL(l, used);
     if (base < 1) return;
     if (mode === 'none') Object.assign(raw, { scaricato: 0, danneggiato: 0, mancante: 0 });
@@ -1418,12 +1709,53 @@ async function loadClose(close) {
   await mutate(async () => {
     const res = S.mode === 'tech' ? await call('api_techLoadClose', S.token, L.evId, close) : await call('api_loadClose', S.pin, L.evId, close);
     setLists(L.evId, res.liste);
-    toast(close ? 'Carico chiuso.' : 'Carico riaperto.', 'ok');
+    const src = listSrc(), lm = src ? loadMissing(src.lines.filter(l => toI(l.quantita) >= 1)) : { pieces: 0 };
+    if (close && lm.pieces) toast('Carico chiuso, ma ' + (lm.pieces === 1 ? 'manca 1 pezzo' : 'mancano ' + lm.pieces + ' pezzi') + '. Tocca «Da dove arriva?» sulle voci che mancano.');
+    else toast(close ? 'Carico chiuso.' : 'Carico riaperto.', 'ok');
   });
+  L.missOpen = '';
   lrender();
 }
 ACT.lloadClose = () => loadClose(true);
 ACT.lloadReopen = () => loadClose(false);
+
+/* ---- carico chiuso con dei pezzi che mancano: da dove arrivano, e quando sono arrivati ---- */
+function openMissLine(el) {
+  const src = listSrc();
+  if (!src || L.kind !== 'carico' || src.ev.stato === 'annullato' || src.lists.scaricoQuando) return null;
+  const lines = src.lines.filter(l => toI(l.quantita) >= 1);
+  const l = lines.filter(x => x.id === el.dataset.id)[0];
+  return l && toI(l.caricato) < toI(l.quantita) ? { src: src, lines: lines, l: l } : null;
+}
+ACT.lmiss = el => { L.missOpen = L.missOpen === el.dataset.id ? '' : el.dataset.id; L.draft = null; lrender(); };
+ACT.lsrc = el => {
+  const c = openMissLine(el);
+  if (!c) return;
+  const v = el.dataset.v;
+  L.draft = null;
+  lapply(c, { mancaDa: v, mancaNota: (v && v === c.l.mancaDa) ? (c.l.mancaNota || '') : '' });
+};
+ACT.lvan = el => {
+  const c = openMissLine(el);
+  if (!c) return;
+  L.draft = null;
+  lapply(c, { mancaDa: 'furgone', mancaNota: el.dataset.name });
+};
+INP.lmissText = el => { L.draft = { id: el.dataset.id, text: el.value }; };
+CHG.lmissNote = el => {
+  const c = openMissLine(el);
+  L.draft = null;
+  if (!c || !c.l.mancaDa || String(el.value).trim() === String(c.l.mancaNota || '')) return;
+  lapply(c, { mancaDa: c.l.mancaDa, mancaNota: el.value });
+};
+ACT.larrived = el => {
+  const c = openMissLine(el);
+  if (!c) return;
+  const ext = c.l.mancaDa === 'fornitore';
+  L.missOpen = ''; L.draft = null;
+  lapply(c, { arrivato: true });
+  toast(ext ? 'Segnato come arrivato. Da fornitore esterno: ora conta tra i pezzi a noleggio.' : 'Segnato come arrivato.', 'ok');
+};
 
 /* ---- chiusura dello scarico (solo coordinatore): prima si vede cosa cambia nel magazzino ---- */
 function effectHtml(it) {
@@ -1498,12 +1830,18 @@ function listBtnHtml(ev, lists, lines, kind) {
   const pr = lprogress(lines, kind);
   const closed = kind === 'carico' ? lists.caricoQuando : lists.scaricoQuando;
   const lab = kind === 'carico' ? 'Lista di carico' : 'Lista di scarico';
-  let st;
-  if (closed) st = '<span class="ls ok">' + ico('check') + ' Chiuso' + (fmtStamp(closed) ? ' · ' + esc(fmtStamp(closed)) : '') + '</span>';
+  // carico chiuso ma con pezzi che mancano: non è «fatto», è giallo e dice quanti ne mancano e da dove arrivano
+  const lm = kind === 'carico' && closed ? loadMissing(lines.filter(l => toI(l.quantita) >= 1)) : null;
+  const miss = !!(lm && lm.pieces);
+  let st, extra = '';
+  if (closed && miss) {
+    st = '<span class="ls warn">' + ico('warn') + ' Chiuso · ' + (lm.pieces === 1 ? 'manca 1 pezzo' : 'mancano ' + lm.pieces + ' pezzi') + '</span>';
+    if (lm.ext || lm.van) extra = '<span class="lsx">' + missWhere(lm, true).join('') + '</span>';
+  } else if (closed) st = '<span class="ls ok">' + ico('check') + ' Chiuso' + (fmtStamp(closed) ? ' · ' + esc(fmtStamp(closed)) : '') + '</span>';
   else if (!pr.total) st = '<span class="ls">' + (kind === 'carico' ? 'Niente da caricare' : 'Niente da far rientrare') + '</span>';
-  else st = '<span class="ls">' + (pr.done ? pr.done + ' di ' : 'Da fare: ') + pr.total + (pr.total === 1 ? ' voce' : ' voci') + (pr.done ? '' : '') + '</span>';
-  return '<button type="button" class="lbtn' + (closed ? ' closed' : '') + '" data-act="listOpen" data-ev="' + esc(ev.id) + '" data-kind="' + kind + '">' +
-    '<span class="lt">' + ico(kind === 'carico' ? 'up' : 'down') + ' ' + lab + '</span>' + st + progBar(closed ? 100 : pr.pct, lab) + '</button>';
+  else st = '<span class="ls">' + (pr.done ? pr.done + ' di ' : 'Da fare: ') + pr.total + (pr.total === 1 ? ' voce' : ' voci') + '</span>';
+  return '<button type="button" class="lbtn' + (closed && !miss ? ' closed' : '') + (miss ? ' miss' : '') + '" data-act="listOpen" data-ev="' + esc(ev.id) + '" data-kind="' + kind + '">' +
+    '<span class="lt">' + ico(kind === 'carico' ? 'up' : 'down') + ' ' + lab + '</span>' + st + extra + progBar(closed && !miss ? 100 : pr.pct, lab) + '</button>';
 }
 
 /* ---------------------------------------------------------------------
@@ -2114,8 +2452,7 @@ function evRow(e) {
   if (clash) sub.push('<span class="alert">Un tecnico è già su un altro evento</span>');
   if (isUpcoming(e)) {
     const ms = matSummary(e);
-    if (ms.shortLines) sub.push('<span class="alert">Manca materiale (' + plural(ms.shortLines, 'articolo', 'articoli') + ')</span>');
-    else if (!ms.lines && e.stato === 'confermato') sub.push('<span class="warnt">Elenco del materiale da fare</span>');
+    if (!ms.shortLines && !ms.lines && e.stato === 'confermato') sub.push('<span class="warnt">Elenco del materiale da fare</span>');
   }
   logiBadges(e).forEach(x => sub.push(x));
   let slots = cov.slots.map(slotHtml).join('');
@@ -2124,7 +2461,7 @@ function evRow(e) {
     '<button type="button" class="evh" data-act="toggleEv" data-id="' + esc(e.id) + '" aria-expanded="' + open + '">' +
     '<span class="evtop"><span class="evt">' + esc(e.cliente || 'Senza nome') + '</span>' +
     '<span class="pill ' + (STAGE_PILL[e.stato] || 'muted') + '">' + esc(STAGE_LABEL[e.stato] || e.stato) + '</span></span>' +
-    (sub.length ? '<span class="evsub">' + sub.join('') + '</span>' : '') +
+    (sub.length ? '<span class="evsub">' + sub.join('') + '</span>' : '') + evProbHtml(e) +
     (slots ? '<span class="slots">' + slots + '</span>' : '') + '</button>' +
     (open ? evPanel(e, cov) : '') + '</article>';
 }
@@ -2470,8 +2807,8 @@ function viewDisp() {
 function viewTecnici() {
   const list = S.tec.slice().sort((a, b) => (isActive(b) - isActive(a)) || byName(a, b));
   let h = '';
-  if (!S.url || /\/dev$/.test(S.url)) {
-    h += '<p class="banner">I link personali dei tecnici funzionano solo se apri l\'app dal link che finisce con <b>/exec</b> (Esegui il deployment > Gestisci i deployment). Ora stai usando una versione di prova.</p>';
+  if (!S.url || /\/(exec|dev)$/.test(S.url)) {
+    h += '<p class="banner">Manca l\'indirizzo di questa pagina nel foglio: scrivilo in Config, riga <b>url_pagina</b>, ed esegui <b>setup</b> se la riga non c\'è. Finché manca, i link dei tecnici e gli inviti Calendar non si aprono.</p>';
   }
   h += '<div class="toolbar"><button class="btn pri" data-act="techNew">' + ico('plus') + ' Nuovo tecnico</button>' +
     '<span class="muted">' + S.tec.filter(isActive).length + ' in squadra</span></div>';
@@ -3234,6 +3571,8 @@ function lineView(c) {
     id: c.id, nome: lineName(c), categoria: m ? catKey(m.categoria) : '', consumabile: m ? isTrue(m.consumabile) : false,
     quantita: toI(c.quantita), subnoleggio: toI(c.subnoleggio), caricato: toI(c.caricato), scaricato: toI(c.scaricato),
     danneggiato: toI(c.danneggiato), mancante: toI(c.mancante), van_id: c.van_id || '', note: c.note || '',
+    mancaDa: c.mancaDa || '', mancaNota: c.mancaNota || '',
+    key: c.equipment_id ? 'e:' + c.equipment_id : 'n:' + String(lineName(c)).trim().toLowerCase(),
   };
 }
 /* I furgoni di un evento, nella stessa forma che vedono i tecnici (+ la riga di FurgoniEvento in fe) */
@@ -3332,10 +3671,51 @@ function logiBadges(e) {
   if (e.scaricoQuando) return out;
   if (dueUnload(e)) { out.push('<span class="alert">Scarico da chiudere</span>'); return out; }
   const pc = lprogress(lines, 'carico'), pu = lprogress(lines, 'scarico');
-  if (e.caricoQuando) out.push('<span class="okt">Carico chiuso</span>');
+  // carico chiuso ma con pezzi che mancano: non è «fatto» (lo dice la striscia dei problemi), quindi niente segno verde
+  if (e.caricoQuando) { if (!loadMissing(lines).pieces) out.push('<span class="okt">Carico chiuso</span>'); }
   else if (pc.got > 0) out.push('<span>Carico <b>' + pc.done + '/' + pc.total + '</b></span>');
   if (pu.got > 0) out.push('<span>Scarico <b>' + pu.done + '/' + pu.total + '</b></span>');
   return out;
+}
+
+/* ---------- materiale con problemi, in evidenza nella riga dell'evento ---------- */
+/* Cosa non va con il materiale di un evento: articoli che non bastano, pezzi che mancano al carico, pezzi danneggiati o
+   mancanti al rientro. level: 'bad' (rosso), 'warn' (giallo), 'done' (già sistemato con la chiusura dello scarico, resta come storia) */
+function evProblems(e) {
+  const p = { items: [] };           // ogni problema ha il suo livello: bad (rosso), warn (giallo), done (grigio: già successo, già sistemato)
+  if (e.stato === 'annullato') return p;
+  const lines = eventLines(e.id);
+  if (!lines.length) return p;
+  const closed = !!e.scaricoQuando;
+  if (!closed && isUpcoming(e)) {
+    const ms = matSummary(e);
+    if (ms.shortLines) p.items.push({ level: 'bad', text: 'Manca materiale (' + plural(ms.shortLines, 'articolo', 'articoli') + ')' });
+  }
+  if (!closed && e.caricoQuando) {
+    const lm = loadMissing(lines);
+    if (lm.pieces) {
+      const w = missWhere(lm, false);
+      p.items.push({ level: 'warn', text: 'Carico chiuso incompleto: ' + (lm.pieces === 1 ? 'manca 1 pezzo' : 'mancano ' + lm.pieces + ' pezzi') +
+        (w.length && (lm.ext || lm.van) ? ' (' + w.join(', ') + ')' : '') });
+    }
+  }
+  // al rientro: danneggiati e mancanti (il materiale di consumo che finisce non è un problema)
+  let dmg = 0, lost = 0;
+  lines.forEach(c => {
+    const m = c.equipment_id ? S.matById[c.equipment_id] : null;
+    dmg += toI(c.danneggiato);
+    if (!(m && isTrue(m.consumabile))) lost += toI(c.mancante);
+  });
+  if (dmg || lost) {
+    const bits = [];
+    if (dmg) bits.push(plural(dmg, 'pezzo danneggiato', 'pezzi danneggiati'));
+    if (lost) bits.push(plural(lost, 'pezzo mancante', 'pezzi mancanti'));
+    p.items.push({ level: closed ? 'done' : 'bad', text: (closed ? 'Al rientro: ' : 'Rientro: ') + bits.join(' e ') });
+  }
+  return p;
+}
+function evProbHtml(e) {
+  return evProblems(e).items.map(i => '<span class="evprob ' + i.level + '" role="status">' + ico('warn') + '<span>' + esc(i.text) + '</span></span>').join('');
 }
 
 /* ---------- sezione "Furgoni e carico" nella scheda dell'evento ---------- */
@@ -3494,6 +3874,13 @@ function todoItems() {
   const out = [];
   S.ev.filter(dueUnload).sort(cmpEv).forEach(e => out.push({
     text: 'Scarico da chiudere: ' + e.cliente + ' (' + fmtShort(e.data) + ')', act: 'listOpen', ev: e.id, kind: 'scarico' }));
+  // carico chiuso con dei pezzi che mancano, per gli eventi che devono ancora fare (quelli passati hanno già «scarico da chiudere»)
+  S.ev.filter(e => e.caricoQuando && !e.scaricoQuando && e.stato !== 'annullato' && String(e.data) >= S.oggi).sort(cmpEv).forEach(e => {
+    const lm = loadMissing(eventLines(e.id));
+    if (!lm.pieces) return;
+    out.push({ text: 'Carico chiuso con pezzi mancanti: ' + e.cliente + ' (' + fmtShort(e.data) + '), ' + (lm.pieces === 1 ? 'manca 1 pezzo' : 'mancano ' + lm.pieces + ' pezzi') +
+      (lm.ext ? ', ' + lm.ext + ' da fornitore esterno' : ''), act: 'listOpen', ev: e.id, kind: 'carico' });
+  });
   const rb = reimbSummary();
   if (rb.n) out.push({ text: 'Rimborsi da fare: ' + plural(rb.n, 'spesa', 'spese') + ', ' + fmtEur(rb.tot) + ' (' + plural(rb.techs, 'tecnico', 'tecnici') + ')', act: 'goTab', tab: 'tecnici' });
   const toRepair = S.rip.filter(r => r.stato === 'da riparare').reduce((s, r) => s + toI(r.quantita), 0);
@@ -4262,6 +4649,54 @@ document.addEventListener('toggle', ev => {   // "toggle" non risale: lo ascolto
   if (d && d.matches && d.matches('details[data-mat]')) T.open[d.getAttribute('data-mat')] = d.open;
 }, true);
 
+/* La squadra dell'evento: tutti vedono chi lavora, con quali ruoli e chi ha già confermato (la riga con «tu» è la propria) */
+function teamBlock(squadra) {
+  if (!squadra || !squadra.length) return '';
+  const n = squadra.length;
+  return '<div class="team" aria-label="Squadra di lavoro"><h4 class="teamh">Chi lavora<small>' + n + (n === 1 ? ' persona' : ' persone') + '</small></h4><ul>' +
+    squadra.map(x => {
+      const ok = x.stato === 'confermato';
+      return '<li' + (x.tu ? ' class="you"' : '') + '><span class="tn">' + esc(x.nome) + (x.tu ? ' <em>(tu)</em>' : '') + '</span>' +
+        '<span class="trole">' + uniq(rolesOf(x.ruoli)).map(r => '<span class="trc r-' + r + '">' + r + '</span>').join('') + '</span>' +
+        '<span class="tstat ' + (ok ? 'ok' : 'muted') + '">' + (ok ? ico('check') + 'Confermato' : 'In attesa') + '</span></li>';
+    }).join('') + '</ul></div>';
+}
+
+/* Gli orari dell'evento non tornano con quello che il tecnico ha scritto di sé per quel giorno? Succede quando gli orari
+   arrivano all'ultimo: lo deve sapere anche lui, non solo il coordinatore. disp = {on, from} oppure vuoto. */
+function availIssues(e, disp) {
+  const out = [];
+  if (!disp || e.stato === 'annullato') return out;
+  if (!disp.on) {
+    out.push({ level: 'bad', text: 'Per questo giorno avevi segnato che non sei disponibile, ma sei in squadra.' });
+    return out;
+  }
+  const w = evWin(e), f = toMin(disp.from);
+  if (f !== null && w && w.s !== null && f > w.s) {
+    out.push({ level: 'warn', text: 'Hai scritto che sei libero solo dalle ' + hhmm(f) + ', ma l\'evento parte alle ' + hhmm(w.s) + '.' });
+  }
+  return out;
+}
+function availWarnHtml(e, disp, canFix) {
+  const list = availIssues(e, disp);
+  if (!list.length) return '';
+  return '<div class="banner availwarn' + (list[0].level === 'bad' ? ' bad' : '') + '" role="alert"><b>Gli orari non tornano con la tua disponibilità</b>' +
+    list.map(i => '<span>' + esc(i.text) + '</span>').join('') +
+    '<span class="avhow">' + (canFix ? 'Se è cambiato qualcosa correggila, e in ogni caso avvisa il coordinatore.' : 'Se non riesci a esserci in tempo, avvisa il coordinatore.') + '</span>' +
+    (canFix ? '<button type="button" class="btn sm" data-act="goAvail" data-d="' + esc(e.data) + '">' + ico('cal') + ' Cambia la mia disponibilità</button>' : '') + '</div>';
+}
+ACT.goAvail = el => {
+  const d = el.dataset.d, diff = dayNum(d) - dayNum(T.oggi);
+  if (!(diff < T.days)) T.days = Math.min(180, Math.ceil((diff + 1) / 30) * 30);
+  paint();
+  const row = document.getElementById('d-' + d);
+  if (row) {
+    row.scrollIntoView({ block: 'center' });
+    row.classList.add('flash');
+    setTimeout(() => row.classList.remove('flash'), 3000);
+  }
+};
+
 /* Furgoni dell'evento: quale, quale targa, chi guida (e se guidi tu) */
 function vansBlock(vans) {
   if (!vans || !vans.length) return '';
@@ -4310,7 +4745,7 @@ function techListsBlock(m) {
 
 /* scheda di una convocazione, uguale nella pagina personale e nella conferma rapida.
    m (facoltativo): la convocazione completa, per furgoni, liste e spese (solo nella pagina personale) */
-function convBody(e, a, lines, defOpen, m) {
+function convBody(e, a, lines, defOpen, m, extra) {
   const roles = uniq(rolesOf(a.ruoli));
   const cancelled = e.stato === 'annullato';
   let h = '<div class="row"><span class="when">' + esc(fmtLong(e.data)) + '</span>' +
@@ -4320,10 +4755,12 @@ function convBody(e, a, lines, defOpen, m) {
     roles.map(r => '<span class="chip r-' + r + '">' + r + '</span>').join('') + '</div>';
   if (cancelled) return h;
   h += timesHtml(e);
+  if (extra && a.stato !== 'rifiutato') h += availWarnHtml(e, extra.disp, extra.canFix);
   const facts = [];
   if (e.luogo) facts.push('<div><span class="k">Luogo: </span>' + esc(e.luogo) + '</div>');
   if (e.noteTecnici) facts.push('<div><span class="k">Note: </span>' + esc(e.noteTecnici) + '</div>');
   if (facts.length) h += '<div class="facts">' + facts.join('') + '</div>';
+  if (extra) h += teamBlock(extra.squadra);
   h += matBlock(e, lines || [], roles, defOpen);
   if (m) {
     h += sameDayHtml(m) + vansBlock(m.furgoni);
@@ -4366,7 +4803,8 @@ function techView() {
   if (!T.mie.length) h += '<p class="empty">Nessuna convocazione per ora. Quando ti chiamano per un evento lo trovi qui.</p>';
   T.mie.forEach(m => {
     h += '<article class="card ' + cardCls(m.assegnazione.stato) + '" id="conv-' + esc(m.assegnazione.id) + '">' +
-      convBody(m.evento, m.assegnazione, m.materiale, false, m) + respondButtons(m.assegnazione, 'respond', m.assegnazione.token) + '</article>';
+      convBody(m.evento, m.assegnazione, m.materiale, false, m, { squadra: m.squadra, disp: T.disp[m.evento.data], canFix: true }) +
+      respondButtons(m.assegnazione, 'respond', m.assegnazione.token) + '</article>';
   });
   if (T.recenti.length) {
     h += '</section><section class="sec"><h2>Eventi appena passati</h2>';
@@ -4477,7 +4915,8 @@ async function techBoot() {
 function confirmView() {
   const d = C.data, e = d.evento, cancelled = e.stato === 'annullato';
   return mastSimple('Convocazione', '', false) + '<main class="wrap narrow main"><h1 class="hello">Ciao ' + esc(firstName(d.nome)) + '</h1>' +
-    '<article class="card ' + (cancelled ? 'annullato' : cardCls(d.stato)) + '">' + convBody(e, { ruoli: d.ruoli, stato: d.stato }, d.materiale || [], true) +
+    '<article class="card ' + (cancelled ? 'annullato' : cardCls(d.stato)) + '">' +
+    convBody(e, { ruoli: d.ruoli, stato: d.stato }, d.materiale || [], true, null, { squadra: d.squadra, disp: d.disp, canFix: false }) +
     (cancelled ? '' : vansBlock(d.furgoni) + respondButtons({ stato: d.stato }, 'cRespond', S.token)) + '</article></main>';
 }
 ACT.cRespond = el => {
@@ -4492,7 +4931,11 @@ ACT.cRespond = el => {
 async function confirmBoot() {
   S.view = confirmView;
   paint(loadingView());
-  try { C.data = await call('api_confirmInit', S.token); paint(); } catch (e) { paint(linkErrorView(e.message)); }
+  try {
+    C.data = await call('api_confirmInit', S.token);
+    S.cfg = { durata_evento_ore: C.data.durata_evento_ore || 4 };
+    paint();
+  } catch (e) { paint(linkErrorView(e.message)); }
 }
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && S.mode === 'tech' && T.oggi && !Object.keys(T.saving).length && !S.sheet && !S.locked && !LQ.running && !LQ.items.length) {
