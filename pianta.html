@@ -111,11 +111,14 @@ function deptsOfRoles(roles) {
   }
   var hash = String(location.hash || '');
   var mh = /[#&]h=([A-Za-z0-9_.\-]+)/.exec(hash), mp = /[#&]p=([A-Za-z0-9_\-]+)/.exec(hash);
+  var mm = /[#&]m=((?:base|my):[A-Za-z0-9_\-]{1,70})/.exec(hash);      // 4.3: un modello del Generatore guidato da cui partire («base:band5», «my:il-mio-modello»)
   if (mp) ssSet('pj.p', mp[1]);
   Q.p = mp ? mp[1] : (ssGet('pj.p') || '');
   Q.h = mh ? mh[1] : '';
-  if (mh || mp) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* niente */ } }
+  if (mh || mp || mm) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* niente */ } }
   window.__NOSTART = !!Q.p;                // con un progetto da aprire non mostro la schermata iniziale
+  // il modello vale una volta sola, per il progetto appena creato: non si salva (ricaricando la scheda il Generatore non si riapre da solo)
+  window.__GENMODEL = mm && mp ? mm[1] : '';
 
   var ready = (function () {
     if (Q.h) {
@@ -7533,7 +7536,13 @@ function loadGlobal(d){d=d||{};
     rebuildAddSelect();fillSpecs();renderStockAll();renderReports();
     try{const qs=await DB.collection('progetti').orderBy('updatedAt','desc').limit(1).get();
       if(!qs.empty&&!Dirty&&$('genDlg').hidden){const d0=qs.docs[0],x=d0.data();loadState(x,d0.id);LAST={id:d0.id,nome:(x.meta||{}).nome,agg:x.updatedAt};
-        if($('startScr').hidden)say('Progetto aperto. 📂 File › Apri progetti per gli altri.')}}catch(e){}
+        if($('startScr').hidden)say('Progetto aperto. 📂 File › Apri progetti per gli altri.');
+        if(window.__GENMODEL){const gm=window.__GENMODEL;window.__GENMODEL='';
+          if(gm.startsWith('my:'))await loadGenModels();
+          GEN=genDefault();
+          if(applyModel(gm)){if(!GEN.ev.nome)GEN.ev.nome=Meta.nome||'';if(!GEN.ev.luogo)GEN.ev.luogo=Meta.location||'';if(!GEN.ev.data)GEN.ev.data=Meta.data||'';
+            openGen(GEN);say('Modello caricato: controlla le sezioni e genera la pianta.')}
+          else say('Il modello scelto non c\'è più: scegline un altro dal Generatore guidato.')}}}catch(e){}
     if(!$('startScr').hidden)renderStart();
   }
   ASSETS=await pAssets;DL=await pDl;

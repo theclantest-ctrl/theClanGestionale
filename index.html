@@ -232,7 +232,7 @@ button.chip{cursor:pointer;min-height:34px}
 .mxw{overflow-x:auto;margin:10px calc(-1*var(--gut,16px)) 0;padding:0 var(--gut,16px) 10px;-webkit-overflow-scrolling:touch}
 table.mx{border-collapse:separate;border-spacing:0}
 .mx th,.mx td{padding:0;text-align:center;font-weight:400}
-.mx .nm{position:sticky;left:0;z-index:2;background:var(--bg);text-align:left;min-width:108px;max-width:120px;padding:5px 10px 5px 0;font:700 18px/1.05 var(--cond);border-right:2px solid var(--rule);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mx .nm{position:sticky;left:0;z-index:2;background:var(--bg);box-shadow:calc(-1*var(--gut,16px)) 0 0 var(--bg);text-align:left;min-width:108px;max-width:120px;padding:5px 10px 5px 0;font:700 18px/1.05 var(--cond);border-right:2px solid var(--rule);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mx .dh{min-width:46px;padding:8px 2px 6px;font:700 21px/1 var(--cond)}
 .mx .dh small{display:block;margin-bottom:2px;font:600 12.5px/1.1 var(--sans);color:var(--ink2)}
 .mx .dh.we{color:var(--bad)}
@@ -252,6 +252,24 @@ table.mx{border-collapse:separate;border-spacing:0}
 .legend i.no{background:var(--badbg);border-color:var(--bad)}
 .legend i.busy{position:relative}
 .legend i.busy::after{content:"";position:absolute;left:2px;right:2px;bottom:2px;height:4px;background:var(--ink)}
+/* Disponibilità: scelta del periodo, numero degli eventi del giorno, ritorno dagli eventi */
+.dnav{position:relative;display:flex;gap:8px;align-items:center;margin:12px calc(-1*var(--gut,16px)) 0;padding:2px var(--gut,16px) 6px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dnav .cat{flex:none;min-height:40px;padding:0 11px;font-size:18px;white-space:nowrap}
+.dnav::after{content:"";flex:none;width:1px}
+@media(min-width:560px){.dnav{flex-wrap:wrap;overflow-x:visible;margin-left:0;margin-right:0;padding-left:0;padding-right:0}.dnav::after{display:none}}
+.dgo{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:14px;color:var(--ink2)}
+.dgo input[type=date]{width:auto;min-width:0;min-height:40px;max-width:100%;padding:0 8px;border-radius:4px;font:600 16px/1 var(--sans)}
+.mx .dh.sel{background:var(--tape);color:#12151a;border-radius:4px}
+.mx .dh.sel small{color:#12151a}
+.evn{display:block;width:42px;height:36px;margin:2px;padding:0;border:2px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink);font:700 16px/1 var(--cond);cursor:pointer}
+.evn:hover{background:rgba(127,127,127,.14)}
+.evall{display:block;width:100%;min-height:36px;padding:0;text-align:left;border:0;background:none;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.devgo{display:block;margin-top:8px;font:700 17px/1 var(--cond);color:var(--ink2)}
+.backbar{background:var(--bg);border-bottom:1px solid var(--line)}
+.backbar .wrap{padding-top:6px;padding-bottom:6px}
+.ev{scroll-margin-top:72px}
+.main.hasback .ev{scroll-margin-top:128px}
+.ev.flash{animation:drowflash 3s ease-out}
 
 /* materiale e magazzino (coordinatore) */
 .fld>span.qty{display:inline-flex;margin:0;font-size:inherit;font-weight:inherit;color:inherit}
@@ -608,7 +626,7 @@ details.mat[open]>summary::after{transform:rotate(-135deg);margin-bottom:-3px}
 .banner.availwarn .btn{justify-self:start;margin-top:6px}
 .drow.flash{animation:drowflash 3s ease-out}
 @keyframes drowflash{0%,60%{box-shadow:inset 0 0 0 3px var(--warn)}100%{box-shadow:inset 0 0 0 3px transparent}}
-@media (prefers-reduced-motion:reduce){.drow.flash{animation:none;box-shadow:inset 0 0 0 3px var(--warn)}}
+@media (prefers-reduced-motion:reduce){.drow.flash,.ev.flash{animation:none;box-shadow:inset 0 0 0 3px var(--warn)}}
 
 /* furgoni di un evento */
 .vans>li{margin-top:10px;padding:10px 12px 12px;border:2px solid var(--line);border-left:7px solid var(--tape);border-radius:4px;background:var(--card)}
@@ -680,7 +698,22 @@ details.mat[open]>summary::after{transform:rotate(-135deg);margin-bottom:-3px}
 /* magazzino: sezioni, movimenti, riparazioni, inventario */
 .subtabs{margin-top:12px;display:grid;grid-template-columns:1fr 1fr}
 .subtabs .cat{width:100%}
-@media(min-width:520px){.subtabs{grid-template-columns:repeat(4,1fr)}}
+.subtabs .cat:last-child:nth-child(odd){grid-column:1/-1}
+@media(min-width:520px){.subtabs{grid-template-columns:repeat(3,1fr)}.subtabs .cat:last-child:nth-child(odd){grid-column:auto}}
+/* contenitori: elenco nella scheda Magazzino e finestra «Dove sta» */
+.contsum{margin:0;padding:0 12px 11px 17px;font-size:14.5px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.contl{display:grid;gap:3px;margin:2px 0 4px}
+.contl li{display:flex;gap:10px;align-items:baseline;font-size:16px;font-weight:600}
+.contl li b{font:700 21px/1 var(--cond);min-width:38px;text-align:right}
+.dsl{margin-top:12px;display:grid;gap:10px}
+.dsr{border:2px solid var(--line);border-radius:6px;background:var(--card);padding:8px 6px 10px 10px}
+.dsrt{display:flex;align-items:center;gap:4px}
+.dsrt select{flex:1 1 auto;min-width:0}
+.dsrq{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px}
+.dsnote{font-size:14px}
+.dsnone{padding:6px 2px;font-size:15px}
+.dsl+.row{margin-top:10px}
+.dssum{margin-top:12px;font-size:16px}
 .cat.low[aria-pressed=false]{border-color:var(--warn);color:var(--warn)}
 .lnk{display:inline;min-height:36px;padding:6px 0;background:none;border:0;color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:left}
 .stkmv{display:grid;gap:2px;font-size:14px}
@@ -733,7 +766,14 @@ details.mat[open]>summary::after{transform:rotate(-135deg);margin-bottom:-3px}
 .pjc>.row{margin-top:10px}
 .pjev{display:grid;gap:8px;padding:10px 0;border-top:1px solid var(--line2)}
 .pjev:first-of-type{border-top:0}
-.pjrow{margin-top:12px}
+/* la pianta dell'evento, dentro la scheda del tecnico: ben visibile, subito sotto luogo e note */
+.pjtech{margin-top:14px;padding:6px 12px 10px;border:2px solid var(--line);border-left:7px solid var(--tape);background:var(--card)}
+.pjth{display:flex;align-items:center;gap:8px;margin:4px 0 0;font:700 20px/1.1 var(--cond)}
+.pjth svg{flex:none}
+.pjtech .pjev{padding:8px 0 4px}
+.pjtech .pjev .row{margin-top:0}
+.pjgd{display:block;margin-top:4px;font-size:14px;line-height:1.3;color:var(--ink2)}
+.pjmodhint{margin:10px 0 0}
 .menu{display:grid;gap:8px;margin-top:14px}
 .menu .btn{justify-content:flex-start;text-align:left}
 .pjhist{margin-top:6px}
@@ -817,6 +857,33 @@ details.mat[open]>summary::after{transform:rotate(-135deg);margin-bottom:-3px}
 .pcdiff li.del{border-left-color:var(--bad)}
 .pcdiff li.chg{border-left-color:var(--warn)}
 .pcdiff small{color:var(--ink2)}
+/* importare l'inventario (4.5): scelta del file e tabella da controllare */
+.imsrc{margin-top:14px}
+.imsrc .btn{width:100%}
+.imor{display:flex;align-items:center;gap:12px;margin:16px 0 0;font-size:14px;color:var(--ink2)}
+.imor::before,.imor::after{content:"";flex:1;border-top:1px solid var(--line)}
+.imctl{margin-top:10px}
+.imctl .k{display:block;font-size:14px;font-weight:600;color:var(--ink2)}
+#imctl .cats{margin-top:6px;gap:6px}
+#imctl .cat{min-height:38px;padding:0 10px;font-size:17px}
+#immapsum{font-size:15px;min-height:40px}
+.imbulk{margin:8px 0 2px;font-size:15px}
+.imlist{margin-top:8px}
+.imr{align-items:flex-start}
+.imr[hidden]{display:none}
+.imr.imchk{box-shadow:inset 5px 0 0 var(--warn)}
+.imr.done{opacity:.6}
+.imr.lock{opacity:.72}
+.imb{flex:1;min-width:0}
+.imb input.imn{min-height:44px;font-weight:600}
+.imq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px}
+.imq select{flex:1 1 120px;width:auto;min-width:0;min-height:44px}
+.imq .qty input[type=number]::placeholder{color:var(--ink2);font-weight:400}
+.imx{margin:6px 0 0;font-size:14px;line-height:1.4;color:var(--ink2);overflow-wrap:anywhere}
+.imx:empty{display:none}
+.imx .pill{margin-right:6px}
+.imm,.imw{display:block;margin-top:3px}
+.imw{color:var(--warn);font-weight:600}
 @media(max-width:380px){
   .wrap{--gut:12px}
   .evt{font-size:23px}
@@ -946,6 +1013,39 @@ function toMin(t) {
 function hhmm(n) { n = ((Math.round(n) % 1440) + 1440) % 1440; return pad(Math.floor(n / 60)) + ':' + pad(n % 60); }
 function fmtT(t) { const n = toMin(t); return n === null ? String(t == null ? '' : t).trim() : hhmm(n); }
 function inputT(t) { const n = toMin(t); return n === null ? '' : hhmm(n); }
+
+/* ---------- disponibilità: fin dove si scrive e si guarda, e i pulsanti dei mesi (coordinatore e tecnico) ---------- */
+const AVAIL_AHEAD = 400;      // giorni avanti da oggi: fin dove i tecnici possono segnare la disponibilità e fin dove arrivano i pulsanti dei mesi (lo stesso numero di MAX_DAYS_AHEAD nel server)
+function lastOfMonth(s) {
+  const p = parseYMD(s);
+  return addDays(p.m === 12 ? (p.y + 1) + '-01-01' : p.y + '-' + pad(p.m + 1) + '-01', -1);
+}
+function capFirst(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+function fmtDMY(s) { const p = parseYMD(s); return p ? p.d + ' ' + MESI[p.m - 1] + ' ' + p.y : String(s || ''); }
+/* I mesi dopo quello in corso, fino a quello dell'ultimo giorno in cui si può scrivere: 'AAAA-MM'. Sono gli stessi per tutti e non dipendono dagli eventi. */
+function availMonths(oggi) {
+  const p = parseYMD(oggi), q = parseYMD(addDays(oggi, AVAIL_AHEAD)), out = [];
+  let y = p.y, m = p.m;
+  for (;;) {
+    if (++m > 12) { m = 1; y++; }
+    if (y > q.y || (y === q.y && m > q.m)) break;
+    out.push(y + '-' + pad(m));
+  }
+  return out;
+}
+/* Un pulsante-mese. act = l'azione da chiamare (dispMonth nella Disponibilità del coordinatore, techMonth nella pagina del tecnico) */
+function availChip(ym, selected, act, oggi) {
+  const y = +ym.slice(0, 4), m = +ym.slice(5);
+  const short = capFirst(MESI_B[m - 1]) + (y !== parseYMD(oggi).y ? ' ' + String(y).slice(2) : '');
+  const full = capFirst(MESI[m - 1]) + ' ' + y;
+  return '<button type="button" class="cat" data-act="' + act + '" data-m="' + ym + '" aria-pressed="' + selected + '" aria-label="' + full + '" title="' + full + '">' + short + '</button>';
+}
+/* La riga «Prossimi giorni» + un pulsante per ogni mese. mode = 'next' oppure 'AAAA-MM' (il pulsante acceso) */
+function availChips(oggi, mode, act) {
+  return '<div class="dnav" role="group" aria-label="Periodo da guardare">' +
+    '<button type="button" class="cat" data-act="' + act + '" data-m="next" aria-pressed="' + (mode === 'next') + '">Prossimi giorni</button>' +
+    availMonths(oggi).map(ym => availChip(ym, mode === ym, act, oggi)).join('') + '</div>';
+}
 
 /* ---------- orari e sovrapposizioni ---------- */
 /* Da dove parte e dove finisce la giornata di un evento. Chi va al magazzino parte dal primo orario che c'è tra arrivo in
@@ -1277,6 +1377,7 @@ function paint(html) {
   if (html !== undefined) $('#app').innerHTML = html;
   else if (typeof S.view === 'function') $('#app').innerHTML = S.view();
   if (y) window.scrollTo(0, y);
+  if (typeof S.afterPaint === 'function') S.afterPaint();
 }
 
 /* Pulsanti "a due tocchi": il primo cambia il testo, il secondo conferma */
@@ -2634,8 +2735,10 @@ Object.assign(S, {
   reuseSame: store.get('reuseSame') !== '0',   // due eventi lo stesso giorno, uno dopo l'altro: possono usare gli stessi pezzi? (di base sì, se gli orari non si sovrappongono)
   openLine: null,                  // riga di materiale aperta per la modifica
   stockDate: '', stockQ: '', stockCat: '', openStk: null,   // scheda Magazzino
+  contQ: '', openCont: null, ds: null,   // scheda Contenitori: ricerca e contenitore aperto; finestra «Dove sta» di un articolo
   magTab: 'articoli', movKind: '', movQ: '', ripOpen: null, rimbTec: null,
   pick: {}, addEv: null,           // finestra "Aggiungi materiale"
+  dispMode: 'next', dispGo: '', dispKeep: null, back: null,   // scheda Disponibilità: periodo scelto, giorno cercato, dove stava la griglia; da dove si è arrivati agli Eventi
   view: null,
 });
 
@@ -2878,13 +2981,13 @@ function caseOver(m) {
   return Math.max(0, inCaseRaw(m) - (Number(m.quantita) || 0));
 }
 function compList(m) {
-  return (S.compByCase[m.id] || []).map(x => ({ m: S.matById[x.id], q: x.q })).filter(x => x.m).sort((a, b) => cmpName(a.m.nome, b.m.nome));
+  return (S.compByCase[m.id] || []).map(x => ({ m: S.matById[x.id], q: x.q })).filter(x => x.m).sort((a, b) => cmpNat(a.m.nome, b.m.nome));
 }
 function compText(m) { return compList(m).map(x => x.q + ' ' + x.m.nome).join(', '); }
 /* In quali case sta un articolo: «Case cavi 2 × 10» */
 function holdersText(m) {
-  return (S.holdIn[m.id] || []).filter(h => stockOf(h.c) > 0).sort((a, b) => cmpName(a.c.nome, b.c.nome))
-    .map(h => h.c.nome + ' ' + stockOf(h.c) + ' × ' + h.per).join(', ');
+  return (S.holdIn[m.id] || []).filter(h => stockOf(h.c) > 0).sort((a, b) => cmpNat(a.c.nome, b.c.nome))
+    .map(h => stockOf(h.c) === 1 ? h.per + ' in ' + h.c.nome : h.c.nome + ' ' + stockOf(h.c) + ' × ' + h.per).join(', ');
 }
 function openVars(lineId) { return (S.cvarByLine[lineId] || []).filter(v => !v.rimesso); }
 function lineVars(lineId) { return S.cvarByLine[lineId] || []; }
@@ -3109,6 +3212,8 @@ function coordView() {
     ? '<p class="banner" role="alert"><b>Il foglio non è aggiornato.</b> Hai messo il codice nuovo ma manca un passaggio: apri Estensioni > Apps Script, ' +
       'scegli la funzione <b>setup</b> nel menu in alto e premi Esegui. Poi aggiorna questa pagina. <small>(Mancano: ' + esc(S.mancano.join(', ')) + ')</small></p>'
     : '';
+  const back = (S.tab === 'eventi' && S.back === 'disp')
+    ? '<div class="backbar"><div class="wrap"><button type="button" class="btn sm" data-act="backDisp">← Torna alle disponibilità</button></div></div>' : '';
   return '<header class="mast"><div class="wrap mastin"><div class="brand">' + esc(S.cfg.nome_azienda || 'Gestionale service') +
     '<small>Coordinatore</small></div><div class="mastact">' +
     '<button class="ib" data-act="refresh" aria-label="Aggiorna i dati">' + ico('refresh') + '</button>' +
@@ -3116,8 +3221,8 @@ function coordView() {
     '<div class="stick"><nav class="tabs" role="tablist" aria-label="Sezioni"><div class="wrap tabsin">' +
     tabs.map(t => '<button role="tab" class="tab" aria-selected="' + (S.tab === t[0]) + '" data-act="tab" data-tab="' + t[0] + '">' +
       t[1] + '</button>').join('') +
-    '</div></nav><div class="hazard"></div></div>' +
-    '<main class="wrap main" role="tabpanel">' + gaps +
+    '</div></nav><div class="hazard"></div>' + back + '</div>' +
+    '<main class="wrap main' + (back ? ' hasback' : '') + '" role="tabpanel">' + gaps +
     (S.tab === 'eventi' ? viewEventi() : S.tab === 'disp' ? viewDisp() : S.tab === 'mag' ? viewMag() : S.tab === 'prog' ? viewProg() : viewTecnici()) + '</main>';
 }
 
@@ -3556,13 +3661,48 @@ function pickFilter() {
   if (em) em.hidden = shown > 0;
 }
 
-/* ---------- scheda Disponibilità (chi è libero nei prossimi giorni, anche senza eventi) ---------- */
+/* ---------- scheda Disponibilità (chi è libero nei prossimi giorni e nei mesi dopo, anche senza eventi) ---------- */
+/* I pulsanti dei mesi e il limite di 400 giorni (AVAIL_AHEAD) sono in core.js: li usa anche la pagina del tecnico */
+function dMon(s) { const p = parseYMD(s); return p ? p.d + ' ' + MESI_B[p.m - 1] : String(s || ''); }
+
+/* Quali giorni mostra la griglia.
+   «Prossimi giorni»: da oggi, almeno 3 settimane e comunque fino a fine mese. «AAAA-MM»: quel mese (da oggi, se è il mese in corso). */
+function dispNext() {
+  const a = addDays(S.oggi, 20), b = lastOfMonth(S.oggi);
+  return { mode: 'next', from: S.oggi, to: a > b ? a : b };
+}
+function dispRange() {
+  const m = String(S.dispMode || '');
+  if (/^\d{4}-(0[1-9]|1[0-2])$/.test(m)) {
+    const first = m + '-01', last = lastOfMonth(first);
+    if (last >= S.oggi) return { mode: m, from: first < S.oggi ? S.oggi : first, to: last };
+  }
+  return dispNext();
+}
+/* I pulsanti dei mesi arrivano sempre a 400 giorni da oggi (availMonths, in core.js), come la pagina del tecnico: non dipendono dagli eventi.
+   Un evento più lontano si raggiunge con «Vai al giorno». */
+function dispNavHtml(R, go) {
+  return availChips(S.oggi, R.mode, 'dispMonth') +
+    '<label class="dgo"><span>Vai al giorno</span><input type="date" data-chg="dispGo" value="' + esc(go || S.dispGo || '') + '" min="' + S.oggi + '"></label>';
+}
+/* Su telefono i mesi stanno su una riga che scorre di lato: dopo ogni disegno della pagina porto in vista quello scelto */
+function dispNavFit() {
+  const nav = $('.dnav');
+  const b = nav && $('[aria-pressed=true]', nav);
+  if (!b) return;
+  const l = b.offsetLeft, r = l + b.offsetWidth, v = nav.scrollLeft, w = nav.clientWidth;
+  if (l < v + 8) nav.scrollLeft = Math.max(0, l - 16);
+  else if (r > v + w - 8) nav.scrollLeft = r - w + 16;
+}
+S.afterPaint = dispNavFit;
+
 function viewDisp() {
   const techs = S.tec.filter(isActive).sort(byName);
   if (!techs.length) return '<p class="empty">Nessun tecnico attivo. Aggiungili dalla scheda Tecnici.</p>';
-  const N = 21;
+  const R = dispRange();
   const days = [];
-  for (let i = 0; i < N; i++) days.push(addDays(S.oggi, i));
+  for (let d = R.from; d <= R.to; d = addDays(d, 1)) days.push(d);
+  const go = (S.dispGo && S.dispGo >= R.from && S.dispGo <= R.to) ? S.dispGo : '';
   const evPerDay = {};
   S.ev.forEach(e => { if (e.stato !== 'annullato') evPerDay[e.data] = (evPerDay[e.data] || 0) + 1; });
   const busy = {};
@@ -3573,13 +3713,18 @@ function viewDisp() {
     (m[e.data] = m[e.data] || []).push(e.cliente + ' (' + uniq(rolesOf(a.ruoli)).join(' + ') + ')');
   });
   const yes = {};
-  let h = '<p class="hint" style="margin-top:14px">Quello che i tecnici hanno scritto per i prossimi ' + N + ' giorni, anche dove non c\'è ancora un evento. Tocca una casella per i dettagli.</p>';
+  let h = '<p class="hint" style="margin-top:14px">Quello che i tecnici hanno scritto dal ' + dMon(R.from) + ' al ' + dMon(R.to) +
+    ', anche dove non c\'è ancora un evento. Scegli un altro mese o un giorno preciso per guardare più avanti.</p>';
+  h += dispNavHtml(R, go);
   h += '<div class="mxw"><table class="mx"><thead><tr><th class="nm" scope="col"><span class="vh">Tecnico</span></th>' + days.map((d, i) => {
     const p = parseYMD(d), w = wday(d);
     const mo = (i === 0 || p.d === 1);
-    return '<th scope="col" class="dh' + (w === 0 || w === 6 ? ' we' : '') + (mo && i > 0 ? ' mo' : '') + '"><small>' + GIORNI_B[w] + '</small>' + p.d + (mo ? '<small>' + MESI_B[p.m - 1] + '</small>' : '') + '</th>';
-  }).join('') + '</tr><tr><th class="nm" scope="row" style="font-size:15px;font-weight:600;color:var(--ink2)">Eventi</th>' +
-    days.map(d => '<td class="evc">' + (evPerDay[d] || '') + '</td>').join('') + '</tr></thead><tbody>';
+    return '<th scope="col" data-d="' + d + '" class="dh' + (w === 0 || w === 6 ? ' we' : '') + (mo && i > 0 ? ' mo' : '') + (d === go ? ' sel' : '') + '"><small>' + GIORNI_B[w] + '</small>' + p.d + (mo ? '<small>' + MESI_B[p.m - 1] + '</small>' : '') + '</th>';
+  }).join('') + '</tr><tr><th class="nm" scope="row" style="font-size:15px;font-weight:600;color:var(--ink2)"><button type="button" class="evall" data-act="dispEvAll" title="Tutti gli eventi del periodo">Eventi</button></th>' +
+    days.map(d => {
+      const n = evPerDay[d] || 0;
+      return '<td class="evc">' + (n ? '<button type="button" class="evn" data-act="dayEv" data-d="' + d + '" aria-label="' + esc(plural(n, 'evento', 'eventi') + ', ' + fmtShort(d) + ': vedi quali sono') + '">' + n + '</button>' : '') + '</td>';
+    }).join('') + '</tr></thead><tbody>';
   techs.forEach(t => {
     h += '<tr><th class="nm" scope="row" title="' + esc(t.nome) + '">' + esc(t.nome) + '</th>';
     days.forEach(d => {
@@ -3591,7 +3736,8 @@ function viewDisp() {
       else if (x) { cls = 'no'; txt = 'No'; lab = 'non disponibile'; }
       if (x && x.on) yes[d] = (yes[d] || 0) + 1;
       const full = t.nome + ', ' + fmtShort(d) + ': ' + lab + (b ? '. Convocato per ' + b.join('; ') : '');
-      h += '<td><button type="button" class="cell ' + cls + (b ? ' busy' : '') + '" data-act="cell" data-msg="' + esc(full) + '" aria-label="' + esc(full) + '">' + txt + '</button></td>';
+      const aria = full + (b ? '. Tocca per ' + (b.length > 1 ? 'vedere gli eventi' : 'aprire l\'evento') : '');
+      h += '<td><button type="button" class="cell ' + cls + (b ? ' busy' : '') + '" data-act="cell" data-t="' + esc(t.id) + '" data-d="' + d + '" data-msg="' + esc(full) + '" aria-label="' + esc(aria) + '">' + txt + '</button></td>';
     });
     h += '</tr>';
   });
@@ -3599,8 +3745,120 @@ function viewDisp() {
     days.map(d => '<td>' + (yes[d] || '') + '</td>').join('') + '</tr></tfoot></table></div>';
   h += '<div class="legend"><span><i class="yes"></i>Libero</span><span><i class="from"></i>Libero da quell\'ora</span>' +
     '<span><i class="no"></i>Non disponibile</span><span><i></i>Nessuna risposta</span><span><i class="busy"></i>Già convocato</span></div>';
+  h += '<p class="hint">Tocca una casella per i dettagli: se il tecnico è già convocato si apre l\'evento. ' +
+    'Tocca il numero degli eventi, sotto la data, per vedere quali sono.</p>';
+  if (R.to > addDays(S.oggi, AVAIL_AHEAD)) {
+    h += '<p class="hint">I tecnici possono scrivere la loro disponibilità fino a ' + AVAIL_AHEAD + ' giorni avanti, cioè fino al ' + fmtDMY(addDays(S.oggi, AVAIL_AHEAD)) +
+      ': più in là le caselle restano vuote, ma gli eventi si vedono.</p>';
+  }
   return h;
 }
+
+/* La griglia ricorda dove eri (mese, spostamento a lato, altezza) quando vai a guardare un evento e poi torni */
+function keepDisp() {
+  const mx = $('.mxw');
+  S.dispKeep = (S.tab === 'disp' && mx) ? { x: mx.scrollLeft, y: window.scrollY } : null;
+}
+function restoreDisp() {
+  const k = S.dispKeep;
+  S.dispKeep = null;
+  const mx = $('.mxw');
+  if (k && mx) { mx.scrollLeft = k.x; window.scrollTo(0, k.y); }
+}
+function dispScrollTo(d) {
+  const mx = $('.mxw'), th = mx && $('th[data-d="' + d + '"]', mx);
+  if (!mx || !th) return;
+  const nm = $('.nm', mx);
+  const edge = nm ? nm.getBoundingClientRect().right : mx.getBoundingClientRect().left + 120;      // dove finisce la colonna dei nomi, che resta ferma
+  mx.scrollLeft = Math.max(0, th.getBoundingClientRect().left - edge + mx.scrollLeft - 2);      // 2 px di margine: del giorno prima si vede solo il suo spazio vuoto
+}
+
+/* Una scheda breve per ogni evento, dentro le finestre della Disponibilità: tocchi e vai all'evento */
+function dispEvCard(e) {
+  const cov = coverage(e);
+  const sub = evSubBits(e);
+  const slots = cov.slots.length ? cov.slots.map(slotHtml).join('') : '<span class="muted" style="font-size:14px">Nessun ruolo richiesto</span>';
+  return '<article class="ev st-' + esc(e.stato) + '"><button type="button" class="evh" data-act="goEv" data-id="' + esc(e.id) + '">' +
+    '<span class="evtop"><span class="evt">' + esc(e.cliente || 'Senza nome') + '</span>' +
+    '<span class="pill ' + (STAGE_PILL[e.stato] || 'muted') + '">' + esc(STAGE_LABEL[e.stato] || e.stato) + '</span></span>' +
+    (sub.length ? '<span class="evsub">' + sub.join('') + '</span>' : '') +
+    '<span class="slots">' + slots + '</span><span class="devgo">Vai all\'evento ›</span></button></article>';
+}
+function dispSheet(title, list, note, byDay) {
+  openSheet(title, (note ? '<p class="hint">' + esc(note) + '</p>' : '') +
+    (list.length
+      ? (byDay ? groupByDay(list, dispEvCard, true) : '<section class="day">' + list.map(dispEvCard).join('') + '</section>')
+      : '<p class="empty">Nessun evento in questo periodo.</p>') +
+    '<div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Chiudi</button></div>', { noFocus: true });
+}
+/* Apre l'evento nella scheda Eventi, già aperto e in vista; da Disponibilità c'è il pulsante per tornare indietro */
+function goEvent(id, from) {
+  const e = S.evById[id];
+  if (!e) { toast('Questo evento non c\'è più: aggiorna i dati.', 'err'); return; }
+  if (from === 'disp') keepDisp();
+  if (S.sheet) closeSheet();
+  S.tab = 'eventi'; S.openEv = id; S.back = from === 'disp' ? 'disp' : null;
+  S.prop = null; S.addRoleFor = null; S.respFor = null; S.openLine = null;
+  if (!isUpcoming(e)) S.showPast = true;
+  paint();
+  const n = document.getElementById('ev-' + id);
+  if (n) {
+    n.scrollIntoView({ block: 'start' });
+    n.classList.add('flash');
+    setTimeout(() => n.classList.remove('flash'), 3000);
+    const hd = $('.evh', n);
+    if (hd) hd.focus({ preventScroll: true });
+  }
+}
+ACT.goEv = el => goEvent(el.dataset.id, 'disp');
+ACT.backDisp = () => {
+  S.tab = 'disp'; S.back = null; S.prop = null; S.addRoleFor = null; S.respFor = null; S.openLine = null;
+  paint(); window.scrollTo(0, 0); restoreDisp();
+};
+ACT.dispMonth = el => {
+  const m = el.dataset.m || 'next';
+  S.dispMode = m; S.dispGo = ''; S.dispKeep = null;
+  paint();
+  const mx = $('.mxw');
+  if (mx) mx.scrollLeft = 0;
+  const b = $('.dnav [data-m="' + m + '"]');
+  if (b) b.focus({ preventScroll: true });
+};
+CHG.dispGo = el => {
+  const d = el.value;
+  if (!d) { S.dispGo = ''; paint(); return; }
+  if (!parseYMD(d)) return;
+  if (d < S.oggi) { toast('Quel giorno è già passato.'); el.value = S.dispGo; return; }
+  const R = dispRange();
+  if (d < R.from || d > R.to) S.dispMode = d <= dispNext().to ? 'next' : d.slice(0, 7);
+  S.dispGo = d; S.dispKeep = null;
+  paint();
+  dispScrollTo(d);
+};
+ACT.dayEv = el => {
+  const d = el.dataset.d;
+  const list = dayEvents(d);
+  dispSheet(plural(list.length, 'evento', 'eventi') + ' · ' + fmtLong(d), list);
+};
+ACT.dispEvAll = () => {
+  const R = dispRange();
+  const list = S.ev.filter(e => e.stato !== 'annullato' && e.data >= R.from && e.data <= R.to).sort(cmpEv);
+  dispSheet(plural(list.length, 'evento', 'eventi') + ' · dal ' + dMon(R.from) + ' al ' + dMon(R.to), list, '', true);
+};
+/* Tocco su una casella: se il tecnico è convocato quel giorno ti porta all'evento (se sono due, te li fa scegliere); altrimenti ti dice com'è */
+ACT.cell = el => {
+  const msg = el.dataset.msg, t = el.dataset.t, d = el.dataset.d;
+  const list = [];
+  (S.asgByTec[t] || []).forEach(a => {
+    const e = S.evById[a.event_id];
+    if (a.stato === 'rifiutato' || !e || e.stato === 'annullato' || e.data !== d || list.indexOf(e) >= 0) return;
+    list.push(e);
+  });
+  list.sort(cmpEv);
+  if (!list.length) { toast(msg); return; }
+  if (list.length === 1) { goEvent(list[0].id, 'disp'); toast(msg); return; }
+  dispSheet('Convocato per ' + list.length + ' eventi', list, msg);
+};
 
 /* ---------- scheda Tecnici ---------- */
 function viewTecnici() {
@@ -3725,7 +3983,9 @@ function stkRow(m, dn) {
     det += '<div class="row"><button type="button" class="btn sm" data-act="movOpen" data-id="' + esc(m.id) + '" data-tipo="entrata"' + (dismissed ? ' disabled' : '') + '>' + ico('down') + ' Entrata</button>' +
       '<button type="button" class="btn sm" data-act="movOpen" data-id="' + esc(m.id) + '" data-tipo="uscita"' + (dismissed ? ' disabled' : '') + '>' + ico('up') + ' Uscita</button>' +
       '<button type="button" class="btn sm" data-act="brkOpen" data-id="' + esc(m.id) + '"' + (dismissed ? ' disabled' : '') + '>' + ico('wrench') + ' Guasto</button>' +
-      (isCase(m) && !dismissed ? '<button type="button" class="btn sm" data-act="compOpen" data-id="' + esc(m.id) + '">' + ico('list') + ' Cosa c\'è dentro</button>' : '') +
+      (isCase(m) && !dismissed ? '<button type="button" class="btn sm" data-act="compOpen" data-id="' + esc(m.id) + '">' + ico('list') + ' Cosa c\'è dentro</button>' +
+        '<button type="button" class="btn sm" data-act="contDup" data-id="' + esc(m.id) + '">' + ico('copy') + ' Copia</button>' : '') +
+      (!isCase(m) && !dismissed ? '<button type="button" class="btn sm" data-act="dsOpen" data-id="' + esc(m.id) + '">' + ico('box') + ' Dove sta</button>' : '') +
       '<button type="button" class="btn sm" data-act="matEdit" data-id="' + esc(m.id) + '">' + ico('edit') + ' Modifica</button></div></div>';
   }
   return stkShell(m, dismissed, cat, pill, bits, open, det);
@@ -3749,10 +4009,12 @@ function viewArticoli() {
   const ro = S.mode !== 'coord';       // il responsabile tecnico guarda il magazzino (quanti pezzi, cosa è libero): lo cambia solo il coordinatore
   let h = '<div class="toolbar">' + (ro ? '' : '<div class="row"><button class="btn pri" data-act="matNew">' + ico('plus') + ' Nuovo articolo</button>' +
     '<button class="btn" data-act="invOpen">' + ico('list') + ' Inventario</button>' +
+    '<button class="btn" data-act="impOpen">' + ico('up') + ' Importa</button>' +
     '<button class="btn" data-act="stkPlan">' + ico('plan') + ' Dalla pianta</button></div>') +
     '<span class="muted">' + plural(active.length, 'articolo', 'articoli') + ', ' + plural(pieces, 'pezzo', 'pezzi') + '</span></div>';
   if (!all.length) {
-    return h + '<p class="empty">Il magazzino è vuoto. Tocca «Nuovo articolo» per aggiungere il primo, oppure compila la scheda Materiali del foglio.</p>';
+    return h + '<p class="empty">' + (ro ? 'Il magazzino è vuoto: lo riempie il coordinatore.' :
+      'Il magazzino è vuoto. Tocca «Importa» per caricare l\'elenco che hai già, oppure «Nuovo articolo» per aggiungere il primo. Si può anche compilare la scheda Materiali del foglio.') + '</p>';
   }
   h += '<div class="datebar"><label class="fld"><span>Disponibilità del giorno</span>' +
     '<input type="date" value="' + esc(date) + '" min="' + esc(S.oggi) + '" data-chg="stockDate"></label>' + tentToggle() + '</div>';
@@ -3991,7 +4253,12 @@ function techFormHtml(t) {
 }
 
 /* ---------- azioni ---------- */
-ACT.tab = el => { S.tab = el.dataset.tab; S.prop = null; S.addRoleFor = null; S.respFor = null; paint(); window.scrollTo(0, 0); };
+ACT.tab = el => {
+  if (S.tab === 'disp') keepDisp();
+  S.tab = el.dataset.tab; S.back = null; S.prop = null; S.addRoleFor = null; S.respFor = null;
+  paint(); window.scrollTo(0, 0);
+  if (S.tab === 'disp') restoreDisp();
+};
 ACT.refresh = async () => {
   try {
     await coordLoad();
@@ -4000,7 +4267,7 @@ ACT.refresh = async () => {
   } catch (e) { toast(e.message, 'err'); }
 };
 ACT.coordRetry = () => coordBoot();
-ACT.logout = () => { store.del('pin'); S.pin = ''; S.ready = false; pjReset(); paint(loginView()); };
+ACT.logout = () => { store.del('pin'); S.pin = ''; S.ready = false; S.back = null; S.dispKeep = null; S.dispGo = ''; pjReset(); paint(loginView()); };
 ACT.toggleEv = el => {
   const id = el.dataset.id;
   S.openEv = S.openEv === id ? null : id;
@@ -4015,7 +4282,6 @@ CHG.allowDouble = el => {
   if (S.prop && S.evById[S.prop.evId]) S.prop = computeProposal(S.evById[S.prop.evId]);
   paint();
 };
-ACT.cell = el => toast(el.dataset.msg);
 ACT.step = el => {
   const box = el.closest('.step');
   const inp = $('input', box), out = $('output', box);
@@ -4397,7 +4663,7 @@ SUB.matForm = async form => {
     if (!isCase(saved)) { S.comp = S.comp.filter(r => r.case_id !== saved.id); S.cvar = S.cvar.filter(v => v.case_id !== saved.id); }
     derive();
     closeSheet();
-    S.tab = 'mag'; S.openStk = saved.id; paint();
+    S.tab = 'mag'; S.openStk = saved.id; if (isCase(saved)) S.openCont = saved.id; paint();
     toast(isNew ? 'Articolo aggiunto.' : 'Articolo salvato.', 'ok');
     // un case nuovo (o appena diventato tale): subito si indica cosa c'è dentro, perché i conti del magazzino lo contino
     if (isCase(saved) && !wasCase && !S.compByCase[saved.id]) ACT.compOpen({ dataset: { id: saved.id } });
@@ -4483,10 +4749,10 @@ ACT.compGo = async () => {
     const res = await call('api_saveComposizione', S.pin, cm.id, items);
     S.comp = S.comp.filter(x => x.case_id !== cm.id).concat(res.composizione || []);
     derive();
-    closeSheet(); S.tab = 'mag'; S.openStk = cm.id; paint();
+    closeSheet(); S.tab = 'mag'; S.openStk = cm.id; S.openCont = cm.id; paint();
     toast(items.length ? 'Salvato: cosa c\'è dentro «' + cm.nome + '».' : 'Salvato: «' + cm.nome + '» non ha niente dentro.', 'ok');
   }, true);
-  if (!r.ok && err) err.textContent = r.err;
+  if (!r.ok && err) { err.textContent = r.err; err.scrollIntoView({ block: 'center' }); }       // l'elenco è lungo: il messaggio sta in fondo, lo porto in vista
 };
 
 /* tecnici: modulo e salvataggio */
@@ -4917,7 +5183,7 @@ function todoBoxHtml() {
     (i.sub ? ' data-sub="' + i.sub + '"' : '') + (i.cat !== undefined ? ' data-cat="' + esc(i.cat) + '"' : '') + '>Apri</button></li>').join('') + '</ul></section>';
 }
 ACT.goTab = el => {
-  S.tab = el.dataset.tab; S.prop = null; S.addRoleFor = null;
+  S.tab = el.dataset.tab; S.back = null; S.prop = null; S.addRoleFor = null;
   if (el.dataset.sub) S.magTab = el.dataset.sub;
   if (el.dataset.cat !== undefined) S.stockCat = el.dataset.cat;
   closeSheet();
@@ -5106,10 +5372,10 @@ function stkExtraHtml(m) {
 /* ---------- le sezioni del magazzino ---------- */
 function viewMag() {
   const nRip = S.rip.filter(r => REP_OPEN.indexOf(r.stato) >= 0).length;
-  const tabs = [['articoli', 'Articoli'], ['rip', 'Riparazioni' + (nRip ? ' (' + nRip + ')' : '')], ['mov', 'Movimenti'], ['furgoni', 'Furgoni']];
+  const tabs = [['articoli', 'Articoli'], ['cont', 'Contenitori'], ['rip', 'Riparazioni' + (nRip ? ' (' + nRip + ')' : '')], ['mov', 'Movimenti'], ['furgoni', 'Furgoni']];
   return '<div class="cats subtabs" role="group" aria-label="Sezioni del magazzino">' + tabs.map(t =>
     '<button type="button" class="cat" data-act="magTab" data-tab="' + t[0] + '" aria-pressed="' + (S.magTab === t[0]) + '">' + t[1] + '</button>').join('') + '</div>' +
-    (S.magTab === 'rip' ? viewRip() : S.magTab === 'mov' ? viewMov() : S.magTab === 'furgoni' ? viewFurgoni() : viewArticoli());
+    (S.magTab === 'rip' ? viewRip() : S.magTab === 'mov' ? viewMov() : S.magTab === 'furgoni' ? viewFurgoni() : S.magTab === 'cont' ? viewContenitori() : viewArticoli());
 }
 ACT.magTab = el => { S.magTab = el.dataset.tab; paint(); };
 
@@ -5606,11 +5872,1275 @@ ACT.rbUndo = el => {
     toast('Rimborso annullato: la spesa è di nuovo da rimborsare.');
   }).then(() => rbRender());
 };
+/* ====================================================================================================================
+   Contenitori (4.4): case, ceste e valigie uno per uno, «Dove sta» di ogni articolo, copia di un contenitore.
+   Un contenitore è un articolo «case» del magazzino (di solito uno solo: quantita 1) con la sua composizione, cioè quanti pezzi di
+   quali articoli ci sono dentro. Quei pezzi sono già nel totale dell'articolo; finché il contenitore è pronto non sono sciolti
+   (vedi lockedOf). Un evento prende i contenitori per nome, come ogni altro materiale: lo stesso contenitore non può andare a due eventi
+   lo stesso giorno. Tutto il resto (conti, disponibilità, scarico) lo fa il meccanismo dei case che c'era già.
+   ==================================================================================================================== */
+
+/* Ordine «naturale» dei nomi: Cesta 2 viene prima di Cesta 10 */
+function cmpNat(a, b) { return String(a).localeCompare(String(b), 'it', { sensitivity: 'base', numeric: true }); }
+
+/* I contenitori in uso (i dismessi non contano), in ordine di nome */
+function contList() {
+  return S.mat.filter(m => isCase(m) && String(m.stato) !== 'dismesso').sort((a, b) => cmpNat(a.nome, b.nome));
+}
+/* Quanti pezzi ci sono dentro a ogni copia di un contenitore */
+function contPieces(m) { return compList(m).reduce((n, x) => n + x.q, 0); }
+function contText(m) {
+  return (m.nome + ' ' + (m.posizione || '') + ' ' + (m.contenuto || '') + ' ' + compList(m).map(x => x.m.nome).join(' ')).toLowerCase();
+}
+function contHidden(m) {
+  const t = contText(m);
+  return !S.contQ.trim().toLowerCase().split(/\s+/).filter(Boolean).every(w => t.indexOf(w) >= 0);
+}
+
+/* ---------- la scheda «Contenitori» del magazzino ---------- */
+function contRow(m, dn) {
+  const u = stockOnDay(m, dn);
+  const open = S.openCont === m.id;
+  const ro = S.mode !== 'coord';
+  const list = compList(m);
+  const per = contPieces(m);
+  const tot = Number(m.quantita) || 0, out = Number(m.fuoriServizio) || 0;
+  let pill;
+  if (u.stock === 0) pill = '<span class="pill muted">fuori uso</span>';
+  else if (u.free < 0) pill = '<span class="pill bad">sovraprenotato di ' + (-u.free) + '</span>';
+  else if (u.free === 0) pill = '<span class="pill warn">' + (u.stock === 1 ? 'impegnato' : 'tutti impegnati') + '</span>';
+  else pill = '<span class="pill ok">' + (u.stock === 1 ? 'libero' : (u.free === 1 ? '1 libero' : u.free + ' liberi')) + '</span>';
+  if (!list.length) pill += '<span class="pill muted">vuoto</span>';
+  if (caseBad(m)) pill += '<span class="pill bad">non tornano i conti</span>';
+  const bits = [];
+  if (list.length) bits.push(plural(list.length, 'articolo', 'articoli') + ', ' + plural(per, 'pezzo', 'pezzi') + (tot > 1 ? ' a copia' : ''));
+  if (tot > 1) bits.push(tot + ' uguali');
+  if (out) bits.push(out + ' fuori uso');
+  const sum = list.map(x => x.q + ' × ' + x.m.nome).join(' · ');
+  let det = '';
+  if (open) {
+    det = '<div class="stkd">';
+    const others = u.used.filter(x => x.q > 0);
+    if (others.length) {
+      det += '<p>Quel giorno serve a: ' + others.map(x => '<b>' + esc(x.e.cliente) + '</b>' + (x.q > 1 ? ' ' + x.q : '') +
+        (x.e.stato === 'confermato' || x.e.stato === 'concluso' ? '' : ' <span class="muted">(' + esc(STAGE_LABEL[x.e.stato].toLowerCase()) + ')</span>')).join(', ') + '.</p>';
+    } else if (u.stock > 0) det += '<p class="muted">Quel giorno nessun evento lo usa.</p>';
+    if (list.length) {
+      det += '<p class="muted" style="margin-bottom:0">' + (tot > 1 ? 'Dentro, a ognuno dei ' + tot + ' uguali:' : 'Dentro:') + '</p>' +
+        '<ul class="contl">' + list.map(x => '<li><b>' + x.q + '</b><span>' + esc(x.m.nome) + '</span></li>').join('') + '</ul>';
+    } else det += '<p class="muted">Non c\'è ancora niente dentro.</p>';
+    if (m.contenuto) det += '<p><span class="muted">Promemoria: </span>' + esc(m.contenuto) + '</p>';
+    if (caseBad(m)) det += '<p class="note bad">' + esc(caseBadText(m)) + '</p>';
+    if (!ro) {
+      det += '<div class="row"><button type="button" class="btn sm" data-act="compOpen" data-id="' + esc(m.id) + '">' + ico('list') + ' Cosa c\'è dentro</button>' +
+        '<button type="button" class="btn sm" data-act="contDup" data-id="' + esc(m.id) + '">' + ico('copy') + ' Copia</button>' +
+        '<button type="button" class="btn sm" data-act="matEdit" data-id="' + esc(m.id) + '">' + ico('edit') + ' Modifica</button></div>';
+    }
+    det += '</div>';
+  }
+  return '<article class="stk cont' + (open ? ' open' : '') + '" data-q="' + esc(contText(m)) + '"' + (contHidden(m) ? ' hidden' : '') + '>' +
+    '<button type="button" class="stkh" data-act="contToggle" data-id="' + esc(m.id) + '" aria-expanded="' + open + '">' +
+    '<span class="stkn">' + esc(m.nome) + (m.posizione ? '<small class="cs">posizione: ' + esc(m.posizione) + '</small>' : '') + '</span>' +
+    '<span class="stkc">' + pill + (bits.length ? '<small>' + esc(bits.join(' · ')) + '</small>' : '') + '</span></button>' +
+    (open ? '' : '<p class="contsum">' + (sum ? esc(sum) : 'Niente dentro: aprilo e tocca «Cosa c\'è dentro».') + '</p>') + det + '</article>';
+}
+function viewContenitori() {
+  const ro = S.mode !== 'coord';
+  const date = parseYMD(S.stockDate) ? S.stockDate : S.oggi;
+  const dn = dayNum(date);
+  const list = contList();
+  const inside = list.reduce((n, m) => n + stockOf(m) * contPieces(m), 0);
+  let h = '<div class="toolbar">' + (ro ? '' : '<div class="row"><button type="button" class="btn pri" data-act="contNew">' + ico('plus') + ' Nuovo contenitore</button></div>') +
+    '<span class="muted">' + plural(list.length, 'contenitore', 'contenitori') + ', ' + plural(inside, 'pezzo dentro', 'pezzi dentro') + '</span></div>';
+  if (!list.length) {
+    return h + '<p class="empty">Non ci sono ancora contenitori. Un contenitore è un case, una cesta o una valigia che prepari già fatta, con dentro i pezzi che ti servono ' +
+      '(per esempio «Cesta XLR 1»: 20 cavi da 10 m, 15 da 5 m, 3 da 1 m). ' + (ro ? '' : 'Tocca «Nuovo contenitore» per fare il primo: poi lo copi quante volte vuoi.') + '</p>';
+  }
+  h += '<div class="datebar"><label class="fld"><span>Disponibilità del giorno</span>' +
+    '<input type="date" value="' + esc(date) + '" min="' + esc(S.oggi) + '" data-chg="stockDate"></label>' + tentToggle() + '</div>';
+  h += '<input type="search" id="contq" class="srch" data-inp="contQ" value="' + esc(S.contQ) + '" placeholder="Cerca: nome, o cosa c\'è dentro…" aria-label="Cerca tra i contenitori" autocomplete="off" autocapitalize="off">';
+  h += '<div id="contlist">' + list.map(m => contRow(m, dn)).join('') + '</div>';
+  h += '<p class="empty" id="cont-empty"' + (list.some(m => !contHidden(m)) ? ' hidden' : '') + '>Nessun contenitore trovato. Prova un\'altra parola.</p>';
+  h += '<p class="hint">I pezzi che non stanno in nessun contenitore sono «sciolti». Per scegliere in quali contenitori sta un articolo, aprilo nella scheda Articoli e tocca «Dove sta».</p>';
+  return h;
+}
+ACT.contToggle = el => { S.openCont = S.openCont === el.dataset.id ? null : el.dataset.id; paint(); };
+INP.contQ = el => {
+  S.contQ = el.value;
+  let shown = 0;
+  $$('#contlist .stk').forEach(a => {
+    const ok = S.contQ.trim().toLowerCase().split(/\s+/).filter(Boolean).every(w => a.dataset.q.indexOf(w) >= 0);
+    a.hidden = !ok;
+    if (ok) shown++;
+  });
+  const em = $('#cont-empty');
+  if (em) em.hidden = shown > 0;
+};
+
+/* ---------- nuovo contenitore ---------- */
+function contFormHtml() {
+  const cats = uniq(CAT_ORDER.concat(S.mat.map(x => catKey(x.categoria)).filter(Boolean)));
+  return '<form data-submit="contForm" novalidate>' +
+    '<p class="hint" style="margin-top:0">Un contenitore è un case, una cesta o una valigia che prepari già fatta, con dentro i pezzi che ti servono. ' +
+    'Dagli un nome che ti faccia capire cos\'è (per esempio «Cesta XLR 1» o «Case corrente 2»). Subito dopo scegli cosa metterci; poi lo puoi copiare.</p>' +
+    '<label class="fld"><span>Nome del contenitore</span><input type="text" name="nome" maxlength="80" autocomplete="off" placeholder="es. Cesta XLR 1"></label>' +
+    '<div class="cats" role="group" aria-label="Come cominciare il nome">' + ['Case', 'Cesta', 'Valigia', 'Cassetta'].map(w =>
+      '<button type="button" class="cat" data-act="contWord" data-w="' + w + '">' + w + '</button>').join('') + '</div>' +
+    '<label class="fld"><span>Reparto</span><select name="categoria">' + cats.map(c =>
+      '<option value="' + esc(c) + '"' + (c === 'generale' ? ' selected' : '') + '>' + esc(catLabel(c)) + '</option>').join('') + '</select></label>' +
+    '<p class="hint">Serve a farlo trovare a chi lavora: quello «Generale» lo vedono tutti, quello «Audio» o «Luci» sta nel reparto giusto.</p>' +
+    '<label class="fld"><span>Dove lo tieni in magazzino (facoltativo)</span><input type="text" name="posizione" maxlength="80" autocomplete="off" placeholder="es. scaffale C, vicino al portone"></label>' +
+    '<label class="fld"><span>Promemoria (facoltativo)</span><textarea name="contenuto" maxlength="600" rows="2" placeholder="es. la chiave sta nella tasca laterale"></textarea></label>' +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="submit" class="btn pri">Crea e scegli cosa metterci</button></div></form>';
+}
+ACT.contNew = () => {
+  if (S.tab !== 'mag' || S.magTab !== 'cont') { S.tab = 'mag'; S.magTab = 'cont'; S.back = null; paint(); }
+  openSheet('Nuovo contenitore', contFormHtml());
+};
+ACT.contWord = el => {
+  const inp = $('#sheet input[name=nome]');
+  if (!inp) return;
+  inp.value = el.dataset.w + ' ' + inp.value.replace(/^\s*(case|cesta|valigia|cassetta)\b\s*/i, '');
+  inp.focus();
+  try { inp.setSelectionRange(inp.value.length, inp.value.length); } catch (e) { /* ok */ }
+};
+SUB.contForm = async form => {
+  const f = new FormData(form), g = k => String(f.get(k) == null ? '' : f.get(k)).trim();
+  const nome = g('nome').replace(/\s+/g, ' ');
+  const err = $('.ferr', form);
+  if (!nome) { err.textContent = 'Scrivi il nome del contenitore (per esempio «Cesta XLR 1»).'; $('[name=nome]', form).focus(); return; }
+  err.textContent = '';
+  const m = { nome: nome, categoria: g('categoria') || 'generale', marca: '', quantita: 1, fuoriServizio: 0, tipo: 'case', posizione: g('posizione'), contenuto: g('contenuto') };
+  const r = await mutate(async () => {
+    const saved = await call('api_saveMateriale', S.pin, m);
+    upsert(S.mat, saved);
+    derive();
+    closeSheet();
+    S.tab = 'mag'; S.magTab = 'cont'; S.openCont = saved.id; paint();
+    toast('Contenitore «' + saved.nome + '» creato.', 'ok');
+    ACT.compOpen({ dataset: { id: saved.id } });       // subito si sceglie cosa c'è dentro
+  }, true);
+  if (!r.ok) err.textContent = r.err;
+};
+
+/* ---------- copia di un contenitore, con tutto il contenuto ---------- */
+/* Il nome per la copia: «Cesta XLR 1» diventa «Cesta XLR 2» (il primo numero libero), «Cesta XLR» diventa «Cesta XLR 2». Lo stesso fa il server. */
+function nextContName(base) {
+  const taken = {};
+  S.mat.forEach(m => { if (String(m.stato) !== 'dismesso') taken[String(m.nome).trim().toLowerCase()] = true; });
+  const t = String(base || '').trim().replace(/\s+/g, ' ');
+  const mm = /^(.*?)\s*(\d+)$/.exec(t);
+  const stem = mm ? mm[1] : t;
+  for (let n = mm ? parseInt(mm[2], 10) + 1 : 2; n < 10000; n++) {
+    const cand = (stem + ' ' + n).trim();
+    if (!taken[cand.toLowerCase()]) return cand;
+  }
+  return t + ' (copia)';
+}
+/* Cosa non entrerebbe nella copia: dei pezzi di ogni articolo ne restano solo quelli che non stanno già in altri contenitori */
+function contDupShort(m) {
+  return compList(m).map(x => {
+    const room = String(x.m.stato) === 'dismesso' ? 0 : Math.max(0, (Number(x.m.quantita) || 0) - inCaseRaw(x.m));
+    return { m: x.m, voluto: x.q, messo: Math.min(x.q, room) };
+  }).filter(x => x.messo < x.voluto);
+}
+function contDupHtml(m) {
+  const list = compList(m), short = contDupShort(m);
+  return '<form data-submit="contDup"><input type="hidden" name="id" value="' + esc(m.id) + '">' +
+    '<label class="fld"><span>Nome della copia</span><input type="text" name="nome" maxlength="80" value="' + esc(nextContName(m.nome)) + '" autocomplete="off"></label>' +
+    '<p class="hint">' + (list.length ? 'Si copia anche cosa c\'è dentro: ' + esc(compText(m)) + '. ' : 'Questo contenitore è vuoto, quindi la copia sarà vuota. ') +
+    'I pezzi si prendono da quelli che non stanno già in altri contenitori.</p>' +
+    short.map(x => '<p class="note warn">Di ' + esc(x.m.nome) + ' ne restano ' + x.messo + ' fuori dai contenitori (ne servirebbero ' + x.voluto + '): nella copia ne metto ' +
+      (x.messo ? x.messo : 'nessuno') + '.</p>').join('') +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="submit" class="btn pri">Crea la copia</button></div></form>';
+}
+ACT.contDup = el => {
+  const m = S.matById[el.dataset.id];
+  if (m && isCase(m) && String(m.stato) !== 'dismesso') openSheet('Copia di «' + m.nome + '»', contDupHtml(m));
+};
+SUB.contDup = async form => {
+  const f = new FormData(form);
+  const id = String(f.get('id') || ''), nome = String(f.get('nome') || '').trim().replace(/\s+/g, ' ');
+  const err = $('.ferr', form);
+  if (!nome) { err.textContent = 'Scrivi il nome della copia.'; $('[name=nome]', form).focus(); return; }
+  err.textContent = '';
+  const r = await mutate(async () => {
+    const res = await call('api_dupCase', S.pin, id, nome);
+    upsert(S.mat, res.materiale);
+    S.comp = S.comp.filter(x => x.case_id !== res.materiale.id).concat(res.composizione || []);
+    derive();
+    closeSheet();
+    S.tab = 'mag'; S.magTab = 'cont'; S.openCont = res.materiale.id; paint();
+    toast('Creato «' + res.materiale.nome + '».', 'ok');
+    if ((res.ridotti || []).length) openSheet('Copia creata, ma incompleta', contReducedHtml(res), { noFocus: true });
+  }, true);
+  if (!r.ok) err.textContent = r.err;
+};
+function contReducedHtml(res) {
+  const m = res.materiale;
+  return '<p style="margin-top:0">Ho creato <b>' + esc(m.nome) + '</b>, ma non c\'erano abbastanza pezzi fuori dai contenitori per riempirlo come l\'originale:</p>' +
+    res.ridotti.map(x => '<p class="note warn">' + esc(x.nome) + ': ' + (x.messo ? 'ne ho messi ' + x.messo + ' invece di ' + x.voluto : 'non ne ho messi (ne servivano ' + x.voluto + ')') + '.</p>').join('') +
+    '<p class="hint">Gli altri pezzi sono già dentro altri contenitori. Se ti servono anche qui, toglili di là dalla scheda «Dove sta» dell\'articolo, poi aggiungili a questo.</p>' +
+    '<div class="sheetfoot"><button type="button" class="btn" data-act="compOpen" data-id="' + esc(m.id) + '">Cosa c\'è dentro</button>' +
+    '<button type="button" class="btn pri" data-act="closeSheet">Va bene</button></div>';
+}
+
+/* ---------- «Dove sta» di un articolo: in quali contenitori e quanti pezzi in ognuno ---------- */
+/* S.ds = { id: articolo, rows: [{c: contenitore, q: pezzi a copia}], pos: dove si tengono i pezzi sciolti } */
+function dsRowsOf(a) {
+  return (S.holdIn[a.id] || []).filter(h => isCase(h.c) && String(h.c.stato) !== 'dismesso')
+    .sort((x, y) => cmpNat(x.c.nome, y.c.nome)).map(h => ({ c: h.c.id, q: h.per }));
+}
+function dsRowsHtml() {
+  const conts = contList(), used = {};
+  S.ds.rows.forEach(r => { used[r.c] = true; });
+  if (!S.ds.rows.length) return '<li class="dsnone muted">Nessun contenitore: tutti i pezzi sono sciolti.</li>';
+  return S.ds.rows.map((r, i) => {
+    const c = S.matById[r.c];
+    const copies = c ? stockOf(c) : 0;
+    const nm = c ? c.nome : 'questo contenitore';
+    return '<li class="dsr" data-i="' + i + '"><div class="dsrt"><select data-chg="dsCase" data-i="' + i + '" aria-label="Contenitore">' +
+      conts.map(x => '<option value="' + esc(x.id) + '"' + (x.id === r.c ? ' selected' : '') + (used[x.id] && x.id !== r.c ? ' disabled' : '') + '>' +
+        esc(x.nome) + (stockOf(x) > 1 ? ' (×' + stockOf(x) + ')' : '') + '</option>').join('') + '</select>' +
+      '<button type="button" class="ib" data-act="dsDel" data-i="' + i + '" aria-label="Togli da ' + esc(nm) + '">' + ico('x') + '</button></div>' +
+      '<div class="dsrq">' + qtyField('dsq-' + i, r.q, 0, 9999, 'Quanti pezzi in ' + nm, ' data-inp="dsQty" data-i="' + i + '"') +
+      '<span class="dsnote muted">' + (copies > 1 ? 'a ognuno dei ' + copies + ': ' + (copies * r.q) + ' in tutto' : 'pezzi') + '</span></div></li>';
+  }).join('');
+}
+function dsSumHtml() {
+  const a = S.matById[S.ds.id];
+  const owned = Number(a.quantita) || 0, usable = stockOf(a);
+  let claim = 0;
+  S.ds.rows.forEach(r => { const c = S.matById[r.c]; if (c && r.q >= 1) claim += stockOf(c) * r.q; });
+  if (claim > owned) {
+    return '<span class="pkav bad">Hai messo ' + claim + ' pezzi nei contenitori, ma ne hai ' + owned + ' in tutto: ne devi togliere ' + (claim - owned) + '.</span>';
+  }
+  return '<b>' + claim + '</b> nei contenitori · <b>' + (usable - Math.min(usable, claim)) + '</b> sciolti';
+}
+function dsSheetHtml(a) {
+  const owned = Number(a.quantita) || 0, out = Number(a.fuoriServizio) || 0;
+  const head = '<p class="hint" style="margin-top:0">Di <b>' + esc(a.nome) + '</b> ne hai <b>' + owned + '</b>' + (out ? ' (' + out + ' fuori uso)' : '') + '. ' +
+    'Scegli in quali case, ceste o valigie li metti e quanti per ognuno. Quelli che non metti in nessun contenitore restano sciolti.</p>';
+  if (!contList().length) {
+    return head + '<p class="empty">Non hai ancora contenitori. Creane uno (per esempio «Cesta XLR 1»), poi torna qui a scegliere quanti pezzi ci metti.</p>' +
+      '<div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Chiudi</button>' +
+      '<button type="button" class="btn pri" data-act="contNew">' + ico('plus') + ' Nuovo contenitore</button></div>';
+  }
+  return head + '<ul class="dsl" id="dslist">' + dsRowsHtml() + '</ul>' +
+    '<div class="row"><button type="button" class="btn sm" data-act="dsAdd">' + ico('plus') + ' Metti in un contenitore</button></div>' +
+    '<p class="dssum" id="dssum" role="status">' + dsSumHtml() + '</p>' +
+    '<label class="fld"><span>Dove tieni quelli sciolti (facoltativo)</span><input type="text" name="pos" data-inp="dsPos" maxlength="80" value="' + esc(S.ds.pos) +
+    '" autocomplete="off" placeholder="es. rastrelliera cavi, scaffale B2"></label>' +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot sticky"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="button" class="btn pri" data-act="dsGo">Salva</button></div>';
+}
+ACT.dsOpen = el => {
+  const a = S.matById[el.dataset.id];
+  if (!a || isCase(a) || String(a.stato) === 'dismesso') return;
+  S.ds = { id: a.id, rows: dsRowsOf(a), pos: String(a.posizione || '') };
+  openSheet('Dove sta: ' + a.nome, dsSheetHtml(a), { noFocus: true });
+};
+/* Ridisegna le righe e il totale (non il campo «dove tieni quelli sciolti», così la tastiera resta aperta) */
+function dsRefresh() {
+  const ul = $('#dslist'), sum = $('#dssum');
+  if (ul) ul.innerHTML = dsRowsHtml();
+  if (sum) sum.innerHTML = dsSumHtml();
+}
+ACT.dsAdd = () => {
+  if (!S.ds) return;
+  const used = {};
+  S.ds.rows.forEach(r => { used[r.c] = true; });
+  const free = contList().filter(c => !used[c.id]);
+  if (!free.length) { toast('Hai già messo questo articolo in tutti i contenitori.'); return; }
+  S.ds.rows.push({ c: free[0].id, q: 1 });
+  dsRefresh();
+  const q = $('#dslist li:last-child .qty input');
+  if (q) { q.focus(); q.select(); }
+};
+ACT.dsDel = el => {
+  if (!S.ds) return;
+  S.ds.rows.splice(+el.dataset.i, 1);
+  dsRefresh();
+};
+CHG.dsCase = el => {
+  if (!S.ds || !S.ds.rows[+el.dataset.i]) return;
+  S.ds.rows[+el.dataset.i].c = el.value;
+  dsRefresh();
+  const sel = $('#dslist li[data-i="' + el.dataset.i + '"] select');
+  if (sel) sel.focus();
+};
+INP.dsQty = el => {
+  const row = S.ds && S.ds.rows[+el.dataset.i];
+  if (!row) return;
+  row.q = Math.max(0, Math.min(9999, parseInt(el.value, 10) || 0));
+  const c = S.matById[row.c], copies = c ? stockOf(c) : 0;
+  const note = $('.dsnote', el.closest('.dsr'));
+  if (note) note.textContent = copies > 1 ? 'a ognuno dei ' + copies + ': ' + (copies * row.q) + ' in tutto' : 'pezzi';
+  const sum = $('#dssum');
+  if (sum) sum.innerHTML = dsSumHtml();
+};
+INP.dsPos = el => { if (S.ds) S.ds.pos = el.value; };
+ACT.dsGo = async () => {
+  const a = S.ds && S.matById[S.ds.id];
+  if (!a) return;
+  const items = S.ds.rows.filter(r => r.q >= 1).map(r => ({ case_id: r.c, quantita: r.q }));
+  const err = $('#sheet .ferr');
+  if (err) err.textContent = '';
+  const r = await mutate(async () => {
+    const res = await call('api_saveDoveSta', S.pin, a.id, items, S.ds.pos.trim());
+    upsert(S.mat, res.materiale);
+    S.comp = S.comp.filter(x => x.equipment_id !== a.id).concat(res.composizione || []);
+    derive();
+    S.ds = null;
+    closeSheet();
+    S.tab = 'mag'; S.openStk = a.id; paint();
+    toast(items.length ? 'Salvato: dove sta «' + a.nome + '».' : '«' + a.nome + '»: tutti sciolti.', 'ok');
+  }, true);
+  if (!r.ok && err) { err.textContent = r.err; err.scrollIntoView({ block: 'center' }); }
+};
+
+/* =====================================================================
+   IMPORTARE L'INVENTARIO (4.5), prima parte: leggere il testo
+   File CSV, testo incollato da Excel o dal telefono, testo di un PDF. Qui dentro non c'è la pagina: sono funzioni che ricevono del testo
+   e restituiscono righe {nome, n (pezzi), cat, marca, pos, note, sec, warn} oppure l'elenco di quello che non hanno saputo usare.
+   La seconda parte (imp2.js) le mostra in una tabella da controllare e salva.
+   ===================================================================== */
+
+/* minuscolo e senza accenti */
+function impLow(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+/* solo lettere e cifre (per riconoscere le intestazioni delle colonne) */
+function impPlain(s) { return impLow(s).replace(/[^a-z0-9]+/g, ''); }
+/* La chiave con cui si riconosce lo stesso articolo: «Cannon Audio Xrl 10Mt» e «cannon audio XRL 10 m» sono lo stesso nome */
+function impNorm(s) {
+  return impLow(s).replace(/[×✕]/g, 'x').replace(/(\d)\s*(?:metri|metro|mtr|mt|m)\b\.?/g, '$1m').replace(/[^a-z0-9]+/g, '');
+}
+
+/* ---------- il reparto, indovinato dalle parole ---------- */
+const IMP_CAT_RE = {
+  audio: /\b(?:audio|fonic\w*|suono|microfon\w*|radiomic\w*|mic|cass[ae]|subwoofer|sub|mixer|mixing|amplific\w*|finale di potenza|speaker|diffusor\w*|di ?box|stage ?box|multicore|multipolare|snake|speakon|xlr|xrl|cannon|jack|aste?|in ?ears?|cuffie?|wedge|spi[ae]|ritorn\w*|line array|equalizzator\w*|compressore)\b/g,
+  luci: /\b(?:luci|luce|illuminazion\w*|fari|faro|faretti?|par|led|moving|testa mobile|teste mobili|strobo\w*|dimmer|dmx|gelatin\w*|sagomator\w*|profilo|fresnel|blinder|fumo|nebbia|haze|fx|mirror ?ball|wash|beam|spot|pixel|centralina)\b/g,
+  video: /\b(?:video\w*|proiettor\w*|proiezion\w*|scherm[io]|telo|teli|led ?wall|maxischerm\w*|hdmi|sdi|telecamer\w*|camera|switcher|convertitor\w*|televisor\w*|tv|scaler|streaming)\b/g,
+  generale: /\b(?:americana|americane|truss|traliccio|palco|pedana|pedane|quadro|quadri|prolunga|prolunghe|ciabatta|ciabatte|multipresa|multiprese|corrente|alimentazion\w*|gaffer|nastro|flight ?case|case|cesta|ceste|carrello|tavolo|tavoli|sedia|sedie|zavorra|zavorre|morsett\w*|stativ\w*|tripod\w*|gonna|moquette|schuko|powercon|cee|ceeform|adattator\w*|avvolgicavo|scotch|attrezz\w*|valigia|cassetta|ponteggio|tiranti?|catene?|velcro|fascette|trasformator\w*)\b/g,
+};
+/* 'audio' | 'luci' | 'video' | 'generale', oppure '' se le parole non bastano a decidere (pari = non so) */
+function impGuessCat(text) {
+  const t = impLow(text);
+  if (!t.trim()) return '';
+  const score = {};
+  Object.keys(IMP_CAT_RE).forEach(k => { score[k] = (t.match(IMP_CAT_RE[k]) || []).length; });
+  if (/\b(?:led ?wall|ledwall|maxischerm\w*|schermo led)\b/.test(t)) { score.video += 2; }
+  const best = Math.max.apply(null, Object.keys(score).map(k => score[k]));
+  if (best < 1) return '';
+  const top = Object.keys(score).filter(k => score[k] === best);
+  return top.length === 1 ? top[0] : '';
+}
+/* Il reparto di una riga: prima quello scritto nel file, poi il titolo di sezione sopra, poi le parole del nome; altrimenti «generale» */
+function impCatOf(cat, sec, nome) {
+  return impGuessCat(cat) || impGuessCat(sec) || impGuessCat(nome) || 'generale';
+}
+
+/* ---------- numeri ---------- */
+/* Pezzi scritti in una cella: «60», «60 pz», «x 60», «60,00», «1.200». Restituisce {n, bad}: n = numero (o null se non c'è), bad = perché non va */
+function impQty(v) {
+  let t = String(v == null ? '' : v).replace(/ /g, ' ').trim();
+  if (!t) return { n: null, bad: '' };
+  t = t.replace(/^[xX×]\s*/, '').replace(/\s*(?:pz\.?|pezzi|pcs|unit[aà]|nr\.?|n\.)$/i, '').trim();
+  let n = null;
+  if (/^\d+$/.test(t)) n = parseInt(t, 10);
+  else if (/^\d+[.,]0+$/.test(t)) n = parseInt(t, 10);
+  else if (/^\d{1,3}(?:\.\d{3})+$/.test(t)) n = parseInt(t.replace(/\./g, ''), 10);
+  if (n === null) return { n: null, bad: 'I pezzi «' + String(v).trim().slice(0, 30) + '» non sono un numero intero.' };
+  if (n > 9999) return { n: null, bad: n + ' pezzi sono troppi (il massimo è 9999).' };
+  return { n: n, bad: '' };
+}
+
+/* ---------- ripulire un nome ---------- */
+function impClean(s) {
+  let t = String(s == null ? '' : s).replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+  t = t.replace(/^[^\p{L}\p{N}"“(\[]+/u, '').replace(/^\d{1,3}[.)]\s+/, '');
+  if (/^["“].+["”]$/.test(t)) t = t.slice(1, -1).trim();
+  return t.replace(/[\s\-–—:;,.]+$/, '').trim().slice(0, 120);
+}
+/* Righe che non sono articoli: totali, titoli di pagina, numeri di pagina */
+function impJunk(nome) {
+  return /^(?:descrizione|nome|articolo|materiale)\s+(?:q\.?t[aà]|quantit[aà]|pezzi|pz)(?:\s|$)/i.test(nome) || /^(?:totale|tot\.?|subtotale|pagina|pag\.?|page|data|stampa|stampato|inventario|elenco|lista|magazzino|n°|nr\.?)(?:\s|$|:)/i.test(nome) || /^\d+\s*(?:\/|di)\s*\d+$/.test(nome) || !/[A-Za-zÀ-ÿ]{2}/.test(nome);
+}
+/* Un titolo di sezione: «AUDIO», «Luci:», «Cavi XLR». Restituisce il testo del titolo, oppure '' se non lo è. */
+const IMP_SEC_WORDS = /^(?:audio|luci|luce|video|generale|generali|comune|illuminazione|fonica|suono|varie|altro|accessori|cavi|cavo|corrente|strutture|struttura|palco|microfoni|casse|regia)$/;
+function impHeading(line) {
+  const raw = String(line == null ? '' : line).trim();
+  const t = raw.replace(/^[#*\-–—_=\s]+/, '').replace(/[:\-–—_=*#\s]+$/, '').trim();
+  if (!t || t.length > 45 || /\d/.test(t)) return '';
+  const letters = t.replace(/[^A-Za-zÀ-ÿ]/g, '');
+  if (letters.length < 3) return '';
+  const upper = letters === letters.toUpperCase();
+  const colon = /:\s*$/.test(raw);
+  const word = IMP_SEC_WORDS.test(impPlain(t));
+  return (upper || colon || word) ? t : '';
+}
+
+/* ---------- separatori e colonne (CSV, testo copiato da Excel o da un PDF a tabella) ---------- */
+function impLinesOf(text) { return String(text == null ? '' : text).replace(/^﻿/, '').replace(/\r\n?/g, '\n').split('\n'); }
+/* Quante volte compare il separatore in una riga, fuori dalle virgolette */
+function impCount(line, d) {
+  let n = 0, q = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line.charAt(i);
+    if (c === '"') { if (q && line.charAt(i + 1) === '"') i++; else if (q || i === 0 || line.charAt(i - 1) === d) q = !q; }
+    else if (c === d && !q) n++;
+  }
+  return n;
+}
+/* Il separatore delle colonne: tabulazione, punto e virgola, barra verticale o virgola, se in tre righe su cinque compare lo stesso numero di volte; altrimenti '' */
+function impDelimOf(lines) {
+  const sample = lines.filter(l => l.trim() !== '').slice(0, 40);
+  if (!sample.length) return '';
+  let best = '', bestN = 0;
+  ['\t', ';', '|', ','].forEach(d => {
+    const freq = {};
+    sample.forEach(l => { const c = impCount(l, d); if (c > 0) freq[c] = (freq[c] || 0) + 1; });
+    let top = 0;
+    Object.keys(freq).forEach(k => { if (freq[k] > top) top = freq[k]; });
+    if (top >= Math.ceil(sample.length * 0.6) && top > bestN) { best = d; bestN = top; }
+  });
+  return best;
+}
+/* Il testo diviso in righe di celle (con le virgolette dei CSV). Una virgoletta lasciata aperta non si porta dietro il resto del file. */
+function impCsvRows(text, d, noQuotes) {
+  const rows = [], s = String(text == null ? '' : text).replace(/^﻿/, '').replace(/\r\n?/g, '\n');
+  let row = [], cell = '', q = false;
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charAt(i);
+    if (q) {
+      if (c === '"') { if (s.charAt(i + 1) === '"') { cell += '"'; i++; } else q = false; }
+      else cell += c;
+    } else if (c === '"' && cell === '' && !noQuotes) q = true;
+    else if (c === d) { row.push(cell); cell = ''; }
+    else if (c === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += c;
+  }
+  if (q) return impCsvRows(text, d, true);
+  row.push(cell); rows.push(row);
+  return rows.map(r => r.map(x => x.replace(/ /g, ' ').trim())).filter(r => r.some(x => x !== ''));
+}
+const IMP_HEAD = {
+  nome: /^(?:nome|articol[oi]|descrizione|descr|materiale|prodott[oi]|modello|voce|denominazione|attrezzatur[ae]|item|name|description)/,
+  quantita: /^(?:qta|qt|quantit\w*|quantity|qty|pezzi|pz|totale|tot|giacenza|disponibil\w*)$/,
+  categoria: /^(?:categoria|reparto|tipo|tipologia|famiglia|gruppo|area|settore|classe|category)/,
+  marca: /^(?:marca|brand|produttore|costruttore|fabbricante|marchio)/,
+  posizione: /^(?:posizione|ubicazione|dove|collocazione|scaffale|locazione|luogo|deposito|location)/,
+  note: /^(?:note|nota|annotazioni|osservazioni|commento|commenti|dettagli|varie|notes)/,
+};
+const IMP_FIELDS = [['nome', 'Nome dell\'articolo'], ['quantita', 'Pezzi'], ['categoria', 'Reparto'], ['marca', 'Marca'], ['posizione', 'Posizione'], ['note', 'Note']];
+/* Quali colonne sono quali, leggendo la riga delle intestazioni */
+function impHeadMap(row) {
+  const map = {}, used = {};
+  Object.keys(IMP_HEAD).forEach(f => {
+    for (let i = 0; i < row.length; i++) {
+      if (used[i]) continue;
+      if (IMP_HEAD[f].test(impPlain(row[i]))) { map[f] = i; used[i] = true; break; }
+    }
+  });
+  return map;
+}
+/* Senza intestazioni: i pezzi sono la prima colonna di numeri interi (non una numerazione 1, 2, 3...), il nome la prima di testo. */
+function impGuessMap(rows, taken) {
+  const sample = rows.slice(0, 40), map = {};
+  const ncol = Math.max.apply(null, [0].concat(sample.map(r => r.length)));
+  const has = {};
+  Object.keys(taken || {}).forEach(k => { has[taken[k]] = true; });
+  const stat = [];
+  for (let c = 0; c < ncol; c++) {
+    const vals = sample.map(r => String(r[c] == null ? '' : r[c]).trim()).filter(Boolean);
+    const nums = vals.filter(v => /^\d{1,4}(?:[.,]0+)?$/.test(v)).map(v => parseInt(v, 10));
+    const seq = nums.length >= 3 && nums.filter((v, i) => i > 0 && v === nums[i - 1] + 1).length >= (nums.length - 1) * 0.8;
+    stat.push({ c: c, n: vals.length, ratio: vals.length ? nums.length / vals.length : 0, seq: seq });
+  }
+  const qtyCol = stat.filter(s => !has[s.c] && s.n >= Math.max(1, sample.length * 0.5) && s.ratio >= 0.8 && !s.seq)[0];
+  if (qtyCol && (taken || {}).quantita === undefined) map.quantita = qtyCol.c;
+  const nameCol = stat.filter(s => !has[s.c] && s.c !== map.quantita && s.n >= 1 && s.ratio < 0.5)[0];
+  if (nameCol && (taken || {}).nome === undefined) map.nome = nameCol.c;
+  // il reparto: una colonna di parole brevi che sono quasi tutte «Audio», «Luci», «Video»...
+  const catCol = stat.filter(s => {
+    if (has[s.c] || s.c === map.quantita || s.c === map.nome || s.ratio >= 0.5 || s.n < Math.max(1, sample.length * 0.5)) return false;
+    const vals = sample.map(r => String(r[s.c] == null ? '' : r[s.c]).trim()).filter(Boolean);
+    return vals.filter(v => v.length <= 20 && impGuessCat(v) !== '').length >= vals.length * 0.6;
+  })[0];
+  if (catCol && (taken || {}).categoria === undefined) map.categoria = catCol.c;
+  return map;
+}
+/* La tabella letta: le celle, l'intestazione (se c'è, anche sotto un titolo) e quale colonna è quale */
+function impTabOf(rows) {
+  const isNum = c => /^\d+(?:[.,]\d+)?$/.test(String(c).trim());
+  let hi = -1, hm = {};
+  for (let k = 0; k < Math.min(6, rows.length); k++) {
+    const m = impHeadMap(rows[k]);
+    if (!rows[k].some(isNum) && Object.keys(m).length >= (k === 0 ? 1 : 2)) { hi = k; hm = m; break; }
+  }
+  let map = {};
+  if (hi < 0 && rows.length >= 3) {
+    // intestazioni con parole che non conosco («Cosa», «Disp»): se sotto c'è una colonna di numeri e in cima c'è del testo, la prima riga è l'intestazione
+    const g = impGuessMap(rows.slice(1));
+    const first = rows[0], top = g.quantita === undefined ? '' : String(first[g.quantita] == null ? '' : first[g.quantita]).trim();
+    if (top !== '' && !/^\d/.test(top)) { hi = 0; map = g; }
+  }
+  const body = rows.slice(hi + 1);
+  if (hi >= 0 && !Object.keys(map).length) {
+    map = Object.assign({}, hm);
+    if (map.nome === undefined || map.quantita === undefined) {
+      const g = impGuessMap(body, hm);
+      if (map.nome === undefined && g.nome !== undefined) map.nome = g.nome;
+      if (map.quantita === undefined && g.quantita !== undefined) map.quantita = g.quantita;
+    }
+  } else if (hi < 0) map = impGuessMap(body);
+  return { rows: rows, head: hi >= 0 ? rows[hi] : null, pre: hi > 0 ? rows.slice(0, hi) : [], body: body, map: map, ncol: Math.max.apply(null, [0].concat(rows.map(r => r.length))) };
+}
+/* Le righe di una tabella, secondo le colonne scelte */
+function impTabRaw(tab) {
+  const out = [], skipped = [], m = tab.map;
+  tab.pre.forEach(r => { const t = r.filter(c => c !== '').join(' · '); if (t) skipped.push(t); });
+  if (m.nome === undefined) return { rows: out, skipped: skipped };
+  const cell = (r, k) => (m[k] === undefined ? '' : String(r[m[k]] == null ? '' : r[m[k]]).trim());
+  let section = '';
+  const headKey = tab.head ? tab.head.map(impPlain).join('|') : '';
+  tab.body.forEach(r => {
+    if (headKey && r.length >= 2 && r.map(impPlain).join('|') === headKey) { skipped.push(r.filter(c => c !== '').join(' · ')); return; }      // l'intestazione ripetuta a metà (una nuova pagina)
+    const nome = impClean(r[m.nome]);
+    const filled = r.filter(c => String(c).trim() !== '').length;
+    if (!nome) { if (filled) skipped.push(r.filter(c => c !== '').join(' · ')); return; }
+    const q = m.quantita !== undefined ? impQty(r[m.quantita]) : { n: null, bad: '' };
+    if (q.n === null && !q.bad && filled === 1) {
+      const h = impHeading(nome);
+      if (h) { section = h; return; }
+    }
+    if (impJunk(nome)) { skipped.push(nome); return; }
+    out.push({ nome: nome, n: q.n, bad: q.bad, cat: cell(r, 'categoria'), marca: cell(r, 'marca').slice(0, 60), pos: cell(r, 'posizione').slice(0, 80), note: cell(r, 'note').slice(0, 300), sec: section, warn: [] });
+  });
+  return { rows: out, skipped: skipped };
+}
+
+/* ---------- elenchi a righe: «Cavo XLR 10 m - 60», «60 x Cavo XLR 10 m», «Cavo XLR 10 m ....... 60» ---------- */
+const IMP_TRAIL = [
+  /^(.*\S)\s*[(\[]\s*(\d{1,7})\s*(?:pz\.?|pezzi|pcs)?\s*[)\]]$/i,
+  /^(.*\S)(?:\s+[xX×]\s*|\s*[:=;]\s*|\s+[-–—]\s*|\s*(?:\.{2,}|…+)\s*|\s{2,}|\t\s*)(\d{1,7})(?:[.,]0+)?\s*(?:pz\.?|pezzi|pcs|nr\.?|n\.)?$/i,
+];
+const IMP_BARE = /^(.*[A-Za-zÀ-ÿ)"'])\s(\d{1,7})\s*(pz\.?|pezzi|pcs)?$/i;
+const IMP_LEAD = /^(\d{1,7})\s*(?:[xX×]\s*|(?:pz\.?|pezzi|pcs)\s+|[-–—:]\s+)(?=[A-Za-zÀ-ÿ])(.*\S)$/i;
+const IMP_LEAD_BARE = /^(\d{1,7})\s+(?=[A-Za-zÀ-ÿ])(.*\S)$/;
+const IMP_UNIT_NEXT = /^(?:m|mt|mtr|metri|metro|cm|mm|w|kw|v|a|ch|hz|khz|db|u|pollici|ohm)\b/i;
+function impTrail(t) {
+  for (let i = 0; i < IMP_TRAIL.length; i++) { const m = IMP_TRAIL[i].exec(t); if (m) return { nome: m[1], n: parseInt(m[2], 10) }; }
+  return null;
+}
+function impLead(t) {
+  const m = IMP_LEAD.exec(t);
+  return m ? { nome: m[2], n: parseInt(m[1], 10) } : null;
+}
+function impLeadBare(t) {
+  const m = IMP_LEAD_BARE.exec(t);
+  return (m && !IMP_UNIT_NEXT.test(m[2])) ? { nome: m[2], n: parseInt(m[1], 10) } : null;
+}
+function impBare(t) {
+  const m = IMP_BARE.exec(t);
+  return m ? { nome: m[1], n: parseInt(m[2], 10), unit: !!m[3] } : null;       // unit: c'è scritto «pz», «pezzi» o «pcs»: allora il numero non è un'ipotesi
+}
+/* Un nome che è solo una misura («10 mt») prende davanti il titolo della sezione («Cavi XLR»): «Cavi XLR 10 mt» */
+function impWithSection(nome, sec) {
+  const s = String(sec || '').replace(/[:\s]+$/, '');
+  if (s && (nome.length < 4 || /^\d+(?:[.,]\d+)?\s*(?:m|mt|mtr|metri|metro|cm)\b/i.test(nome))) return impClean(s + ' ' + nome);
+  return nome;
+}
+function impLinesRaw(text) {
+  const lines = impLinesOf(text).map(l => l.replace(/ /g, ' ').replace(/\s+$/, '').replace(/^\s+/, '').replace(/^[-–—•·*▪►>]\s+/, '').replace(/^\d{1,3}[.)]\s+/, '')).filter(l => l !== '');
+  // lo stile dell'elenco: il numero dei pezzi di solito è in fondo alla riga («Cavo - 60») oppure all'inizio («60 x Cavo»)
+  let nTrail = 0, nLead = 0, nBare = 0;
+  lines.forEach(l => {
+    if (impTrail(l)) nTrail++;
+    else if (impLead(l) || impLeadBare(l)) nLead++;
+    else if (impBare(l)) nBare++;
+  });
+  const lead = nLead >= 2 && nLead > nTrail;
+  // un elenco dove quasi tutte le righe finiscono con un numero dopo un solo spazio: i pezzi sono quelli, senza segnalarlo riga per riga
+  const bareDoc = !lead && nBare >= 2 && nBare >= lines.length * 0.6;
+  const withQty = nTrail + nLead + (bareDoc ? nBare : 0);
+  const out = [], skipped = [];
+  let section = '';
+  lines.forEach(l => {
+    let hit = null, guess = false;
+    if (lead) {
+      hit = impLead(l) || impLeadBare(l) || impTrail(l);
+      if (!hit) { const b = impBare(l); if (b && b.unit) hit = b; }      // «Testa mobile 4 pezzi» in un elenco con i numeri davanti: i pezzi sono dichiarati
+    } else { hit = impTrail(l) || impLead(l); if (!hit) { hit = impBare(l); guess = !!hit && !hit.unit; } }
+    if (hit) {
+      const nome = impClean(hit.nome);
+      if (!nome || impJunk(nome)) { skipped.push(l); return; }
+      const o = { nome: impWithSection(nome, section), n: hit.n, bad: '', cat: '', marca: '', pos: '', note: '', sec: section, warn: [] };
+      if (hit.n > 9999) { o.n = null; o.bad = hit.n + ' pezzi sono troppi (il massimo è 9999).'; }
+      if (guess && !bareDoc) o.warn.push('Ho preso l\'ultimo numero come numero di pezzi: controlla.');
+      out.push(o);
+      return;
+    }
+    const h = impHeading(l);
+    if (h && withQty >= 1) { section = h; return; }
+    const nome = impClean(l);
+    if (nome && !impJunk(nome) && /[A-Za-zÀ-ÿ]{2}/.test(nome) && withQty >= 1) out.push({ nome: nome, n: null, bad: '', cat: '', marca: '', pos: '', note: '', sec: section, warn: [] });
+    else skipped.push(l);
+  });
+  if (!withQty) {
+    // nessuna riga con un numero di pezzi: l'elenco è fatto di soli nomi
+    const all = lines.map(impClean).filter(n => n && !impJunk(n));
+    return { rows: all.map(n => ({ nome: n, n: null, bad: '', cat: '', marca: '', pos: '', note: '', sec: '', warn: [] })), skipped: [] };
+  }
+  return { rows: out, skipped: skipped };
+}
+
+/* ---------- da un testo qualunque alle righe ---------- */
+function impParse(text) {
+  const lines = impLinesOf(text).filter(l => l.trim() !== '');
+  if (!lines.length) return { kind: 'vuoto', rows: [], skipped: [] };
+  const d = impDelimOf(lines);
+  if (d) {
+    const tab = impTabOf(impCsvRows(text, d));
+    if (tab.map.nome !== undefined && (tab.map.quantita !== undefined || tab.head)) {
+      const res = impTabRaw(tab);
+      if (res.rows.length) return { kind: 'tab', tab: tab, rows: res.rows, skipped: res.skipped };
+    }
+  }
+  const res = impLinesRaw(text);
+  return { kind: 'righe', rows: res.rows, skipped: res.skipped };
+}
+/* Righe con lo stesso nome (anche scritto un po' diverso: «10Mt» e «10 m») diventano una sola, con i pezzi sommati */
+function impMerge(raw) {
+  const by = {}, list = [];
+  raw.forEach(x => {
+    const k = impNorm(x.nome);
+    if (!k) return;
+    const cur = by[k];
+    if (!cur) {
+      const c = Object.assign({}, x, { warn: x.warn.slice(), parts: x.n === null ? [] : [x.n] });
+      by[k] = c; list.push(c);
+      return;
+    }
+    if (x.n !== null) { cur.parts.push(x.n); cur.n = (cur.n === null ? 0 : cur.n) + x.n; }
+    else if (x.bad && !cur.bad) cur.bad = x.bad;
+    if (!cur.cat && x.cat) cur.cat = x.cat;
+    if (!cur.marca && x.marca) cur.marca = x.marca;
+    if (!cur.pos && x.pos) cur.pos = x.pos;
+    if (!cur.note && x.note) cur.note = x.note;
+    cur.merged = (cur.merged || 1) + 1;
+    x.warn.forEach(w => { if (cur.warn.indexOf(w) < 0) cur.warn.push(w); });
+  });
+  list.forEach(c => { if (c.n !== null && c.n > 9999) { c.n = null; c.bad = 'Sommando le righe si arriva a più di 9999 pezzi.'; } });
+  return list;
+}
+
+/* ---------- il testo di un PDF: dalle parole con la loro posizione alle righe ---------- */
+/* items: quelli di pdf.js (getTextContent): {str, width, height, transform:[a,b,c,d,x,y]}.
+   Le parole sulla stessa altezza fanno una riga; un vuoto tra due parole più largo di mezza altezza di riga (uno spazio è circa 0,28) è una cella nuova (una colonna). */
+function impPdfCells(items) {
+  const arr = (items || []).map(it => ({
+    s: String(it.str == null ? '' : it.str), x: Number(it.transform && it.transform[4]) || 0, y: Number(it.transform && it.transform[5]) || 0,
+    w: Number(it.width) || 0, h: Math.abs(Number(it.height) || Number(it.transform && it.transform[3]) || 10) || 10,
+  })).filter(it => it.s.trim() !== '');
+  arr.sort((a, b) => b.y - a.y || a.x - b.x);
+  const lines = [];
+  arr.forEach(it => {
+    const last = lines[lines.length - 1];
+    if (last && Math.abs(last.y - it.y) <= Math.max(2, 0.45 * Math.min(last.h, it.h))) last.items.push(it);
+    else lines.push({ y: it.y, h: it.h, items: [it] });
+  });
+  return lines.map(L => {
+    L.items.sort((a, b) => a.x - b.x);
+    const cells = [];
+    let cur = null, end = 0;
+    L.items.forEach(it => {
+      const gap = it.x - end;
+      if (cur && gap <= Math.max(3, 0.5 * L.h)) cur.t += (gap > 0.12 * L.h ? ' ' : '') + it.s;
+      else { cur = { x0: it.x, x1: it.x, t: it.s }; cells.push(cur); }
+      end = it.x + it.w;
+      cur.x1 = end;
+    });
+    cells.forEach(c => { c.t = c.t.replace(/ {2,}/g, ' ').trim(); });
+    return { y: L.y, h: L.h, cells: cells };
+  });
+}
+/* Le colonne di una tabella, viste da tutte le pagine insieme: gli intervalli orizzontali dove cadono le celle delle righe che ne hanno più di una.
+   Una cella vuota non lascia traccia nel PDF: senza queste colonne, dove manca la marca la posizione la prenderebbe al suo posto.
+   Se una riga ha due celle nella stessa colonna non è una tabella, e si torna alle sole tabulazioni. */
+function impPdfGrid(pages) {
+  const cells = [], multi = [];
+  pages.forEach(P => P.forEach(L => { if (L.cells.length >= 2) { multi.push(L); L.cells.forEach(c => cells.push(c)); } }));
+  if (multi.length < 3) return null;
+  cells.sort((a, b) => a.x0 - b.x0);
+  const cols = [];
+  cells.forEach(c => {
+    const k = cols[cols.length - 1];
+    if (k && c.x0 <= k.b + 2) k.b = Math.max(k.b, c.x1); else cols.push({ a: c.x0, b: c.x1 });
+  });
+  if (cols.length < 2) return null;
+  for (let i = 0; i < multi.length; i++) {
+    const used = {};
+    for (let j = 0; j < multi[i].cells.length; j++) {
+      const k = impPdfColOf(cols, multi[i].cells[j]);
+      if (used[k]) return null;
+      used[k] = true;
+    }
+  }
+  return cols;
+}
+function impPdfColOf(cols, c) {
+  let best = 0, bestO = -1e9;
+  cols.forEach((k, i) => { const o = Math.min(c.x1, k.b) - Math.max(c.x0, k.a); if (o > bestO) { bestO = o; best = i; } });
+  return best;
+}
+function impPdfLineText(L, grid) {
+  if (grid && L.cells.length >= 2) {
+    const f = grid.map(() => '');
+    L.cells.forEach(c => { const i = impPdfColOf(grid, c); f[i] = f[i] ? f[i] + ' ' + c.t : c.t; });
+    return f.join('\t');
+  }
+  return L.cells.map(c => c.t).join('\t');
+}
+/* Le righe di una pagina (con la griglia delle colonne, se c'è) */
+function impPdfPageLines(items, grid) {
+  return impPdfCells(items).map(L => impPdfLineText(L, grid)).filter(l => l.trim() !== '');
+}
+/* Il testo di tutto il PDF: le colonne si cercano su tutte le pagine insieme (una pagina senza marche non sposta le colonne) */
+function impPdfPages(pagesItems) {
+  const pc = (pagesItems || []).map(impPdfCells), grid = impPdfGrid(pc);
+  return impPdfText(pc.map(P => P.map(L => impPdfLineText(L, grid)).filter(l => l.trim() !== '')));
+}
+/* Le righe di tutte le pagine, senza quelle che si ripetono su ogni pagina (intestazione e piè di pagina) e senza i numeri di pagina.
+   L'intestazione di una tabella ripetuta su ogni pagina resta una volta sola, la prima. */
+function impPdfText(pages) {
+  const sig = l => l.replace(/\d+/g, '#').replace(/\s+/g, ' ').trim().toLowerCase();
+  const count = {};
+  pages.forEach(p => { const seen = {}; p.forEach(l => { const k = sig(l); if (!seen[k]) { seen[k] = true; count[k] = (count[k] || 0) + 1; } }); });
+  const rep = pages.length >= 3 ? Math.ceil(pages.length * 0.6) : 99999;
+  const page = /^(?:pagina|pag\.?|page)\s*#?(?:\s*(?:di|\/|of)\s*#)?$|^#\s*(?:\/|di|of)\s*#$|^-\s*#\s*-$/i;
+  const out = [], kept = {};
+  pages.forEach(p => p.forEach(l => {
+    const k = sig(l);
+    if (page.test(k)) return;
+    if (count[k] >= rep && k.length > 2) {
+      if (!/\t/.test(l)) return;                                      // intestazione o piè di pagina
+      if (!/#/.test(k)) { if (kept[k]) return; kept[k] = true; }      // intestazione della tabella (senza numeri) ripetuta: resta la prima
+    }
+    out.push(l);
+  }));
+  return out.join('\n');
+}
+
+/* =====================================================================
+   IMPORTARE L'INVENTARIO (4.5), seconda parte: la finestra «Importa», la tabella da controllare, il salvataggio a gruppi
+   Si parte da un file (CSV, TXT, PDF con il testo) o da un testo incollato; imp.js lo trasforma in righe; qui le righe si confrontano
+   con il magazzino (stesso nome = stesso articolo), si correggono e si salvano con api_importInventario.
+   ===================================================================== */
+let IMP = null;                    // {src, text, kind, tab, raw, skipped, rows, mode, filter, pasted, saving}
+const IMP_CHUNK = 100;             // righe per ogni chiamata al server
+const IMP_MAX_FILE = 25 * 1024 * 1024;
+const IMP_MAX_ROWS = 1500;         // oltre, la tabella diventa pesante da controllare: meglio dividere il file
+const IMP_PDFJS = ['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.4.299/', 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.4.299/legacy/build/'];
+let IMP_LIB = null;
+
+/* ---------- 1. da dove si parte ---------- */
+function impSourceHtml() {
+  return '<div id="imbody"><p class="hint" style="margin-top:0">Porta qui l\'elenco di quello che hai in magazzino. Prima di salvare vedi tutte le righe in una tabella: ' +
+    'puoi correggere nomi e quantità e togliere quello che non serve.</p>' +
+    '<div class="imsrc"><button type="button" class="btn pri" data-act="impPick">' + ico('up') + ' Scegli un file</button>' +
+    '<input type="file" id="imfile" class="vh" accept=".csv,.tsv,.txt,.pdf,text/csv,text/plain,application/pdf" data-chg="impFile" aria-label="File dell\'inventario" tabindex="-1">' +
+    '<p class="hint">File CSV o TXT, oppure PDF che contiene del testo (non una foto).</p></div>' +
+    '<p class="imor"><span>oppure</span></p>' +
+    '<label class="fld"><span>Incolla qui l\'elenco</span><textarea id="imtext" rows="7" spellcheck="false" placeholder="Cavo XLR 10 m;60&#10;Cavo XLR 5 m;40&#10;Par LED 18x10;12"></textarea></label>' +
+    '<p class="hint">Va bene anche quello che copi da Excel o da Fogli Google: una riga per articolo, con il numero dei pezzi.</p>' +
+    '<p class="ferr" id="imerr" role="alert"></p><p class="hint" id="imstat" role="status" aria-live="polite"></p>' +
+    '<div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button><button type="button" class="btn pri" data-act="impText">Leggi il testo</button></div>' +
+    '<details class="free"><summary>Ho una foto, un foglio scritto a mano o un file Excel</summary>' +
+    '<p class="hint">Una foto o un foglio scritto a mano non si leggono da qui: falli trascrivere in un file CSV o in un testo (per esempio mandando la foto a Claude) e importa quello.</p>' +
+    '<p class="hint">Un file Excel: aprilo, scegli «Salva con nome» e poi «CSV». Oppure seleziona le celle, copiale e incollale nel riquadro qui sopra.</p></details></div>';
+}
+ACT.impOpen = () => {
+  if (S.mode !== 'coord') return;
+  IMP = { pasted: '', saving: false };
+  openSheet('Importa l\'inventario', impSourceHtml(), { noFocus: true });
+  S.onClose = () => { IMP = null; paint(); };
+};
+ACT.impPick = () => { const f = $('#imfile'); if (f) f.click(); };
+/* messaggio di stato (grigio) o di errore (rosso) nella finestra di partenza */
+function impSay(msg, err) {
+  const s = $('#imstat'), e = $('#imerr');
+  if (s) s.textContent = msg || '';
+  if (e) e.textContent = err || '';
+}
+ACT.impText = () => {
+  const t = $('#imtext');
+  if (!IMP || !t) return;
+  IMP.pasted = t.value;
+  if (!t.value.trim()) { impSay('', 'Incolla prima l\'elenco nel riquadro, oppure scegli un file.'); return; }
+  impStart(t.value, 'testo incollato');
+};
+CHG.impFile = el => {
+  const f = el.files && el.files[0];
+  el.value = '';
+  if (f && IMP) impReadFile(f);
+};
+
+/* ---------- 2. leggere il file ---------- */
+async function impFileText(f) {
+  const buf = await f.arrayBuffer();
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(buf); }
+  catch { return new TextDecoder('windows-1252').decode(buf); }       // CSV salvato da Excel in Windows: accenti nel vecchio formato
+}
+async function impPdfLib() {
+  if (IMP_LIB) return IMP_LIB;
+  let err = null;
+  for (const base of IMP_PDFJS) {
+    try {
+      const m = await import(base + 'pdf.min.mjs');
+      m.GlobalWorkerOptions.workerSrc = base + 'pdf.worker.min.mjs';
+      IMP_LIB = { lib: m, base: base };
+      return IMP_LIB;
+    } catch (e) { err = e; }
+  }
+  throw err || new Error('pdf.js non disponibile');
+}
+/* Il testo di un PDF, pagina per pagina */
+async function impPdfToText(f) {
+  impSay('Apro il PDF…');
+  let lib;
+  try { lib = await impPdfLib(); }
+  catch { throw new Error('Non riesco a caricare il lettore dei PDF (serve la connessione a internet). Riprova, oppure apri il PDF, copia il testo e incollalo qui.'); }
+  const buf = await f.arrayBuffer();
+  let pdf;
+  try { pdf = await lib.lib.getDocument({ data: new Uint8Array(buf), wasmUrl: lib.base + 'wasm/', isEvalSupported: false, useSystemFonts: true }).promise; }
+  catch (e) {
+    throw new Error(e && e.name === 'PasswordException' ? 'Il PDF è protetto da una password: toglila e riprova.' : 'Non riesco ad aprire questo PDF: forse è rovinato. Prova a salvarlo di nuovo, oppure copia il testo e incollalo qui.');
+  }
+  const pages = [], max = Math.min(pdf.numPages, 300);
+  try {
+    for (let n = 1; n <= max; n++) {
+      impSay('Leggo la pagina ' + n + ' di ' + pdf.numPages + '…');
+      const pg = await pdf.getPage(n);
+      const tc = await pg.getTextContent();
+      pages.push(tc.items.map(x => ({ str: x.str, width: x.width, height: x.height, transform: x.transform })));
+    }
+  } finally { try { pdf.destroy(); } catch { /* ok */ } }
+  const text = impPdfPages(pages);
+  if (!text.trim()) throw new Error('Questo PDF non contiene testo che io possa leggere: è una scansione o una foto. Fai trascrivere l\'elenco in un file CSV o in un testo (per esempio mandando il PDF a Claude) e importa quello.');
+  return text;
+}
+async function impReadFile(f) {
+  const mark = S.sheet, name = String(f.name || 'file');
+  impSay('', '');
+  const ext = (/\.([A-Za-z0-9]+)$/.exec(name) || ['', ''])[1].toLowerCase();
+  if (f.size > IMP_MAX_FILE) { impSay('', 'Il file è troppo grande (più di 25 MB): dividilo in parti più piccole.'); return; }
+  if (/^(xlsx|xlsm|xls|ods|numbers)$/.test(ext)) { impSay('', 'Un file Excel da qui non si legge. Aprilo, scegli «Salva con nome» e poi «CSV»; oppure seleziona le celle, copiale e incollale nel riquadro qui sotto.'); return; }
+  if (/^(jpe?g|png|heic|heif|gif|webp|bmp|tiff?)$/.test(ext) || /^image\//.test(f.type)) { impSay('', 'Una foto non si legge da qui, perché dentro non c\'è del testo. Fai trascrivere l\'elenco in un file CSV o in un testo (per esempio mandando la foto a Claude) e importa quello.'); return; }
+  if (/^(docx?|odt|rtf|pages)$/.test(ext)) { impSay('', 'Un documento di testo da qui non si legge: apri il documento, copia l\'elenco e incollalo nel riquadro qui sotto (oppure salvalo come PDF).'); return; }
+  try {
+    const text = (ext === 'pdf' || f.type === 'application/pdf') ? await impPdfToText(f) : await impFileText(f);
+    if (S.sheet !== mark || !IMP) return;                  // nel frattempo la finestra è stata chiusa
+    impStart(text, name);
+  } catch (e) { if (S.sheet === mark) impSay('', e.message); }
+}
+
+/* ---------- 3. le righe, confrontate con il magazzino ---------- */
+/* Gli articoli che ci sono (non dismessi), per nome «normalizzato» */
+function impExisting() {
+  const ex = {};
+  S.mat.forEach(m => {
+    if (String(m.stato) === 'dismesso') return;
+    const k = impNorm(m.nome);
+    if (k && !ex[k]) ex[k] = m;
+  });
+  return ex;
+}
+function impMatch(r, ex) {
+  const m = ex[impNorm(r.nome)];
+  r.eq = m ? String(m.id) : '';
+  r.have = m ? toI(m.quantita) : 0;
+  r.blocked = m && isCase(m) ? 'È un contenitore: si gestisce dalla scheda «Contenitori».' : '';
+  const fill = [];
+  if (m) {
+    if (r.marca && !String(m.marca || '').trim()) fill.push('la marca');
+    if (r.pos && !String(m.posizione || '').trim()) fill.push('la posizione');
+    if (r.note && !String(m.note || '').trim()) fill.push('le note');
+  }
+  r.fill = fill;
+}
+/* Quanti pezzi avrà l'articolo dopo l'importazione */
+function impAfter(r) {
+  const q = r.qty === null ? 0 : r.qty;
+  return r.eq && IMP.mode === 'somma' ? r.have + q : q;
+}
+/* Cosa conviene di partenza: nuove sì; quelle che ci sono già, solo se qualcosa cambia; senza pezzi o salvate, no */
+function impAutoOn(r) {
+  if (r.saved || r.blocked || r.qty === null) return false;
+  if (!r.eq) return true;
+  if (IMP.mode === 'somma') return r.qty > 0 || r.fill.length > 0;
+  return r.qty !== r.have || r.fill.length > 0;
+}
+function impNeedsCheck(r) { return !r.saved && !r.blocked && (r.qty === null || r.bad || r.warn.length > 0); }
+function impState(r) { return r.saved ? 'done' : r.blocked ? 'lock' : r.eq ? 'old' : 'new'; }
+function impBuild() {
+  const P = IMP, merged = impMerge(P.raw), ex = impExisting();
+  P.cut = merged.length > IMP_MAX_ROWS ? merged.length : 0;
+  P.rows = merged.slice(0, IMP_MAX_ROWS).map((x, i) => {
+    const r = { n: i, nome: x.nome, qty: x.n, bad: x.bad || '', cat: impCatOf(x.cat, x.sec, x.nome), marca: x.marca || '', pos: x.pos || '', note: x.note || '',
+      parts: x.parts || [], merged: x.merged || 1, warn: x.warn.slice(), touched: false, saved: false, on: false };
+    impMatch(r, ex);
+    r.on = impAutoOn(r);
+    return r;
+  });
+}
+function impStart(text, src) {
+  const P = IMP;
+  if (!P) return;
+  const res = impParse(text);
+  if (!res.rows.length) {
+    impSay('', res.kind === 'vuoto' ? 'Il testo è vuoto.' : 'Non ho trovato righe con il nome di un articolo. Controlla il file, oppure incolla l\'elenco nel riquadro (una riga per articolo, con il numero dei pezzi).');
+    return;
+  }
+  P.src = src; P.text = text; P.kind = res.kind; P.tab = res.tab || null; P.raw = res.rows; P.skipped = res.skipped; P.mode = 'aggiorna'; P.filter = '';
+  impBuild();
+  openSheet('Controlla l\'inventario', impReviewHtml(), { noFocus: true });
+  S.onClose = () => { IMP = null; paint(); };
+  impEls();
+  impPaintAll();
+}
+
+/* ---------- 4. la tabella da controllare ---------- */
+function impColLabel(tab, i) {
+  if (tab.head && String(tab.head[i] || '').trim()) return '«' + String(tab.head[i]).trim() + '»';
+  const ex = tab.body.map(r => String(r[i] == null ? '' : r[i]).trim()).filter(Boolean)[0] || '';
+  return 'colonna ' + (i + 1) + (ex ? ' (per esempio «' + ex.slice(0, 20) + '»)' : '');
+}
+function impMapSummary() {
+  const t = IMP.tab;
+  return IMP_FIELDS.filter(f => t.map[f[0]] !== undefined).map(f => f[1].replace('Nome dell\'articolo', 'Nome')).join(', ') || 'nessuna';
+}
+function impMapHtml() {
+  const P = IMP;
+  if (P.kind !== 'tab' || !P.tab) return '';
+  const t = P.tab, cols = [];
+  for (let i = 0; i < t.ncol; i++) cols.push(i);
+  return '<details class="free" id="immap"><summary id="immapsum">Colonne lette: ' + esc(impMapSummary()) + '</summary>' +
+    '<p class="hint">Se una colonna è sbagliata, scegli qui quella giusta: la tabella si rifà da sola (le correzioni fatte a mano nella tabella si perdono).</p>' +
+    IMP_FIELDS.map(f => '<label class="fld"><span>' + esc(f[1]) + '</span><select data-chg="impMap" data-f="' + f[0] + '"><option value="">— non c\'è —</option>' +
+      cols.map(i => '<option value="' + i + '"' + (t.map[f[0]] === i ? ' selected' : '') + '>' + esc(impColLabel(t, i)) + '</option>').join('') + '</select></label>').join('') + '</details>';
+}
+function impCtlHtml() {
+  const P = IMP, n = { all: P.rows.length, new: 0, old: 0, chk: 0 };
+  P.rows.forEach(r => { if (r.eq) n.old++; else n.new++; if (impNeedsCheck(r)) n.chk++; });
+  let h = '';
+  if (n.old) {
+    h += '<div class="imctl"><span class="k">Per gli articoli che hai già:</span><div class="cats" role="group" aria-label="Cosa fare con gli articoli già in magazzino">' +
+      [['aggiorna', 'Metto i pezzi del file'], ['somma', 'Sommo ai pezzi che ci sono']].map(x =>
+        '<button type="button" class="cat" data-act="impMode" data-m="' + x[0] + '" aria-pressed="' + (P.mode === x[0]) + '">' + x[1] + '</button>').join('') + '</div></div>';
+  }
+  h += '<div class="cats" role="group" aria-label="Quali righe vedere">' + [['', 'Tutte', n.all], ['new', 'Nuove', n.new], ['old', 'Già presenti', n.old], ['chk', 'Da controllare', n.chk]]
+    .filter(x => x[0] === '' || x[2] > 0 || P.filter === x[0])
+    .map(x => '<button type="button" class="cat' + (x[0] === 'chk' ? ' low' : '') + '" data-act="impFilter" data-f="' + x[0] + '" aria-pressed="' + (P.filter === x[0]) + '">' + x[1] + ' (' + x[2] + ')</button>').join('') + '</div>';
+  h += '<p class="imbulk"><button type="button" class="lnk" data-act="impAll" data-v="1">Spunta tutte quelle in vista</button> · <button type="button" class="lnk" data-act="impAll" data-v="0">Togli tutte</button></p>';
+  return h;
+}
+function impRowHtml(r) {
+  const i = r.n;
+  return '<li class="pk imr" data-i="' + i + '">' +
+    '<label class="puc"><input type="checkbox" data-chg="impOn" data-i="' + i + '" aria-label="Importa: ' + esc(r.nome) + '"></label>' +
+    '<div class="imb"><input type="text" class="imn" data-inp="impName" data-chg="impNameDone" data-i="' + i + '" value="' + esc(r.nome) + '" maxlength="120" aria-label="Nome dell\'articolo" autocomplete="off">' +
+    '<div class="imq">' + qtyField('q' + i, r.qty === null ? '' : r.qty, 0, 9999, 'Pezzi: ' + r.nome, ' data-inp="impQty" data-i="' + i + '" placeholder="—"') +
+    '<select class="imc" data-chg="impCat" data-i="' + i + '" aria-label="Reparto: ' + esc(r.nome) + '">' + CAT_ORDER.map(c =>
+      '<option value="' + c + '">' + esc(catLabel(c)) + '</option>').join('') + '</select></div>' +
+    '<p class="imx"></p></div></li>';
+}
+function impSkippedHtml() {
+  const s = IMP.skipped || [];
+  return '<details class="free" id="imskip"' + (s.length ? '' : ' hidden') + '><summary>Righe che non ho usato (' + s.length + ')</summary>' +
+    '<p class="hint">Titoli, totali, numeri di pagina o righe senza nome: non finiscono in magazzino.</p><ul class="puinfo">' +
+    s.slice(0, 100).map(x => '<li>' + esc(String(x).slice(0, 160)) + '</li>').join('') + (s.length > 100 ? '<li>…e altre ' + (s.length - 100) + '</li>' : '') + '</ul></details>';
+}
+function impReviewHtml() {
+  const P = IMP;
+  return '<p class="hint" style="margin-top:0">Ho letto <b id="imcount"></b> da <b>' + esc(P.src) + '</b>. Correggi quello che non va e togli la spunta alle righe da non importare: ' +
+    'finché non premi «Salva» non cambia niente.</p>' +
+    '<p class="note warn" id="imcut" hidden></p>' +
+    impMapHtml() + '<div id="imctl">' + impCtlHtml() + '</div>' +
+    '<ul class="pick imlist" id="imlist">' + P.rows.map(impRowHtml).join('') + '</ul><p class="empty" id="imnone" hidden>Con queste colonne non trovo nessun articolo.</p>' + impSkippedHtml() +
+    '<div class="pubar"><p class="pusum" id="imsum" role="status" aria-live="polite"></p><p class="ferr" id="imerr" role="alert"></p>' +
+    '<div class="sheetfoot" style="margin-top:8px"><button type="button" class="btn" data-act="impBack">Indietro</button>' +
+    '<button type="button" class="btn pri" id="imgo" data-act="impGo" disabled>Salva</button></div></div>';
+}
+/* gli elementi delle righe, nello stesso ordine di IMP.rows (per non cercarli ogni volta) */
+function impEls() { IMP.els = $$('#imlist .imr'); }
+function impRowInfo(r) {
+  const m = r.eq ? S.matById[r.eq] : null;
+  let h = '';
+  if (r.saved) h += '<span class="pill ok">Salvato</span>';
+  else if (r.blocked) h += '<span class="pill muted">Contenitore</span>' + esc(r.blocked);
+  else if (!m) {
+    h += '<span class="pill ok">Nuovo</span>';
+    const bits = [r.marca, r.pos].filter(Boolean);
+    if (bits.length) h += '<span class="imm">' + esc(bits.join(' · ')) + '</span>';
+  } else {
+    const after = impAfter(r), same = r.qty !== null && after === r.have;
+    h += '<span class="pill ' + (same && !r.fill.length ? 'muted' : 'blue') + '">' + (same && !r.fill.length ? 'Già uguale' : 'Già in magazzino') + '</span>' +
+      esc('«' + m.nome + '»: ne hai ' + r.have + (r.qty === null || same ? '' : (IMP.mode === 'somma' ? ', con questi ' + after : ' → ne avrai ' + after)) + '.');
+    if (r.fill.length) h += ' ' + esc('Aggiungo ' + r.fill.join(', ') + '.');
+  }
+  if (!r.saved) {
+    if (r.bad) h += '<span class="imw">' + esc(r.bad) + '</span>';
+    else if (r.qty === null && !r.blocked) h += '<span class="imw">Manca il numero dei pezzi: scrivilo per importare questa riga.</span>';
+    r.warn.forEach(w => { h += '<span class="imw">' + esc(w) + '</span>'; });
+    if (r.merged > 1) h += '<span class="imm">' + esc('Unite ' + r.merged + ' righe con lo stesso nome (' + r.parts.join(' + ') + ').') + '</span>';
+    if (m && r.on && !r.blocked && r.qty !== null) {
+      const inside = inCaseRaw(m);
+      if (inside > impAfter(r)) h += '<span class="imw">' + esc('Nei contenitori ne stanno ' + inside + ': con ' + impAfter(r) + ' pezzi non tornano i conti.') + '</span>';
+    }
+  }
+  return h;
+}
+function impPaintRow(r, keep) {
+  const li = IMP.els && IMP.els[r.n];
+  if (!li) return;
+  li.classList.toggle('sel', r.on);
+  li.classList.toggle('imchk', impNeedsCheck(r));
+  li.classList.toggle('done', r.saved);
+  li.classList.toggle('lock', !!r.blocked);
+  const cb = $('input[type=checkbox]', li);
+  if (cb) { cb.checked = r.on; cb.disabled = r.saved || !!r.blocked; }
+  const sel = $('select.imc', li);
+  if (sel) { sel.value = r.cat; sel.hidden = !!r.eq || r.saved; }
+  const q = $('.qty input', li);
+  if (q) { q.disabled = r.saved || !!r.blocked; $$('.qty button', li).forEach(b => { b.disabled = q.disabled; }); }
+  const nm = $('.imn', li);
+  if (nm) nm.disabled = r.saved;
+  const x = $('.imx', li);
+  if (x) x.innerHTML = impRowInfo(r);
+  // mentre ci scrivi dentro, la riga resta dov'è anche se non risponde più al filtro (altrimenti sparirebbe a metà numero)
+  if (!keep) {
+    const st = impState(r);
+    li.hidden = !!IMP.filter && !(IMP.filter === 'chk' ? impNeedsCheck(r) : st === IMP.filter);
+  }
+}
+function impPaintAll() {
+  IMP.rows.forEach(r => impPaintRow(r));            // (senza passare l'indice: il secondo argomento è un altro)
+  impUpdate();
+}
+/* La riga in fondo e il pulsante «Salva» */
+function impUpdate() {
+  const P = IMP;
+  if (!P || !P.rows) return;
+  let nNew = 0, nUpd = 0, nChk = 0;
+  P.rows.forEach(r => {
+    if (r.on && !r.saved) { if (r.eq) nUpd++; else nNew++; }
+    if (impNeedsCheck(r)) nChk++;
+  });
+  const n = nNew + nUpd;
+  const c = $('#imcount');
+  if (c) c.textContent = plural(P.rows.length, 'articolo', 'articoli');
+  const cut = $('#imcut');
+  if (cut) { cut.hidden = !P.cut; if (P.cut) cut.textContent = 'Il file ha ' + P.cut + ' articoli: ne mostro solo i primi ' + IMP_MAX_ROWS + '. Dividi il file in parti più piccole e importa le altre dopo.'; }
+  const s = $('#imsum'), go = $('#imgo');
+  if (s && !P.saving) {
+    const bits = [nNew ? plural(nNew, 'articolo nuovo', 'articoli nuovi') : '', nUpd ? plural(nUpd, 'articolo da aggiornare', 'articoli da aggiornare') : '', nChk ? plural(nChk, 'riga da controllare', 'righe da controllare') : ''].filter(Boolean);
+    s.textContent = bits.length ? bits.join(' · ') + '.' : 'Spunta le righe da importare.';
+  }
+  if (go && !P.saving) { go.disabled = !n; go.textContent = n ? 'Salva (' + n + ')' : 'Scegli le righe'; }
+  const none = $('#imnone');
+  if (none) none.hidden = P.rows.length > 0;
+}
+/* I pulsanti sopra la tabella (modo, filtri con i loro numeri) */
+function impCtl() {
+  const c = $('#imctl');
+  if (c) c.innerHTML = impCtlHtml();
+}
+/* Rifà la lista (cambio di colonne): le righe nuove, i filtri, i numeri */
+function impRefill() {
+  const P = IMP;
+  impBuild();
+  const l = $('#imlist');
+  if (l) l.innerHTML = P.rows.map(impRowHtml).join('');
+  impCtl();
+  const sk = $('#imskip');
+  if (sk) sk.outerHTML = impSkippedHtml();
+  const ms = $('#immapsum');
+  if (ms) ms.textContent = 'Colonne lette: ' + impMapSummary();
+  impEls();
+  impPaintAll();
+}
+
+/* ---------- 5. cosa si può fare nella tabella ---------- */
+CHG.impOn = el => {
+  const r = IMP && IMP.rows[+el.dataset.i];
+  if (!r) return;
+  r.on = el.checked; r.touched = true;
+  impPaintRow(r, true); impUpdate();
+};
+INP.impName = el => {
+  const r = IMP && IMP.rows[+el.dataset.i];
+  if (r) r.nome = el.value;
+};
+/* Finito di scrivere il nome: se adesso è quello di un articolo che c'è, la riga si collega a lui */
+CHG.impNameDone = el => {
+  const r = IMP && IMP.rows[+el.dataset.i];
+  if (!r) return;
+  r.nome = impClean(el.value) || r.nome;
+  el.value = r.nome;
+  impMatch(r, impExisting());
+  if (!r.touched) r.on = impAutoOn(r);
+  impPaintRow(r, true); impUpdate(); impCtl();
+};
+INP.impQty = el => {
+  const r = IMP && IMP.rows[+el.dataset.i];
+  if (!r) return;
+  const q = impQty(el.value);
+  r.qty = q.n; r.bad = q.bad; r.touched = true;
+  if (r.qty !== null && !r.blocked && !r.saved) r.on = true;
+  if (r.qty === null) r.on = false;
+  impPaintRow(r, true); impUpdate(); impCtl();
+};
+CHG.impCat = el => {
+  const r = IMP && IMP.rows[+el.dataset.i];
+  if (r) r.cat = el.value;
+};
+ACT.impMode = el => {
+  const P = IMP;
+  if (!P || !el.dataset.m) return;
+  P.mode = el.dataset.m;
+  P.rows.forEach(r => { if (!r.touched) r.on = impAutoOn(r); });
+  $$('#imctl [data-act=impMode]').forEach(b => b.setAttribute('aria-pressed', String(b === el)));
+  impPaintAll();
+};
+ACT.impFilter = el => {
+  const P = IMP;
+  if (!P) return;
+  P.filter = el.dataset.f || '';
+  $$('#imctl [data-act=impFilter]').forEach(b => b.setAttribute('aria-pressed', String(b === el)));
+  impPaintAll();
+};
+/* Spunta o toglie le righe che si vedono */
+ACT.impAll = el => {
+  const P = IMP;
+  if (!P) return;
+  const v = el.dataset.v === '1';
+  P.rows.forEach((r, i) => {
+    const li = P.els[i];
+    if (!li || li.hidden || r.saved || r.blocked) return;
+    if (v && r.qty === null) return;
+    r.on = v; r.touched = true;
+  });
+  impPaintAll();
+};
+CHG.impMap = el => {
+  const P = IMP;
+  if (!P || !P.tab) return;
+  const f = el.dataset.f, v = el.value;
+  Object.keys(P.tab.map).forEach(k => { if (v !== '' && k !== f && P.tab.map[k] === +v) delete P.tab.map[k]; });
+  if (v === '') delete P.tab.map[f]; else P.tab.map[f] = +v;
+  const res = impTabRaw(P.tab);
+  P.raw = res.rows; P.skipped = res.skipped;
+  impRefill();
+  $$('#immap select').forEach(s => { const k = s.dataset.f; s.value = P.tab.map[k] === undefined ? '' : String(P.tab.map[k]); });
+};
+ACT.impBack = () => {
+  const P = IMP;
+  if (!P || P.saving) return;
+  const pasted = P.pasted;
+  openSheet('Importa l\'inventario', impSourceHtml(), { noFocus: true });
+  S.onClose = () => { IMP = null; paint(); };
+  const t = $('#imtext');
+  if (t) t.value = pasted || '';
+};
+
+/* ---------- 6. salvare ---------- */
+function impItem(r) {
+  const o = { nome: r.nome, quantita: r.qty, marca: r.marca, posizione: r.pos, note: r.note };
+  if (r.eq) {
+    o.equipment_id = r.eq; o.azione = IMP.mode;
+    if (IMP.mode === 'somma') o.era = r.have;       // se nel frattempo è cambiato, il server non somma una seconda volta
+  } else o.categoria = r.cat;
+  return o;
+}
+/* Due righe che sarebbero lo stesso articolo: il server le rifiuterebbe, meglio dirlo prima */
+function impDup(list) {
+  const seen = {};
+  for (let i = 0; i < list.length; i++) {
+    const r = list[i], k = r.eq ? 'e:' + r.eq : 'n:' + impNorm(r.nome);
+    if (!impNorm(r.nome)) return 'Una riga non ha il nome: scrivilo o togli la spunta.';
+    if (seen[k]) return '«' + r.nome + '» compare due volte nella tabella: togline una o cambia il nome.';
+    seen[k] = true;
+  }
+  return '';
+}
+function impDoneHtml(t) {
+  return '<p style="margin-top:0"><b>Fatto.</b> ' + esc([t.creati ? plural(t.creati, 'articolo nuovo', 'articoli nuovi') : '', t.aggiornati ? plural(t.aggiornati, 'quantità aggiornata', 'quantità aggiornate') : '',
+    t.invariati ? plural(t.invariati, 'riga già uguale', 'righe già uguali') : ''].filter(Boolean).join(', ') || 'Non è cambiato niente') + '.</p>' +
+    t.avvisi.map(a => '<p class="note warn">' + esc(a) + '</p>').join('') +
+    '<p class="hint">Ogni cambio di quantità è nel registro dei movimenti (scheda Movimenti del magazzino), come «Inventario» o «Nuovo articolo».</p>' +
+    '<div class="sheetfoot"><button type="button" class="btn" data-act="impOpen">Importa un altro elenco</button><button type="button" class="btn pri" data-act="closeSheet">Vedi gli articoli</button></div>';
+}
+ACT.impGo = async () => {
+  const P = IMP;
+  if (!P || P.saving) return;
+  const todo = P.rows.filter(r => r.on && !r.saved && !r.blocked && r.qty !== null);
+  if (!todo.length) return;
+  const err = $('#imerr');
+  if (err) err.textContent = '';
+  const dup = impDup(todo);
+  if (dup) { if (err) err.textContent = dup; return; }
+  const note = ('Importato da ' + P.src + ' (' + fmtShort(S.oggi) + ')').slice(0, 200);
+  const tot = { creati: 0, aggiornati: 0, invariati: 0, avvisi: [], fatte: 0 };
+  let fail = '';
+  P.saving = true;
+  const go = $('#imgo');
+  if (go) go.disabled = true;
+  const r0 = await mutate(async () => {
+    for (let i = 0; i < todo.length; i += IMP_CHUNK) {
+      const part = todo.slice(i, i + IMP_CHUNK), s = $('#imsum');
+      if (s) s.textContent = 'Salvo… ' + i + ' di ' + todo.length;
+      let res;
+      try { res = await call('api_importInventario', S.pin, part.map(impItem), note); }
+      catch (e) { fail = e.message; break; }
+      (res.materiali || []).forEach(m => upsert(S.mat, m));
+      (res.movimenti || []).forEach(m => S.mov.push(m));
+      tot.creati += res.creati || 0; tot.aggiornati += res.aggiornati || 0; tot.invariati += res.invariati || 0;
+      (res.avvisi || []).forEach(a => tot.avvisi.push(a));
+      part.forEach(r => { r.saved = true; r.on = false; });
+      tot.fatte += part.length;
+    }
+    derive();
+  }, true);
+  P.saving = false;
+  if (!r0.ok && !fail) {                                                     // un altro salvataggio era in corso, o qualcosa si è rotto
+    if (go) go.disabled = false;
+    const e1 = $('#imerr');
+    if (e1 && r0.err) e1.textContent = r0.err;
+    return;
+  }
+  if (fail) {
+    // una parte è salvata: la tabella lo mostra, e per le altre righe si può riprovare
+    paint();
+    if (IMP === P && P.els) {
+      const ex = impExisting();
+      P.rows.forEach(r => { if (!r.saved) impMatch(r, ex); });
+      impPaintAll();
+      const e2 = $('#imerr');
+      if (e2) e2.textContent = (tot.fatte ? 'Ho salvato ' + plural(tot.fatte, 'riga', 'righe') + ' su ' + todo.length + ', poi: ' : 'Non è stato salvato niente: ') + fail;
+    }
+    return;
+  }
+  openSheet('Importazione finita', impDoneHtml(tot), { noFocus: true });
+  S.onClose = () => { IMP = null; paint(); };
+  paint();
+};
 
 /* =====================================================================
    TECNICO (?t=...) e CONFERMA RAPIDA (?c=...)
    ===================================================================== */
-const T = { nome: '', ruoli: [], oggi: '', mie: [], recenti: [], annullati: [], piante: [], disp: {}, conf: {}, days: 30, saving: {}, q: {}, open: {}, tariffa: 0,
+const T = { nome: '', ruoli: [], oggi: '', mie: [], recenti: [], annullati: [], piante: [], disp: {}, conf: {}, days: 30, mode: 'next', saving: {}, q: {}, open: {}, tariffa: 0,
   resp: { fisso: false, nomine: [] }, page: 'mie' };   // resp = è responsabile tecnico? (spunta fissa e/o nomine per evento); page = 'mie' (le mie convocazioni) o 'resp' (l'area del responsabile)
 /* Come si chiama la risposta del tecnico nella sua pagina (diversa dalla fase dell'evento, che è del cliente) */
 const ASG_TECH = { 'in attesa': 'Da rispondere', confermato: 'Ci sei', rifiutato: 'Non puoi' };
@@ -5718,8 +7248,13 @@ function availWarnHtml(e, disp, canFix, direct) {
     (canFix ? '<button type="button" class="btn sm" data-act="goAvail" data-d="' + esc(e.data) + '">' + ico('cal') + ' Cambia la mia disponibilità</button>' : '') + '</div>';
 }
 ACT.goAvail = el => {
-  const d = el.dataset.d, diff = dayNum(d) - dayNum(T.oggi);
-  if (!(diff < T.days)) T.days = Math.min(180, Math.ceil((diff + 1) / 30) * 30);
+  const d = el.dataset.d, R = techRange();
+  if (d < R.from || d > R.to) {                      // il giorno non è tra quelli che si vedono: apro il suo mese
+    if (d.slice(0, 7) === T.oggi.slice(0, 7)) {      // il mese in corso non ha un pulsante: allungo i prossimi giorni
+      T.mode = 'next';
+      T.days = Math.max(T.days, Math.min(AVAIL_AHEAD + 1, Math.ceil((dayNum(d) - dayNum(T.oggi) + 1) / 30) * 30));
+    } else T.mode = d.slice(0, 7);
+  }
   paint();
   const row = document.getElementById('d-' + d);
   if (row) {
@@ -5814,6 +7349,7 @@ function convBody(e, a, lines, defOpen, m, extra) {
   if (e.luogo) facts.push('<div><span class="k">Luogo: </span>' + esc(e.luogo) + '</div>');
   if (e.noteTecnici) facts.push('<div><span class="k">Note: </span>' + esc(e.noteTecnici) + '</div>');
   if (facts.length) h += '<div class="facts">' + facts.join('') + '</div>';
+  if (m && a.stato !== 'rifiutato') h += pjTechBlock(e.id);       // la pianta dell'evento (4.3): subito sotto luogo e note, prima della squadra e del materiale
   if (extra) h += teamBlock(extra.squadra, e);
   h += matBlock(e, lines || [], roles, defOpen);
   if (m) {
@@ -5860,35 +7396,58 @@ function techView() {
   T.mie.forEach(m => {
     h += '<article class="card ' + cardCls(m.assegnazione.stato) + '" id="conv-' + esc(m.assegnazione.id) + '">' +
       convBody(m.evento, m.assegnazione, m.materiale, false, m, { squadra: m.squadra, disp: T.disp[m.evento.data], canFix: true, vans: m.furgoni, token: m.assegnazione.token }) +
-      (m.assegnazione.stato === 'rifiutato' ? '' : pjTechBtns(m.evento.id)) +
       respondButtons(m.assegnazione, 'respond', m.assegnazione.token) + '</article>';
   });
   if (T.recenti.length) {
     h += '</section><section class="sec"><h2>Eventi appena passati</h2>';
     T.recenti.forEach(m => { h += recentCard(m); });
   }
-  h += '</section>' + pjTechSection() + '<section class="sec"><h2>Quando sei libero</h2>' +
+  const R = techRange();
+  h += '</section><section class="sec" id="avail"><h2>Quando sei libero</h2>' +
     '<p class="hint" style="margin:10px 0 4px">Tocca <b>Sì</b> o <b>No</b> per ogni giorno, anche se non c\'è ancora nessun evento: il coordinatore vede subito chi c\'è. ' +
-    'Se sei libero solo da una certa ora, scrivila. Per cancellare una risposta tocca di nuovo lo stesso pulsante.</p>' + availRows();
-  if (T.days < 180) h += '<div style="margin-top:16px"><button type="button" class="btn" data-act="moreDays">Mostra altri 30 giorni</button></div>';
+    'Se sei libero solo da una certa ora, scrivila. Per cancellare una risposta tocca di nuovo lo stesso pulsante. ' +
+    'Per guardare più avanti scegli un mese: puoi rispondere fino al ' + esc(fmtDMY(addDays(T.oggi, AVAIL_AHEAD))) + '.</p>' +
+    availChips(T.oggi, R.mode, 'techMonth') + availRows(R) + availMore(R);
   h += '</section><p class="foot">Suggerimento: dal menu del browser scegli «Aggiungi a schermata Home», così la apri con un tocco.</p></main>';
   return h;
+}
+/* Quali giorni mostra «Quando sei libero»: i prossimi T.days giorni (T.mode 'next') oppure un mese ('AAAA-MM', da oggi se è quello in corso).
+   Mai oltre i 400 giorni (AVAIL_AHEAD): più in là il server non accetta la risposta. */
+function techRange() {
+  const win = addDays(T.oggi, AVAIL_AHEAD), m = String(T.mode || '');
+  if (/^\d{4}-(0[1-9]|1[0-2])$/.test(m)) {
+    const first = m + '-01', last = lastOfMonth(first);
+    if (last >= T.oggi && first <= win) return { mode: m, from: first < T.oggi ? T.oggi : first, to: last > win ? win : last };
+  }
+  return { mode: 'next', from: T.oggi, to: addDays(T.oggi, Math.min(T.days, AVAIL_AHEAD + 1) - 1) };
+}
+/* In fondo all'elenco: altri 30 giorni (prossimi giorni) oppure il mese dopo, così non serve tornare in cima per cambiare mese */
+function availMore(R) {
+  if (R.mode === 'next') {
+    return R.to < addDays(T.oggi, AVAIL_AHEAD) ? '<div style="margin-top:16px"><button type="button" class="btn" data-act="moreDays">Mostra altri 30 giorni</button></div>' : '';
+  }
+  const ms = availMonths(T.oggi), i = ms.indexOf(R.mode);
+  if (i < 0 || i + 1 >= ms.length) return '';
+  const nx = ms[i + 1], y = +nx.slice(0, 4), m = +nx.slice(5);
+  return '<div style="margin-top:16px"><button type="button" class="btn" data-act="techMonth" data-m="' + nx + '" data-up="1">Mostra ' +
+    MESI[m - 1] + (y !== parseYMD(T.oggi).y ? ' ' + y : '') + '</button></div>';
 }
 /* Un evento già passato dove c'è ancora da fare qualcosa: scarico del furgone, spese da segnalare */
 function recentCard(m) {
   const e = m.evento, lines = m.materiale || [];
   return '<article class="card recente" id="rec-' + esc(m.assegnazione.id) + '"><div class="row"><span class="when">' + esc(fmtLong(e.data)) + '</span>' +
     (m.liste && m.liste.scaricoQuando ? '<span class="pill ok" style="margin-left:auto">Scarico chiuso</span>' : '') + '</div>' +
-    '<h3>' + esc(e.cliente) + '</h3>' + vansBlock(m.furgoni) +
-    (lines.length ? techListsBlock(m) : '') + techExpBlock(m) + pjTechBtns(e.id) + '</article>';
+    '<h3>' + esc(e.cliente) + '</h3>' + pjTechBlock(e.id) + vansBlock(m.furgoni) +
+    (lines.length ? techListsBlock(m) : '') + techExpBlock(m) + '</article>';
 }
-function availRows() {
+function availRows(R) {
   const byDate = {};
   T.mie.forEach(m => { (byDate[m.evento.data] = byDate[m.evento.data] || []).push(m); });
-  let h = '', lastMonth = -1;
-  for (let i = 0; i < T.days; i++) {
-    const d = addDays(T.oggi, i), p = parseYMD(d), w = wday(d);
-    if (p.m !== lastMonth) { h += '<div class="monthsep">' + MESI[p.m - 1] + '</div>'; lastMonth = p.m; }
+  const thisYear = parseYMD(T.oggi).y;
+  let h = '', lastMonth = '';
+  for (let d = R.from; d <= R.to; d = addDays(d, 1)) {
+    const p = parseYMD(d), w = wday(d);
+    if (d.slice(0, 7) !== lastMonth) { h += '<div class="monthsep">' + MESI[p.m - 1] + (p.y !== thisYear ? ' ' + p.y : '') + '</div>'; lastMonth = d.slice(0, 7); }
     const x = T.disp[d];
     const yes = !!(x && x.on), no = !!(x && !x.on);
     const conv = (byDate[d] || []).filter(m => m.assegnazione.stato !== 'rifiutato');
@@ -5936,7 +7495,17 @@ CHG.avFrom = el => {
   saveDay(d, true, x.from);
   paint();
 };
-ACT.moreDays = () => { T.days = Math.min(180, T.days + 30); paint(); };
+ACT.moreDays = () => { T.days = Math.min(AVAIL_AHEAD + 1, T.days + 30); paint(); };
+/* Pulsanti dei mesi (in cima all'elenco, o «Mostra <mese dopo>» in fondo: in quel caso riporto in vista l'inizio dell'elenco) */
+ACT.techMonth = el => {
+  const m = el.dataset.m || 'next', up = !!el.dataset.up;
+  if (m === 'next' && T.mode !== 'next') T.days = 30;       // «Prossimi giorni» riparte da 30 giorni
+  T.mode = m;
+  paint();
+  if (up) { const s = document.getElementById('avail'); if (s) s.scrollIntoView({ block: 'start' }); }
+  const b = $('.dnav [data-m="' + m + '"]');
+  if (b) b.focus({ preventScroll: true });
+};
 ACT.respond = el => {
   const tok = el.dataset.token, v = el.dataset.v;
   mutate(async () => {
@@ -6011,18 +7580,34 @@ document.addEventListener('visibilitychange', () => {
 /* =====================================================================
    PROGETTI - le piante degli eventi (4.0)
    Elenco, nuovo, copia, storico, cestino e apertura dell'editor (pianta.html, sulla pagina GitHub).
-   Lo usano il coordinatore (scheda Progetti e pannello dell'evento) e i tecnici (convocazioni e sezione Piante).
+   Lo usano il coordinatore (scheda Progetti e pannello dell'evento), il tecnico responsabile (scheda Progetti della sua area) e tutti i
+   tecnici (la pianta di un evento sta dentro la scheda dell'evento, nella loro pagina).
    I dati stanno nel Foglio (api_pj... in progetti.gs); qui non si disegna niente: la pianta si disegna nell'editor.
    ===================================================================== */
-const PJ = { list: null, gaps: [], page: true, err: '', loading: null, q: '', filt: 'tutti' };
+const PJ = { list: null, gen: [], gaps: [], page: true, err: '', loading: null, q: '', filt: 'tutti' };
 const PJ_FILT = [['tutti', 'Tutti'], ['eventi', 'Con evento'], ['liberi', 'Senza evento'], ['modelli', 'Modelli']];
 const PJ_MAX_FILE = 4000000;   // caratteri di un progetto (come sul server)
 const PJ_ORIG_HINT = {
   vuoto: 'Una pianta vuota, da disegnare.',
+  editor: 'Come «Da un modello» nell\'editor: si apre il Generatore guidato già compilato con quel modello (band, impianto, luci…). Lo controlli, cambi quello che serve e generi la pianta.',
   copia: 'Si parte da un progetto già fatto: lo copi e lo modifichi, l\'originale resta com\'è.',
   modello: 'Si parte dal modello salvato per quell\'artista: lo copi e lo adatti al posto.',
   file: 'Un file salvato con «Scarica il file», il file .json dell\'editor della pianta, oppure un archivio con più progetti.',
 };
+/* I «Modelli già pronti» del Generatore guidato dell'editor (chiave, nome, cosa c'è dentro). L'elenco è uguale a GEN_BASE dell'editor:
+   una prova (test/t_ui20.py) controlla che le chiavi siano le stesse, così se l'editor ne aggiunge uno, qui si vede subito. */
+const PJ_GEN_BASE = [
+  ['band5', 'Band 5 elementi', 'voce, 2 chitarre, basso, batteria'],
+  ['band6', 'Band con tastiere e cori', 'voce, chitarra, basso, batteria, tastiere e cori'],
+  ['trio', 'Trio rock', 'chitarra e voce, basso, batteria'],
+  ['duo', 'Duo acustico', 'voce, chitarra acustica'],
+  ['basi', 'Solista con basi', 'un cantante con le basi'],
+  ['dj', 'DJ set', 'un DJ'],
+  ['conf', 'Conferenza / presentazione', 'due relatori, schermo, sedie'],
+  ['coro', 'Coro in chiesa', 'coro, sedie, al chiuso, niente palco'],
+  ['chiesa', 'Concerto in chiesa', 'coro sulla scalinata, solisti sul palco, band a terra, delay in navata'],
+  ['sfilata', 'Sfilata di moda', 'passerella, strutture sopra e in fondo, ledwall'],
+];
 
 /* ---------- chi sei, cosa c'è ---------- */
 function pjAuth() { return S.mode === 'tech' ? { t: S.token } : { pin: S.pin }; }
@@ -6034,7 +7619,7 @@ function pjLive() { return (PJ.list || []).filter(p => !p.cestino); }
 function pjNorm(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
 function pjSort() { PJ.list.sort((a, b) => String(b.modificato).localeCompare(String(a.modificato))); }
 function pjPut(p) { if (!PJ.list) PJ.list = []; upsert(PJ.list, p); pjSort(); }
-function pjReset() { PJ.list = null; PJ.gaps = []; PJ.err = ''; PJ.loading = null; PJ.q = ''; PJ.filt = 'tutti'; }
+function pjReset() { PJ.list = null; PJ.gen = []; PJ.gaps = []; PJ.err = ''; PJ.loading = null; PJ.q = ''; PJ.filt = 'tutti'; }
 
 /* Le piante di un evento: l'elenco completo se è già stato caricato, altrimenti quello che il server manda con la pagina del tecnico */
 function pjPlansFor(eventId) {
@@ -6047,7 +7632,7 @@ function pjPlansFor(eventId) {
 function pjLoad() {
   if (PJ.loading) return PJ.loading;
   PJ.loading = call('api_pjList', pjAuth())
-    .then(r => { PJ.list = r.progetti || []; PJ.gaps = r.mancano || []; PJ.page = !!r.pagina; PJ.err = ''; })
+    .then(r => { PJ.list = r.progetti || []; PJ.gen = r.modelliGen || []; PJ.gaps = r.mancano || []; PJ.page = !!r.pagina; PJ.err = ''; })
     .catch(e => { PJ.err = e.message; })
     .then(() => { PJ.loading = null; });
   return PJ.loading;
@@ -6102,6 +7687,10 @@ function pjBodyHtml() {
   if (co && (trashed.length || PJ.filt === 'cestino')) filts.push(['cestino', 'Cestino (' + trashed.length + ')']);
   h += '<div class="cats" role="group" aria-label="Quali progetti">' + filts.map(f =>
     '<button type="button" class="cat" data-act="pjFilt" data-f="' + f[0] + '" aria-pressed="' + (PJ.filt === f[0]) + '">' + esc(f[1]) + '</button>').join('') + '</div>';
+  if (PJ.filt === 'modelli') {
+    h += '<p class="hint pjmodhint">Qui ci sono i modelli di artista: piante già fatte, da copiare. I modelli del Generatore guidato ' +
+      '(band, DJ, coro, chiesa…) li trovi in «Nuovo progetto» › «Un modello del Generatore guidato».</p>';
+  }
   return h + '<div id="pjlist">' + pjListHtml() + '</div>';
 }
 function pjFiltered() {
@@ -6194,9 +7783,10 @@ function pjGo(w, url) {
     '<div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Chiudi</button>' +
     '<a class="btn pri" href="' + esc(url) + '" target="_blank" rel="noopener" data-act="closeSheet">Apri la pianta</a></div>', { noFocus: true });
 }
-async function pjOpenPlan(id, w) {
+/* model (facoltativo): «base:<nome>» o «my:<id>», un modello del Generatore guidato: l'editor apre il progetto e poi il Generatore già compilato */
+async function pjOpenPlan(id, w, model) {
   try {
-    const r = await call('api_pjHandoff', pjAuth(), id);
+    const r = await call('api_pjHandoff', pjAuth(), id, model || '');
     pjGo(w, r.url);
   } catch (e) {
     pjCloseWin(w);
@@ -6226,12 +7816,25 @@ function pjEventOptions(selected, p) {
 function pjSrcLabel(p) {
   return [p.nome, p.artista, p.event_id && p.evento ? fmtShort(p.eventoData) : ''].filter(Boolean).join(' · ');
 }
+/* I modelli del Generatore guidato: quelli già pronti dell'editor e quelli salvati da chi lavora con «Salva come modello» (valori «base:…» e «my:…») */
+function pjGenOptions() {
+  const my = PJ.gen || [];
+  return '<optgroup label="Già pronti">' + PJ_GEN_BASE.map(m => '<option value="base:' + m[0] + '">' + esc(m[1]) + '</option>').join('') + '</optgroup>' +
+    (my.length ? '<optgroup label="I tuoi modelli">' + my.map(m => '<option value="my:' + esc(m.id) + '">' + esc(m.nome || m.id) + '</option>').join('') + '</optgroup>' : '');
+}
+function pjGenFind(v) {
+  v = String(v || '');
+  if (v.indexOf('base:') === 0) { const b = PJ_GEN_BASE.filter(m => m[0] === v.slice(5))[0]; return b ? { nome: b[1], sub: b[2] } : null; }
+  if (v.indexOf('my:') === 0) { const m = (PJ.gen || []).filter(x => x.id === v.slice(3))[0]; return m ? { nome: m.nome || m.id, sub: 'Un tuo modello' + (m.modificato ? ', salvato ' + fmtWhen(m.modificato) : '') } : null; }
+  return null;
+}
+function pjGenSub(v) { const g = pjGenFind(v); return g ? g.sub : ''; }
 function pjNewForm(o) {
   const live = pjLive().slice().sort((a, b) => String(b.modificato).localeCompare(String(a.modificato)));
   const progs = live.filter(p => p.tipo === 'progetto'), models = live.filter(p => p.tipo === 'modello');
   const src = o.daId ? pjById(o.daId) : null;
   const orig = src ? (src.tipo === 'modello' ? 'modello' : 'copia') : 'vuoto';
-  const origins = [['vuoto', 'Una pianta vuota']];
+  const origins = [['vuoto', 'Una pianta vuota'], ['editor', 'Un modello del Generatore guidato (band, DJ, coro…)']];
   if (progs.length) origins.push(['copia', 'Una copia di un progetto precedente']);
   if (models.length) origins.push(['modello', 'Il modello di un artista']);
   origins.push(['file', 'Un file salvato (.json)']);
@@ -6240,6 +7843,8 @@ function pjNewForm(o) {
     '<label class="fld"><span>Nome del progetto</span><input type="text" name="nome" maxlength="120" autocomplete="off" placeholder="Se lo lasci vuoto lo scelgo io"></label>' +
     '<label class="fld"><span>Da dove si parte</span><select name="origine" data-chg="pjOrig">' + origins.map(x =>
       '<option value="' + x[0] + '"' + (x[0] === orig ? ' selected' : '') + '>' + x[1] + '</option>').join('') + '</select></label>' +
+    '<label class="fld pjo" data-o="editor" hidden><span>Quale modello</span><select name="genId" data-chg="pjGen">' + pjGenOptions() + '</select>' +
+      '<small class="pjgd">' + esc(pjGenSub('base:' + PJ_GEN_BASE[0][0])) + '</small></label>' +
     '<label class="fld pjo" data-o="copia"' + (orig === 'copia' ? '' : ' hidden') + '><span>Quale progetto copio</span><select name="daId" data-chg="pjSrc">' +
       progs.map(p => '<option value="' + esc(p.id) + '"' + (src && src.id === p.id ? ' selected' : '') + '>' + esc(pjSrcLabel(p)) + '</option>').join('') + '</select></label>' +
     '<label class="fld pjo" data-o="modello"' + (orig === 'modello' ? '' : ' hidden') + '><span>Quale modello</span><select name="modId" data-chg="pjSrc">' +
@@ -6270,8 +7875,16 @@ CHG.pjOrig = el => {
   $$('.pjo', f).forEach(x => { x.hidden = x.dataset.o !== el.value; });
   const h = $('.pjhint', f);
   if (h) h.textContent = PJ_ORIG_HINT[el.value] || '';
+  // con un modello del Generatore la pianta si apre per forza: è l'editor che lo compila (la spunta resta accesa e non si cambia)
+  const ap = $('[name=apri]', f);
+  if (ap) { ap.disabled = el.value === 'editor'; if (el.value === 'editor') ap.checked = true; }
   const sel = $('.pjo:not([hidden]) select', f);
   if (sel) CHG.pjSrc(sel);
+};
+/* Scelto il modello del Generatore: sotto compare cosa c'è dentro */
+CHG.pjGen = el => {
+  const d = $('.pjgd', el.closest('label'));
+  if (d) d.textContent = pjGenSub(el.value);
 };
 CHG.pjTipo = el => {
   const f = el.closest('form');
@@ -6333,16 +7946,22 @@ SUB.pjNew = async form => {
   const o = { nome: String(f.get('nome') || '').trim(), tipo: String(f.get('tipo')) === 'modello' ? 'modello' : 'progetto',
     artista: String(f.get('artista') || '').trim(), event_id: String(f.get('event_id') || '') };
   if (o.tipo === 'modello') o.event_id = '';
-  let file = null;
+  let file = null, gen = '';
   if (orig === 'copia' || orig === 'modello') {
     o.daId = String(f.get(orig === 'copia' ? 'daId' : 'modId') || '');
     if (!o.daId) { err.textContent = orig === 'copia' ? 'Scegli il progetto da copiare.' : 'Scegli il modello.'; return; }
+  } else if (orig === 'editor') {
+    gen = String(f.get('genId') || '');
+    const g = pjGenFind(gen);
+    if (!g) { err.textContent = 'Scegli il modello.'; return; }
+    if (!PJ.page) { err.textContent = 'Il modello si compila nell\'editor, che sta sulla pagina GitHub: manca ancora il suo indirizzo (scheda Config del foglio, riga url_pagina).'; return; }
+    if (!o.nome && !o.event_id) o.nome = g.nome;           // senza nome e senza evento: il progetto prende il nome del modello
   } else if (orig === 'file') {
     file = f.get('file');
     if (!file || !file.size) { err.textContent = 'Scegli il file del progetto.'; return; }
   }
   err.textContent = '';
-  const go = f.get('apri') !== null;
+  const go = gen !== '' || f.get('apri') !== null;
   const win = go ? pjBlankWin() : null;
   let created = null, arch = null;
   const r = await mutate(async () => {
@@ -6359,7 +7978,7 @@ SUB.pjNew = async form => {
   }, true);
   if (!r.ok) { err.textContent = r.err; pjCloseWin(win); return; }
   if (arch) { pjCloseWin(win); pjArchiveSheet(arch); return; }
-  if (go && created) await pjOpenPlan(created.id, win);
+  if (go && created) await pjOpenPlan(created.id, win, gen);
 };
 
 /* ---------- un archivio: più progetti (e il catalogo) in un file solo ---------- */
@@ -6648,26 +8267,26 @@ ACT.pjEv = () => {
   pjLoad().then(() => { if (PJ.err) toast(PJ.err, 'err'); pjRepaint(); });
 };
 
-/* ---------- pagina del tecnico ---------- */
-function pjTechBtns(eventId) {
+/* ---------- pagina del tecnico: la pianta sta dentro l'evento (4.3) ---------- */
+/* Il blocco «Pianta» nella scheda di un evento (convocazione o evento appena passato): una riga per pianta, con il nome, l'ultimo salvataggio e i
+   pulsanti per aprirla e vederne il materiale. Non c'è più un elenco di tutte le piante nella pagina del tecnico: quello sta nell'area del
+   responsabile tecnico (scheda Progetti) e nel gestionale del coordinatore. */
+function pjTechBlock(eventId) {
   if (S.mode !== 'tech') return '';
   const l = pjPlansFor(eventId);
   if (!l.length) return '';
-  return '<div class="row pjrow">' + l.map(p => '<button type="button" class="btn sm" data-act="pjOpen" data-id="' + esc(p.id) + '">' + ico('plan') +
-    ' Apri la pianta' + (l.length > 1 ? ' · ' + esc(p.nome) : '') + '</button>' +
-    '<button type="button" class="btn sm" data-act="pjMat" data-id="' + esc(p.id) + '">' + ico('list') + ' Materiale' + (l.length > 1 ? ' · ' + esc(p.nome) : '') + '</button>').join('') + '</div>';
+  const many = l.length > 1;
+  return '<div class="pjtech" role="group" aria-label="' + (many ? 'Piante dell\'evento' : 'Pianta dell\'evento') + '"><h4 class="pjth">' + ico('plan') +
+    (many ? 'Le piante dell\'evento' : 'La pianta dell\'evento') + '</h4>' +
+    l.map(p => {
+      const pc = typeof pcBadge === 'function' ? pcBadge(p) : '';             // le sue modifiche alle parti comuni aspettano di essere approvate
+      return '<div class="pjev"><span class="pjn">' + esc(p.nome) + '<small>' + esc(pjSavedText(p)) + '</small>' + (pc ? '<small>' + pc + '</small>' : '') + '</span><span class="row">' +
+        '<button type="button" class="btn sm pri" data-act="pjOpen" data-id="' + esc(p.id) + '">' + ico('plan') + ' Apri la pianta</button>' +
+        '<button type="button" class="btn sm" data-act="pjMat" data-id="' + esc(p.id) + '">' + ico('list') + ' Materiale</button>' +
+        (pc && typeof pcMay === 'function' && pcMay(p) ? '<button type="button" class="btn sm" data-act="pcOpen" data-id="' + esc(p.id) + '">' + ico('check') + ' Da approvare</button>' : '') +
+        '</span></div>';
+    }).join('') + '</div>';
 }
-function pjTechSection() {
-  let h = '<section class="sec" id="piante"><h2>Piante</h2>';
-  if (PJ.list === null) {
-    if (PJ.loading) return h + '<p class="empty">Carico le piante…</p></section>';
-    return h + '<p class="hint" style="margin:10px 0 4px">La pianta di un evento la trovi dentro la sua convocazione. Qui puoi vedere, aprire e fare anche le altre.</p>' +
-      (PJ.err ? '<p class="note bad" role="alert">' + esc(PJ.err) + '</p>' : '') +
-      '<div class="row" style="margin-top:8px"><button type="button" class="btn" data-act="pjTechAll">Mostra tutte le piante</button></div></section>';
-  }
-  return h + pjBodyHtml() + '</section>';
-}
-ACT.pjTechAll = () => { PJ.err = ''; pjLoad().then(pjRepaint); paint(); };
 
 /* Tornando sulla pagina (per esempio dall'editor) l'elenco, se l'avevi aperto, si aggiorna da solo */
 document.addEventListener('visibilitychange', () => {
@@ -7435,6 +9054,8 @@ ACT.pjMat = el => { pmOpen(el.dataset.id); };
    2. Il tecnico responsabile ha una sua area dentro la pagina personale: i suoi eventi (luogo, orari, note), il materiale dei suoi
       reparti (più il «comune»), il magazzino da guardare e, con la spunta fissa, gli eventi nuovi. Riusa le schermate del coordinatore
       (conti del magazzino, righe del materiale, «Aggiungi materiale», «Usa il materiale della pianta») leggendo i dati di api_respInit.
+      Dalla 4.3 ha anche la scheda «Progetti» (come quella del coordinatore, senza cestino): le piante di tutti gli eventi e i modelli.
+      Gli altri tecnici vedono la pianta del loro evento dentro la scheda dell'evento, e basta.
    3. Le parti comuni di una pianta (palco, americane, corrente…) cambiate da un tecnico restano «da approvare» finché il coordinatore
       o un responsabile le conferma: si vedono subito, nessuno resta bloccato.
    ===================================================================== */
@@ -7509,13 +9130,14 @@ function respEntryHtml() {
   if (!respIs()) return '';
   let t;
   if (respFixed()) {
-    t = 'Sei responsabile di tutti gli eventi e di tutti i reparti: cambi luogo, orari e note, il materiale, crei eventi nuovi e approvi le modifiche alle parti comuni delle piante.';
+    t = 'Sei responsabile di tutti gli eventi e di tutti i reparti: cambi luogo, orari e note, il materiale, crei eventi nuovi e approvi le modifiche alle parti comuni delle piante. ' +
+      'In «Progetti» trovi tutte le piante e i modelli.';
   } else {
     const names = (T.resp.nomine || []).map(n => {
       const m = T.mie.filter(x => String(x.evento.id) === String(n.event_id))[0];
       return (m ? m.evento.cliente : 'un evento') + ' (' + respDeptsTxt(n.reparti) + ')';
     });
-    t = 'Il coordinatore ti ha nominato responsabile di: ' + names.join(', ') + '.';
+    t = 'Il coordinatore ti ha nominato responsabile di: ' + names.join(', ') + '. In «Progetti» trovi tutte le piante e i modelli.';
   }
   const pend = PJ.list !== null ? pcPending().filter(pcMay).length : 0;
   return '<section class="respcard" aria-label="Responsabile tecnico"><div class="respic">' + ico('user') + '</div><div class="respbody"><b>Responsabile tecnico</b><p>' + esc(t) + '</p>' +
@@ -7560,13 +9182,13 @@ function respLoad() {
 }
 
 function respView() {
-  const tabs = [['eventi', 'Eventi'], ['mag', 'Magazzino']];
+  const tabs = [['eventi', 'Eventi'], ['mag', 'Magazzino'], ['prog', 'Progetti']];
   let body;
   if (!RS.loaded) {
     body = RS.err
       ? '<div class="pageerr" role="alert"><h2>Non riesco a caricare gli eventi</h2><p>' + esc(RS.err) + '</p><div class="row" style="margin-top:12px"><button type="button" class="btn pri" data-act="respRetry">Riprova</button></div></div>'
       : '<p class="empty">Carico gli eventi…</p>';
-  } else body = RS.tab === 'mag' ? respViewMag() : respViewEventi();
+  } else body = RS.tab === 'mag' ? respViewMag() : RS.tab === 'prog' ? respViewProg() : respViewEventi();
   return '<header class="mast"><div class="wrap mastin"><div class="brand brresp">Responsabile tecnico<small>' + esc(firstName(T.nome)) + '</small></div><div class="mastact">' +
     '<button class="ib" data-act="respBack" aria-label="Torna alla tua pagina">' + ico('back') + '</button>' +
     '<button class="ib" data-act="techRefresh" aria-label="Aggiorna i dati">' + ico('refresh') + '</button></div></div></header>' +
@@ -7731,6 +9353,14 @@ SUB.respEvForm = async form => {
 function respViewMag() {
   return '<p class="hint" style="margin:14px 0 0">Il magazzino lo gestisce il coordinatore: qui guardi cosa c\'è e cosa è libero in un giorno (senza prezzi). ' +
     'Per portare il materiale in un evento usa l\'evento.</p>' + viewArticoli();
+}
+
+/* ---------- i progetti: tutte le piante, anche di altri eventi, e i modelli (4.3) ---------- */
+/* La stessa scheda del coordinatore (elenco, ricerca, Nuovo progetto, Altro): il cestino resta suo. Qui il responsabile apre e prepara le piante
+   di qualunque evento, e fa i modelli di artista da riusare. */
+function respViewProg() {
+  return '<p class="hint" style="margin:14px 0 0">Tutte le piante, anche quelle degli altri eventi, e i modelli da riusare. ' +
+    'Puoi aprirle, copiarle e farne di nuove; il cestino lo usa il coordinatore.</p>' + viewProg();
 }
 
 /* =====================================================================
