@@ -101,7 +101,7 @@ function deptsOfRoles(roles) {
   function nowS() { return Date.now() + (Q.sess ? Q.sess.skew : 0); }
   function setSess(r) {
     Q.sess = { s: String(r.s), nome: String(r.nome || ''), ruolo: String(r.ruolo || ''), scade: Number(r.scade), skew: (Number(r.ora) || Date.now()) - Date.now() };
-    window.PJ_ROLE = Q.sess.ruolo;                   // 'c' coordinatore, 't' tecnico (il cestino è solo del coordinatore)
+    window.PJ_ROLE = Q.sess.ruolo;                   // 'c' coordinatore, 't' tecnico, 'm' magazzino (guarda soltanto); il cestino è solo del coordinatore
     ssSet('pj.sess', JSON.stringify(Q.sess));
   }
   function readSession() {
@@ -377,40 +377,65 @@ function deptsOfRoles(roles) {
     var f = (typeof CATS !== 'undefined' ? CATS : []).filter(function (x) { return x[0] === (c && c.cat); })[0];
     return f ? f[1] : 'Altro';
   }
+  // Le voci delle scorte (anche con il modo di cambiarne la quantità): st = {items, truss, cables, split, adapt}, types = i tipi del catalogo se non sono ancora caricati
+  function stockEntriesOf(st, types) {
+    var out = [];
+    if (!st || typeof st !== 'object') return out;
+    var add = function (c, i, q, k, set) {
+      q = Number(q);
+      if (!(q > 0) || !i) return;
+      var o = { c: String(c), i: String(i), q: q, set: set };
+      if (k) o.k = String(k);
+      out.push(o);
+    };
+    var each = function (fn) { try { fn(); } catch (e) { /* una voce che non si legge non ferma le altre */ } };
+    var typeOf = function (k) {
+      var c = null;
+      try { c = catBy(k); } catch (e) { c = null; }
+      if (!c && Array.isArray(types)) c = types.filter(function (t) { return t && t.k === k; })[0] || null;
+      return c;
+    };
+    Object.keys(st.items || {}).forEach(function (k) {
+      each(function () {
+        var q = st.items[k], set = function (v) { st.items[k] = v; };
+        var la = typeof LA_STOCK !== 'undefined' ? LA_STOCK.filter(function (x) { return x[0] === k; })[0] : null;      // moduli, fly-bar e ground stack dei line array
+        if (la) { add(/^geo_s12/.test(k) ? 'Audio' : 'Audio — line array e rigging', la[1], q, k, set); return; }
+        if (k.indexOf('sup:') === 0) {                                                                                   // piantane e aste
+          var sp = typeof SUPPORTS !== 'undefined' ? SUPPORTS[k.slice(4)] : null;
+          if (sp) add('Audio — supporti casse', sp.l.replace(/ \(.*\)$/, ''), q, k, set);
+          return;
+        }
+        var c = typeOf(k);
+        if (c) add(stockCat(c), c.l, q, k, set);
+      });
+    });
+    Object.keys(st.truss || {}).forEach(function (sys) {
+      each(function () {
+        var t = st.truss[sys];
+        if (!t || typeof t !== 'object') return;
+        Object.keys(t).forEach(function (len) { add('Americane e strutture', sysName(sys) + ' · tratto ' + fx(+len, 2).replace(/,?0+$/, '') + ' m', parseInt(t[len]) || 0, null, function (v) { t[len] = v; }); });
+      });
+    });
+    Object.keys(st.cables || {}).forEach(function (spec) {
+      each(function () {
+        var t = st.cables[spec];
+        if (!t || typeof t !== 'object') return;
+        var fam = famOfSpec(spec), sp = specOf(fam, spec) || {};
+        var cat = sp.strip ? 'Elettrico e distribuzione' : 'Cavi — ' + (FAM[fam] || FAM.audio).l;
+        Object.keys(t).forEach(function (len) { add(cat, pieceName(spec, +len, fam), parseInt(t[len]) || 0, null, function (v) { t[len] = v; }); });
+      });
+    });
+    Object.keys(st.split || {}).forEach(function (sp) { each(function () { if (SPLIT[sp]) add('Elettrico e distribuzione', 'Sdoppio ' + SPLIT[sp].l, st.split[sp], 'split:' + sp, function (v) { st.split[sp] = v; }); }); });
+    Object.keys(st.adapt || {}).forEach(function (pair) {
+      each(function () { var xy = pair.split('|'); add('Elettrico e distribuzione', 'Adattatore ' + adTxt(xy[0], xy[1]), st.adapt[pair], null, function (v) { st.adapt[pair] = v; }); });
+    });
+    return out;
+  }
+  // Le scorte del catalogo (quello che il service ha: americane, cavi per lunghezza, sdoppi, quadri…) con gli stessi nomi dell'elenco materiale
   function stockRows() {
     try {
       if (typeof STOCK !== 'object' || !STOCK) return null;
-      var out = [];
-      var add = function (c, i, q, k) {
-        q = Number(q);
-        if (!(q > 0) || !i) return;
-        var o = { c: String(c), i: String(i), q: q };
-        if (k) o.k = String(k);
-        out.push(o);
-      };
-      var each = function (fn) { try { fn(); } catch (e) { /* una voce che non si legge non ferma le altre */ } };
-      Object.keys(STOCK.items || {}).forEach(function (k) { each(function () { var c = catBy(k); if (c) add(stockCat(c), c.l, STOCK.items[k], k); }); });
-      Object.keys(STOCK.truss || {}).forEach(function (sys) {
-        each(function () {
-          var st = stockLens(sys);
-          if (!st) return;
-          Object.keys(st).forEach(function (len) { add('Americane e strutture', sysName(sys) + ' · tratto ' + fx(+len, 2).replace(/,?0+$/, '') + ' m', st[len], null); });
-        });
-      });
-      Object.keys(STOCK.cables || {}).forEach(function (spec) {
-        each(function () {
-          var st = cableStock(spec);
-          if (!st) return;
-          var fam = famOfSpec(spec), sp = specOf(fam, spec) || {};
-          var cat = sp.strip ? 'Elettrico e distribuzione' : 'Cavi — ' + (FAM[fam] || FAM.audio).l;
-          Object.keys(st).forEach(function (len) { add(cat, pieceName(spec, +len, fam), st[len], null); });
-        });
-      });
-      Object.keys(STOCK.split || {}).forEach(function (sp) { each(function () { if (SPLIT[sp]) add('Elettrico e distribuzione', 'Sdoppio ' + SPLIT[sp].l, STOCK.split[sp], 'split:' + sp); }); });
-      Object.keys(STOCK.adapt || {}).forEach(function (pair) {
-        each(function () { var xy = pair.split('|'); add('Elettrico e distribuzione', 'Adattatore ' + adTxt(xy[0], xy[1]), STOCK.adapt[pair], null); });
-      });
-      return out;
+      return stockEntriesOf(STOCK, null).map(function (e) { var o = { c: e.c, i: e.i, q: e.q }; if (e.k) o.k = e.k; return o; });
     } catch (e) { return null; }
   }
   // Aprendo una pianta il cui elenco materiale non è aggiornato nel foglio lo mando io (senza salvare una versione nuova)
@@ -451,6 +476,309 @@ function deptsOfRoles(roles) {
     })();
   }
 
+  /* ---------- un solo elenco: le scorte dell'editor e il magazzino dell'app si tengono allineati da soli (4.6) ----------
+     Aprendosi l'editor legge dal magazzino i pezzi (dove le due quantità sono diverse vince il magazzino). Quando il coordinatore cambia una scorta,
+     quel cambio va anche in magazzino; un articolo scritto solo qui si crea là. Gli articoli del magazzino che l'editor non conosce stanno in
+     «Dal magazzino» e con un tocco diventano tipi del catalogo. Tutto lo fa api_pjSync (progetti.gs); qui si porta e si applica. */
+  var WH = { on: false, map: {}, nuovi: [], snap: {}, warned: {}, q: '' };
+  var WH_STOP = { di: 1, da: 1, del: 1, della: 1, dei: 1, delle: 1, con: 1, per: 1, e: 1, il: 1, la: 1, le: 1, lo: 1, un: 1, una: 1, in: 1, tipo: 1 };
+  // Le parole di un nome, come in puTokens (prog2.js) e pjTokS_ (progetti.gs): la chiave di una voce deve venire uguale dappertutto
+  function whTok(s) {
+    var t = String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').replace(/([a-z])(\d)/g, '$1 $2').replace(/(\d)([a-z])/g, '$1 $2');
+    var out = [];
+    t.split(' ').forEach(function (w) {
+      if (!w) return;
+      if (w === 'mt' || w === 'mts' || w === 'metri' || w === 'metro') w = 'm';
+      if (WH_STOP[w]) return;
+      out.push(w);
+    });
+    return out;
+  }
+  function whKey(r) { return r.k ? 'k:' + r.k : 'n:' + whTok(r.i).join(' '); }
+  function whIdOf(k) { return String(k || '').indexOf('wh_') === 0 ? String(k).slice(3) : ''; }
+  function whLinked(key) { return Object.prototype.hasOwnProperty.call(WH.map, key) || key.indexOf('k:wh_') === 0; }
+  function whSnap(entries) { WH.snap = {}; entries.forEach(function (e) { WH.snap[whKey(e)] = Math.round(e.q); }); }
+  // Una voce riconosciuta dal nome (un tratto di americana, un cavo di una certa lunghezza) che nelle scorte dell'editor non c'è: dove va scritta?
+  // Si provano le lunghezze scritte nel nome con gli stessi nomi che usa l'elenco materiale; ritorna {map: () => la tabella delle lunghezze, len} o null.
+  function whNameTarget(st, nm, key) {
+    var lens = [];
+    (String(nm || '').match(/\d+(?:[.,]\d+)?/g) || []).forEach(function (n) {
+      var v = parseFloat(n.replace(',', '.'));
+      if (v > 0 && lens.indexOf(v) < 0) lens.push(v);
+    });
+    var found = null;
+    try {
+      lens.forEach(function (len) {
+        Object.keys(TRUSS).forEach(function (sys) {
+          if (found || whKey({ i: sysName(sys) + ' · tratto ' + fx(len, 2).replace(/,?0+$/, '') + ' m' }) !== key) return;
+          found = { len: String(len), map: function () { st.truss = st.truss || {}; return (st.truss[sys] = st.truss[sys] || {}); } };
+        });
+        Object.keys(SPECS).forEach(function (fam) {
+          (SPECS[fam] || []).forEach(function (sp) {
+            if (found || whKey({ i: pieceName(sp.k, len, fam) }) !== key) return;
+            found = { len: String(len), map: function () { st.cables = st.cables || {}; return (st.cables[sp.k] = st.cables[sp.k] || {}); } };
+          });
+        });
+      });
+    } catch (e) { found = null; }
+    return found;
+  }
+  // I pezzi del magazzino dentro le scorte: st = scorte (anche quelle appena lette, prima di caricarle nell'editor), types = i tipi del catalogo
+  // opt = {live: st è lo STOCK dell'editor (si aggiorna anche la fotografia), pushed: {chiave: 1} le voci appena portate al magazzino}.
+  // Una voce che l'utente ha appena cambiato e che non è ancora partita (diversa dalla fotografia) non si tocca. Ritorna {changed, restored: [nomi]}:
+  // «restored» sono le voci che l'utente aveva svuotato e che tornano a valere i pezzi del magazzino.
+  function whMerge(st, types, opt) {
+    opt = opt || {};
+    var changed = false, byKey = {}, restored = [];
+    st.items = st.items || {}; st.split = st.split || {};
+    stockEntriesOf(st, types).forEach(function (e) { byKey[whKey(e)] = e; });
+    var hasType = function (k) {
+      var c = null;
+      try { c = catBy(k); } catch (e) { c = null; }
+      if (c || (Array.isArray(types) && types.some(function (t) { return t && t.k === k; }))) return true;
+      if (typeof LA_STOCK !== 'undefined' && LA_STOCK.some(function (x) { return x[0] === k; })) return true;      // line array
+      return k.indexOf('sup:') === 0 && typeof SUPPORTS !== 'undefined' && !!SUPPORTS[k.slice(4)];                  // piantane e aste
+    };
+    var snapSet = function (key, q) { if (opt.live) WH.snap[key] = Math.round(q); };
+    var nameOf = function (key, e) {
+      if (e) return e.i;
+      var m = WH.map[key] || {};
+      return m.n || key.replace(/^k:/, '');
+    };
+    Object.keys(WH.map).forEach(function (key) {
+      var q = Number(WH.map[key] && WH.map[key].q);
+      if (!(q >= 0)) return;
+      var e = byKey[key], was = WH.snap[key];
+      if (e) {
+        if (opt.live && !(opt.pushed && opt.pushed[key]) && was !== undefined && was !== Math.round(e.q)) return;       // modifica in corso: parte con il prossimo salvataggio
+        if (e.q !== q) { e.set(q); changed = true; }
+        snapSet(key, q);
+        return;
+      }
+      var cleared = opt.live && was !== undefined;                                         // c'era e adesso non c'è più: l'ha svuotata l'utente
+      if (key.indexOf('k:split:') === 0) {
+        var sp = key.slice(8);
+        if (typeof SPLIT !== 'undefined' && SPLIT[sp] && st.split[sp] !== q) { st.split[sp] = q; changed = true; if (cleared) restored.push(nameOf(key, null)); }
+        snapSet(key, q);
+        return;
+      }
+      if (key.indexOf('k:') === 0) {
+        var k = key.slice(2);
+        if (hasType(k) && st.items[k] !== q) { st.items[k] = q; changed = true; if (cleared) restored.push(nameOf(key, null)); }
+        if (hasType(k)) snapSet(key, q);
+        return;
+      }
+      if (key.indexOf('n:') === 0) {                                                       // americane e cavi si riconoscono dal nome: tornano dove l'editor li scrive
+        var tg = whNameTarget(st, nameOf(key, null), key);
+        if (tg) {
+          var mp = tg.map();
+          if (mp[tg.len] !== q) { mp[tg.len] = q; changed = true; if (cleared) restored.push(nameOf(key, null)); }
+          snapSet(key, q);
+        }
+      }
+    });
+    (Array.isArray(types) ? types : []).forEach(function (t) {                  // i tipi nati da un articolo del magazzino seguono l'articolo
+      var id = t && whIdOf(t.k), a = id ? WH.nuovi.filter(function (x) { return x.id === id; })[0] : null;
+      if (!a) return;
+      var key = 'k:' + t.k;
+      if (opt.live && !(opt.pushed && opt.pushed[key]) && WH.snap[key] !== undefined && st.items[t.k] > 0 && WH.snap[key] !== Math.round(st.items[t.k])) return;
+      if (st.items[t.k] !== a.q) { st.items[t.k] = a.q; changed = true; }
+      snapSet(key, a.q);
+    });
+    return { changed: changed, restored: restored };
+  }
+  // All'apertura del catalogo: il magazzino com'è adesso, già dentro le scorte che l'editor sta per caricare
+  function whJoin(data) {
+    return api('api_pjSync', []).then(function (v) {
+      if (!v || typeof v !== 'object') return;
+      WH.on = true;
+      WH.map = v.mappa && typeof v.mappa === 'object' ? v.mappa : {};
+      WH.nuovi = Array.isArray(v.nuovi) ? v.nuovi : [];
+      if (data && typeof data === 'object') {
+        var st = data.stock = (data.stock && typeof data.stock === 'object') ? data.stock : {};
+        ['items', 'truss', 'cables', 'split', 'adapt'].forEach(function (k) { if (!st[k] || typeof st[k] !== 'object') st[k] = {}; });
+        try { whMerge(st, Array.isArray(data.items) ? data.items : null, null); } catch (e) { /* un di più */ }
+      }
+      whWait();                              // quando l'editor ha caricato il catalogo: la fotografia di com'era, e l'elenco «Dal magazzino»
+    }, function () { whMark('data-wh', 'off'); /* il magazzino è un di più: l'editor si apre lo stesso */ });
+  }
+  var whTries = 0;
+  function whWait() {
+    var ok = false;
+    try { ok = typeof STOCK === 'object' && !!STOCK && typeof CustomCat !== 'undefined' && !document.documentElement.classList.contains('gsLoading'); } catch (e) { ok = false; }
+    if (!ok) { if (++whTries < 60) setTimeout(whWait, 250); return; }
+    setTimeout(whAfterLoad, 300);
+  }
+  function whAfterLoad() {
+    try {
+      whSnap(stockEntriesOf(STOCK, null));                                      // com'era alla lettura: da qui si vede cosa cambia l'utente
+      if (whMerge(STOCK, CustomCat, { live: true }).changed) { try { renderStockAll(); renderReports(); } catch (e) { /* niente */ } }
+      whRender();
+      whMark('data-wh', 'pronto');
+      whPushLive();                            // le scorte che il magazzino ancora non conosce vanno a finire là
+    } catch (e) { /* un di più */ }
+  }
+  // Segni sulla pagina (data-wh = com'è andata la lettura, data-wh-sync = quanti invii al magazzino sono finiti): servono alle prove e a chi guarda con gli strumenti del browser
+  function whMark(name, v) { try { document.documentElement.setAttribute(name, String(v)); } catch (e) { /* niente */ } }
+  var whDone = 0;
+  // Le voci da portare al magazzino: quelle cambiate dall'ultima volta e quelle che il magazzino non conosce ancora
+  function whMod(rows) {
+    if (window.PJ_ROLE !== 'c') return [];
+    var out = [];
+    rows.forEach(function (r) {
+      var k = whKey(r);
+      if (!whLinked(k) || WH.snap[k] !== Math.round(r.q)) out.push(k);
+    });
+    return out;
+  }
+  function whPushLive() {
+    if (window.PJ_ROLE !== 'c') return;
+    var rows = stockRows();
+    if (!rows || !rows.length) return;
+    var mod = whMod(rows);
+    if (mod.length) whPush(rows, mod);
+  }
+  function whSay(v) {
+    if (typeof say !== 'function') return;
+    var bits = [], n;
+    if ((n = v.creati)) bits.push(n + (n === 1 ? ' articolo nuovo' : ' articoli nuovi'));
+    if ((n = v.aggiornati)) bits.push(n + (n === 1 ? ' quantità aggiornata' : ' quantità aggiornate'));
+    if ((n = v.collegati)) bits.push(n + (n === 1 ? ' voce c\'era già' : ' voci c\'erano già') + ': valgono i pezzi del magazzino');
+    var chk = (v.controlla || []).filter(function (x) { return !WH.warned[x.chiave]; });
+    chk.forEach(function (x) { WH.warned[x.chiave] = 1; });
+    if (chk.length) bits.push(chk.length + (chk.length === 1 ? ' voce somiglia' : ' voci somigliano') + ' a un articolo del magazzino senza essere uguale (per esempio «' + chk[0].voce + '» e «' + chk[0].articolo + '»): collegale da Magazzino › Collegamenti editor, così non nascono doppioni');
+    var rs = v.restored || [];
+    if (rs.length) bits.push((rs.length === 1 ? '«' + rs[0] + '» è tornato' : rs.length + ' voci sono tornate') + ' ai pezzi del magazzino (l\'editor segue il magazzino: per cambiarli usa la scheda Magazzino dell\'app)');
+    if (bits.length) say('Magazzino dell\'app: ' + bits.join(' · ') + '.');
+  }
+  function whPush(rows, mod) {
+    var seq = WH.seq = (WH.seq || 0) + 1, pushed = {};
+    mod.forEach(function (k) { pushed[k] = 1; });
+    try {
+      api('api_pjSync', [JSON.stringify(rows), JSON.stringify(mod)]).then(function (v) {
+        if (!v || typeof v !== 'object') return;
+        WH.map = v.mappa && typeof v.mappa === 'object' ? v.mappa : WH.map;
+        WH.nuovi = Array.isArray(v.nuovi) ? v.nuovi : WH.nuovi;
+        try {
+          if (seq === WH.seq && typeof STOCK === 'object' && STOCK) {          // se nel frattempo è partito un altro invio, vale la risposta di quello
+            var m = whMerge(STOCK, typeof CustomCat !== 'undefined' ? CustomCat : null, { live: true, pushed: pushed });
+            if (m.changed) { try { renderStockAll(); renderReports(); if (typeof sel !== 'undefined' && sel && typeof pn === 'function') pn(); } catch (e) { /* niente */ } }
+            v.restored = m.restored;
+          }
+          whRender();
+          whSay(v);
+        } catch (e) { /* un di più */ }
+        whMark('data-wh-sync', ++whDone);
+      }, function () { whMark('data-wh-sync', ++whDone); /* offline o altro: alla prossima modifica si riprova (le voci cambiate restano diverse dalla fotografia) */ });
+    } catch (e) { /* un di più */ }
+  }
+  var WH_SOFT = { passivo: 1, passiva: 1, attivo: 1, attiva: 1, nexo: 1 };
+  function whEsc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  // Le voci che l'editor conosce e per cui può tenere una scorta: tipi del catalogo, moduli line array, piantane e aste
+  function whKnown() {
+    var out = [];
+    try {
+      catAll().forEach(function (c) {
+        if (!c || !c.k || !c.l || String(c.k).indexOf('wh_') === 0 || /^(zone|note|box|wall|door|exit|column|truss|frame|stage|stairs|cableramp|barrier|seats|tower|strip|splitter)$/.test(c.sym || '')) return;
+        out.push({ k: c.k, c: stockCat(c), l: c.l });
+      });
+    } catch (e) { /* niente */ }
+    (typeof LA_STOCK !== 'undefined' ? LA_STOCK : []).forEach(function (x) { out.push({ k: x[0], c: /^geo_s12/.test(x[0]) ? 'Audio' : 'Audio — line array e rigging', l: x[1] }); });
+    try {
+      Object.keys(SUPPORTS).forEach(function (k) { var v = SUPPORTS[k]; if (v && (v.t === 'stand' || v.t === 'pole')) out.push({ k: 'sup:' + k, c: 'Audio — supporti casse', l: v.l.replace(/ \(.*\)$/, '') }); });
+    } catch (e) { /* niente */ }
+    return out;
+  }
+  // A quale voce dell'editor somiglia un articolo del magazzino? Servono parole uguali e gli stessi numeri («S1210» non è «S1230»); se no, nessun suggerimento
+  function whGuess(a) {
+    var ta = whTok(a.n).filter(function (w) { return !WH_SOFT[w]; });
+    if (!ta.length) return null;
+    var nums = function (t) { return t.filter(function (w) { return /^\d+$/.test(w); }).sort().join(','); };
+    var best = null, bestScore = 0;
+    whKnown().forEach(function (it) {
+      var tl = whTok(it.l).filter(function (w) { return !WH_SOFT[w]; });
+      if (!tl.length || nums(ta) !== nums(tl) || WH.map['k:' + it.k]) return;
+      var common = ta.filter(function (w) { return tl.indexOf(w) >= 0; }).length;
+      var sub = common === ta.length || common === tl.length;
+      var score = common / Math.max(ta.length, tl.length);
+      if (sub && common >= Math.min(2, ta.length, tl.length) && score >= .5 && score > bestScore) { best = it; bestScore = score; }
+    });
+    return best;
+  }
+  // «Collega»: il nome è quello dell'articolo, così il server lo riconosce e lo lega alla voce senza toccare i pezzi del magazzino
+  function whLink(id) {
+    var a = WH.nuovi.filter(function (x) { return x.id === id; })[0], g = a ? whGuess(a) : null;
+    if (!a || !g || window.PJ_ROLE !== 'c') return;
+    whPush([{ c: g.c, i: a.n, q: Math.max(1, a.q), k: g.k }], ['k:' + g.k]);
+  }
+  // «Dal magazzino»: gli articoli dell'app che l'editor non conosce, per usarli in pianta con un tocco
+  function whRender() {
+    var host = document.getElementById('itemStockBox');
+    if (!host || !host.parentNode) return;
+    var box = document.getElementById('whBox');
+    if (!WH.on || window.PJ_ROLE === 'm') { if (box) box.hidden = true; return; }
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'whBox';
+      host.parentNode.insertBefore(box, host.nextSibling);
+      box.addEventListener('click', function (e) {
+        var b = e.target.closest ? e.target.closest('[data-whuse],[data-whlink]') : null;
+        if (!b) return;
+        if (b.hasAttribute('data-whlink')) whLink(b.getAttribute('data-whlink'));
+        else whUse(b.getAttribute('data-whuse'));
+      });
+      box.addEventListener('input', function (e) {
+        if (!e.target || e.target.id !== 'whQ') return;
+        WH.q = e.target.value;
+        whList();
+      });
+    }
+    var used = {};
+    (typeof CustomCat !== 'undefined' ? CustomCat : []).forEach(function (t) { var id = whIdOf(t.k); if (id) used[id] = 1; });
+    var list = WH.nuovi.filter(function (a) { return !used[a.id] && !a.u; });
+    box.hidden = !list.length;
+    if (!list.length) { box.innerHTML = ''; return; }
+    box.innerHTML = '<h3 style="font-size:13.5px;margin:16px 0 4px">Dal magazzino dell\'app</h3>' +
+      '<p class="hint" style="margin:0 0 6px">Articoli del magazzino che l\'editor non ha ancora collegato (' + list.length + '). «Usa in pianta» li aggiunge ai tipi che puoi mettere in pianta; «Collega» (dove l\'editor trova una voce che somiglia) li lega a quella voce. I pezzi si leggono sempre dal magazzino, dove si cambiano.</p>' +
+      (list.length > 8 ? '<input type="search" id="whQ" placeholder="Cerca un articolo" value="' + String(WH.q).replace(/"/g, '&quot;') + '" style="width:100%;margin:0 0 6px">' : '') +
+      '<div id="whList"></div>';
+    whList();
+  }
+  function whList() {
+    var el = document.getElementById('whList');
+    if (!el) return;
+    var used = {};
+    (typeof CustomCat !== 'undefined' ? CustomCat : []).forEach(function (t) { var id = whIdOf(t.k); if (id) used[id] = 1; });
+    var q = whTok(WH.q).join(' ');
+    var list = WH.nuovi.filter(function (a) { return !used[a.id] && !a.u && (!q || whTok(a.n).join(' ').indexOf(q) >= 0); });
+    var h = '';
+    list.slice(0, 60).forEach(function (a) {
+      var g = window.PJ_ROLE === 'c' ? whGuess(a) : null;
+      h += '<div class="lens-row"><span style="flex:1 1 150px;min-width:0;display:block"><span style="color:inherit">' + whEsc(a.n) + '</span> <span class="hint" style="padding:0;display:inline">· ' + a.q + (a.q === 1 ? ' pezzo' : ' pezzi') + '</span>' +
+        (g ? '<span class="hint" style="padding:0;display:block">forse è «' + whEsc(g.l) + '»</span>' : '') + '</span>' +
+        '<span style="min-width:0;flex:0 0 auto;display:flex;gap:6px;flex-wrap:wrap">' + (g ? '<button type="button" class="sm" data-whlink="' + whEsc(a.id) + '">Collega</button>' : '') +
+        '<button type="button" class="sm" data-whuse="' + whEsc(a.id) + '">Usa in pianta</button></span></div>';
+    });
+    if (list.length > 60) h += '<p class="hint" style="margin:4px 0">… e altri ' + (list.length - 60) + ': scrivi nella ricerca per trovarli.</p>';
+    if (!list.length) h = '<p class="hint" style="margin:4px 0">Nessun articolo con questo nome.</p>';
+    el.innerHTML = h;
+  }
+  function whUse(id) {
+    var a = WH.nuovi.filter(function (x) { return x.id === id; })[0];
+    if (!a || typeof CustomCat === 'undefined') return;
+    var cat = (a.c === 'audio' || a.c === 'luci' || a.c === 'video') ? a.c : 'personalizzati';
+    var sym = cat === 'luci' ? 'par' : cat === 'video' ? 'projector' : 'rack';
+    var k = 'wh_' + a.id;
+    if (CustomCat.some(function (t) { return t.k === k; })) return;
+    CustomCat.push({ k: k, gen: 'altro', cat: cat, custom: 1, l: a.n, sym: sym, w: .5, h: .4, c: '#455A64', W: 0, pin: 'none' });
+    STOCK.items = STOCK.items || {};
+    STOCK.items[k] = a.q;
+    WH.snap['k:' + k] = Math.round(a.q);
+    try { rebuildAddSelect(); renderStockAll(); if (typeof renderTypeList === 'function') renderTypeList(); saveGlobal(); } catch (e) { /* niente */ }
+    whRender();
+    if (typeof say === 'function') say('«' + a.n + '» è nel catalogo: lo trovi in Inserisci' + (cat === 'personalizzati' ? ' › I tuoi tipi' : '') + '. I pezzi li legge dal magazzino. Misure e simbolo si cambiano da ✏️ Modifica il tipo.');
+  }
+
   /* ---------- database ---------- */
   function pidOf(coll, id) {
     if (coll === 'progetti') return id;
@@ -471,12 +799,18 @@ function deptsOfRoles(roles) {
     var pid = pidOf(coll, id);
     function load(withImages) {
       return api('api_pjLoad', [pid]).then(function (r) {
-        if (!r.exists) return snap(false, id, null);
-        var s = snap(true, id, fromLoad(r));
-        s.trashed = !!r.cestino;
-        if (coll === 'progetti' && !r.cestino && id === Q.p && Number(r.matRev) !== Number(r.rev)) refreshMat(pid, Number(r.rev), (s.data().meta || {}).nome);
-        if (coll === 'catalogo' && id === 'custom' && !r.cestino && Number(r.matRev) !== Number(r.rev)) refreshStock(pid, Number(r.rev));
-        return withImages && coll === 'progetti' ? prefetch(r.immagini).then(function () { return s; }) : s;
+        var isCat = coll === 'catalogo' && id === 'custom';
+        if (!r.exists) return isCat ? whJoin(null).then(function () { return snap(false, id, null); }) : snap(false, id, null);
+        var data = fromLoad(r);
+        // il catalogo si apre insieme al magazzino: i pezzi dell'app sono già dentro le scorte quando l'editor le carica
+        var joined = isCat && !r.cestino ? whJoin(data) : Promise.resolve();
+        return joined.then(function () {
+          var s = snap(true, id, data);
+          s.trashed = !!r.cestino;
+          if (coll === 'progetti' && !r.cestino && id === Q.p && Number(r.matRev) !== Number(r.rev)) refreshMat(pid, Number(r.rev), (s.data().meta || {}).nome);
+          if (coll === 'catalogo' && id === 'custom' && !r.cestino && Number(r.matRev) !== Number(r.rev)) refreshStock(pid, Number(r.rev));
+          return withImages && coll === 'progetti' ? prefetch(r.immagini).then(function () { return s; }) : s;
+        });
       });
     }
     var ref = {
@@ -488,7 +822,8 @@ function deptsOfRoles(roles) {
         var extra = isProject ? matPack() : (coll === 'catalogo' ? stockRows() : null);
         var args = [pid, exp, JSON.stringify(body), body.sid || ''];
         if (extra) args.push(JSON.stringify(extra));
-        return api('api_pjSave', args).catch(function (e) {
+        var mod = coll === 'catalogo' && extra ? whMod(extra) : null;
+        return api('api_pjSave', args).then(function (res) { if (mod && mod.length) whPush(extra, mod); return res; }).catch(function (e) {
           if (e.code === 'conflict' && isProject) {       // qualcuno ha salvato nel frattempo: porto con me la sua versione, l'editor chiede cosa fare
             return ref.getLite().then(function (s) { e.remote = s.exists ? s.data() : null; throw e; }, function () { throw e; });
           }
@@ -562,6 +897,7 @@ function deptsOfRoles(roles) {
   setTimeout(reveal, 25000);
   ready.then(function () {
     if (!Q.sess) { reveal(); banner(Q.err || 'Sessione non valida.', 'err'); return; }
+    if (Q.sess.ruolo === 'm') banner('Dal magazzino la pianta si può solo guardare: le modifiche non vengono salvate.');       // il server lo rifiuta comunque
     if (!Q.p) reveal();                 // niente progetto da aspettare: si vede subito la schermata iniziale
   });
   // il progetto è arrivato (o non è arrivato): da qui si vede la pagina
@@ -599,7 +935,7 @@ function deptsOfRoles(roles) {
     };
     ready.then(function () {
       var w = document.getElementById('gsWho');
-      if (w && Q.sess) { w.textContent = Q.sess.nome + ' · salva su Google'; document.getElementById('gsBar').title = w.textContent; }
+      if (w && Q.sess) { w.textContent = Q.sess.nome + (Q.sess.ruolo === 'm' ? ' · solo da guardare' : ' · salva su Google'); document.getElementById('gsBar').title = w.textContent; }
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountBar); else mountBar();
@@ -1457,7 +1793,9 @@ const BUILTIN=[
  {k:'spk_g',cat:'audio',l:'Diffusore generico 12"',sym:'spk',w:.38,h:.38,c:COL.audio,W:400,est:1,pin:'civ',cord:3,spk:{H:.6,cov:[90,60],tilt:[0],spl:128}},
  {k:'spk15',cat:'audio',l:'Diffusore generico 15"',sym:'spk',w:.45,h:.45,c:COL.audio,W:500,est:1,pin:'civ',cord:3,spk:{H:.7,cov:[90,60],tilt:[0],spl:130}},
  {k:'spk_p',cat:'audio',l:'Diffusore passivo generico 12"',sym:'spk',w:.38,h:.38,c:COL.audio,W:0,est:1,pin:'none',spk:{H:.6,cov:[90,60],tilt:[0],passive:1,imp:8,pmax:800,spl:126}},
- {k:'la',cat:'audio',l:'Line array (elemento)',sym:'linearray',w:1.0,h:.5,c:COL.audio,W:800,est:1,pin:'pcon',thru:'pcon',spk:{H:.35,cov:[100,10],spl:136}},
+ {k:'geo12',cat:'audio',l:'Nexo GEO S12 — line array passivo (S1210 / S1230)',sym:'linearray',w:.675,h:.55,c:COL.audio,W:0,pin:'none',src:'moduli 344×675 mm (A×L) · S1210 28,05 kg · S1230 26,8 kg · 16 Ω passivi · 2× Speakon NL4 (IN/THRU in parallelo, pin 2±) · fino a 12 appesi, 6 S1210 sul GSTK · 4 moduli = 4 Ω per canale NXAMP',
+  spk:{arr:'geo12',passive:1,imp:16,pmax:900,H:.344,cov:[80,10],spl:131},p:{sup:'fly',la:{m:['s1210','s1210','s1210','s1210'],sp:[1.25,2,3.15],t0:6,per:4,hz:80}}},
+ {k:'la',cat:'audio',l:'Line array attivo generico (elemento)',sym:'linearray',w:1.0,h:.5,c:COL.audio,W:800,est:1,pin:'pcon',thru:'pcon',spk:{H:.35,cov:[100,10],spl:136}},
  {k:'sub_g',cat:'audio',l:'Sub 18" generico',sym:'sub',w:.6,h:.75,c:COL.sub,W:600,est:1,pin:'civ',cord:3,spk:{H:.6,sub:1}},
  {k:'sub2',cat:'audio',l:'Sub 2×18" generico',sym:'sub',w:1.2,h:.8,c:COL.sub,W:1200,est:1,pin:'pcon',thru:'pcon',spk:{H:.6,sub:1}},
  {k:'wedge_g',cat:'audio',l:'Monitor wedge 12" attivo generico',sym:'wedge',w:.55,h:.45,c:COL.mon,W:300,est:1,pin:'civ',cord:3,spk:{H:.4,cov:[90,60],mon:[45],spl:127}},
@@ -1766,6 +2104,7 @@ function geom(o){
   const p=o.p||{};
   switch(o.sym){
     case 'spk':case 'wedge':{const fp=spkFoot(o);if(fp){o.w=fp.w;o.h=fp.h}break}
+    case 'linearray':if(laIs(o)){const sh=laShape(laCfg(o));o.w=f(LA_MODELS[laCfg(o).m[0]].w);o.h=f(clamp(.42+Math.abs(sh.lean),.45,1.4))}break;
     case 'stage':{const d=DECKS[p.deck]||[2,1],dw=p.ori?d[1]:d[0],dd=p.ori?d[0]:d[1];o.w=f(dw*Math.max(1,p.nx|0));o.h=f(dd*Math.max(1,p.ny|0));break}
     case 'stairs':{const g=stairsGeo(p);o.w=f(+p.wid||1);o.h=f(g.depth);break}
     case 'cableramp':o.w=f(Math.max(1,p.n|0)*(+p.seg||.9));o.h=f(+p.wd||.5);break;
@@ -1803,7 +2142,8 @@ function mkObj(k,x,y){
   const o={id:uid(),k,sym:c.sym,x:f(x),y:f(y),w:c.w,h:c.h,r:0,c:c.c,l:c.l.split(' — ')[0].replace(/\s*\(.*\)$/,''),W:c.W||0,p:JSON.parse(JSON.stringify(c.p||{}))};
   if(c.sym==='stairs'){const st=S.find(s=>s.sym==='stage');if(st)o.p.hcm=st.p.hcm}
   if(c.sym==='zone')o.l=ZONES[o.p.zt||'pubblico'].l;
-  geom(o);return o;
+  geom(o);if(laIs(o)){try{laAim(o,8,40);geom(o)}catch(e){}} // line array nuovo: angoli già calcolati per un pubblico fra 8 e 40 m
+  return o;
 }
 
 /* ============================== CONNETTORI DI ALIMENTAZIONE ============================== */
@@ -1925,7 +2265,9 @@ const CUP=.10;
 const spkKg=o=>+o.kg||+((catBy(o.k)||{}).kg)||0;
 const supOver=o=>{const sup=SUPPORTS[(o.p||{}).sup],kg=spkKg(o);return sup&&sup.kg&&kg>sup.kg?{kg,max:sup.kg,l:sup.l.replace(/ \(.*\)$/,'')}:null}; // il bicchiere della cassa scende di circa 10 cm sul tubo
 function spkData(o){const c=catBy(o.k)||{},d=Object.assign({},c.spk||{},o.spk||{});
-  if(!d.H)d.H=o.sym==='sub'?.6:o.sym==='wedge'?.4:.6;if(!d.cov)d.cov=o.sym==='linearray'?[100,10]:[90,60];return d}
+  if(!d.H)d.H=o.sym==='sub'?.6:o.sym==='wedge'?.4:.6;if(!d.cov)d.cov=o.sym==='linearray'?[100,10]:[90,60];
+  if(d.arr&&o.sym==='linearray')laData(o,d); // line array a moduli: altezza, copertura e picco vengono dai suoi moduli
+  return d}
 const isSpk=o=>o&&(o.sym==='spk'||o.sym==='linearray'||o.sym==='sub'||o.sym==='wedge');
 const isPassive=o=>{const d=spkData(o);return isSpk(o)&&!!d.passive};
 function spkUse(o){const p=o.p||{};if(p.use)return p.use;return o.sym==='sub'?'sub':o.sym==='wedge'?'wedge':'pa'}
@@ -1944,13 +2286,17 @@ function spkGeo(o){
   if(sup.t==='stand'){const hs=clamp(+p.hs||sup.max,sup.min,sup.max);base=stage+hs-CUP;note=`piantana a ${fx(hs,2)} m`}
   else if(sup.t==='pole'){const sub=subUnder(o),sH=sub?spkData(sub).H:(+p.subH||.6),len=clamp(+p.hs||sup.max,sup.min,sup.max);base=stageUnder(sub||o)+sH+len-CUP;note=(sub?`sopra ${sub.l}`:'sopra un sub')+` · tubo ${fx(len,2)} m`}
   else if(sup.t==='onsub'){const sub=subUnder(o),sH=sub?spkData(sub).H:(+p.subH||.6);base=stageUnder(sub||o)+sH;note=(sub?`sopra ${sub.l}`:'sopra un sub')+(sup.lying?' · sdraiata sul fianco':' · in piedi')}
-  else if(sup.t==='fly'){const R=+p.hf>0?null:supOf(o);base=+p.hf>0?+p.hf:R?Math.max(.5,supTop(R)-(+d.H||.6)-.1):4;note=R?`appesa a ${SUP_NAME[R.sym]} «${R.l}»`:'appesa'}
+  else if(sup.t==='fly'){
+    if(laIs(o)){const R=+p.ht>0?null:supOf(o),hook=+p.ht>0?+p.ht:R?supTop(R)-.1:6;base=Math.max(.3,hook-LA_BAR-(+d.H||0));note=R?`appeso a ${SUP_NAME[R.sym]} «${R.l}»`:'appeso'}
+    else{const R=+p.hf>0?null:supOf(o);base=+p.hf>0?+p.hf:R?Math.max(.5,supTop(R)-(+d.H||.6)-.1):4;note=R?`appesa a ${SUP_NAME[R.sym]} «${R.l}»`:'appesa'}}
   const lyH=sup.lying&&use!=='wedge'?(+(catBy(o.k)||{}).w||d.H*.6):0; // sdraiata: l'altezza della cassa diventa la sua larghezza
   const H=lyH||d.H,ac=use==='wedge'?.35:lyH?.5:(d.ac||.78),axis=base+H*ac;
   let tilt=+p.tilt||0;if(use==='wedge'){tilt=-(90-monInfo(o).b)} // monitor: asse verso l'alto (90° − inclinazione del frontale)
-  return{d,use,sup,base,axis,tilt,V:+d.cov[1]||60,Hc:+d.cov[0]||90,note,stage}}
+  const g={d,use,sup,base,axis,tilt,V:+d.cov[1]||60,Hc:+d.cov[0]||90,note,stage};
+  if(laIs(o)){const L=laGeo(o,base);g.la=L;g.axis=L.axis;g.tilt=L.tilt;g.V=L.V;g.Hc=L.hz} // line array: asse e inclinazione del modulo di mezzo
+  return g}
 // distanze sul piano delle orecchie (he): inizio copertura, asse, limite superiore
-function spkReach(g,he){const dh=g.axis-he,lo=(g.tilt+g.V/2)*Math.PI/180,ax=g.tilt*Math.PI/180,hi=(g.tilt-g.V/2)*Math.PI/180;
+function spkReach(g,he){if(g.la)return laReach(g.la,he);const dh=g.axis-he,lo=(g.tilt+g.V/2)*Math.PI/180,ax=g.tilt*Math.PI/180,hi=(g.tilt-g.V/2)*Math.PI/180;
   const at=a=>dh>0&&a>0.0001?dh/Math.tan(a):dh<=0&&a<-0.0001?dh/Math.tan(a):Infinity;
   return{near:dh<=0?0:at(lo),axis:at(ax),far:at(hi),dh}}
 // monitor: a che distanza l'asse arriva alla testa dell'artista
@@ -2088,6 +2434,7 @@ function symbol(o,opt){
     if(opt.cover)s+=coverFan(o,0,h/2);
     break;
   case 'linearray':
+    if(laIs(o)){s+=laSymbol(o,opt);break}
     s+=SR(-w/2,-h/2,w,h,c,c,1.5,FO(.14))+SL(-w/2,h/2,w/2,h/2,c,3.2);
     s+=SR(-w*.56,-h/2-h*.16,w*1.12,h*.16,'none',c,1);
     s+=SC(-w*.27,-h*.05,m*.24,'none',c,1)+SC(w*.27,-h*.05,m*.24,'none',c,1);
@@ -2296,12 +2643,300 @@ function symbol(o,opt){
 
 /* Spicchio di copertura in pianta: angolo orizzontale da manuale, lunghezza dal pannello; arco tratteggiato dove inizia la copertura */
 function coverFan(o,x0,y0){
-  const g=spkGeo(o),c=o.c||'#7B2D8E',p=o.p||{},use=g.use,L=+p.thr||(use==='front'?4:use==='wedge'?3:12),a=clamp(g.Hc,10,180)/2*Math.PI/180;
+  const g=spkGeo(o),c=o.c||'#7B2D8E',p=o.p||{},use=g.use,L=+p.thr||(use==='front'?4:use==='wedge'?3:g.la?25:12),a=clamp(g.Hc,10,180)/2*Math.PI/180;
   let s=SP(`M${f(x0)},${f(y0)} L${f(x0+Math.sin(a)*L)},${f(y0+Math.cos(a)*L)} A${f(L)},${f(L)} 0 0 1 ${f(x0-Math.sin(a)*L)},${f(y0+Math.cos(a)*L)} Z`,c,'none',0,FO(.035));
   s+=SL(x0,y0,x0+Math.sin(a)*L,y0+Math.cos(a)*L,c,1,'3 3',' stroke-opacity=".55"')+SL(x0,y0,x0-Math.sin(a)*L,y0+Math.cos(a)*L,c,1,'3 3',' stroke-opacity=".55"');
-  if(o.sym!=='sub'){const r=spkReach(g,earH()).near;if(r>.3&&r<L)s+=SP(`M${f(x0+Math.sin(a)*r)},${f(y0+Math.cos(a)*r)} A${f(r)},${f(r)} 0 0 1 ${f(x0-Math.sin(a)*r)},${f(y0+Math.cos(a)*r)}`,'none',c,1.3,' stroke-dasharray="2 3" stroke-opacity=".8"')}
+  if(o.sym!=='sub'){const rr=spkReach(g,earH()),r=rr.near;if(r>.3&&r<L)s+=SP(`M${f(x0+Math.sin(a)*r)},${f(y0+Math.cos(a)*r)} A${f(r)},${f(r)} 0 0 1 ${f(x0-Math.sin(a)*r)},${f(y0+Math.cos(a)*r)}`,'none',c,1.3,' stroke-dasharray="2 3" stroke-opacity=".8"');
+    if(g.la&&rr.far>.3&&rr.far<L){const r2=rr.far;s+=SP(`M${f(x0+Math.sin(a)*r2)},${f(y0+Math.cos(a)*r2)} A${f(r2)},${f(r2)} 0 0 1 ${f(x0-Math.sin(a)*r2)},${f(y0+Math.cos(a)*r2)}`,'none',c,1.3,' stroke-dasharray="6 3" stroke-opacity=".8"')}}
   return`<g pointer-events="none">${s}</g>`;
 }
+
+/*LARR-BEGIN*/
+/* ============================== LINE ARRAY PASSIVI (v17: NEXO GEO S12) ============================== */
+// Un solo elemento in pianta = tutta la fila di moduli (S1210 e/o S1230), appesa al fly-bar o appoggiata sul GSTK.
+// Dati dal manuale NEXO GEO S12 (v106): moduli alti 344 mm e larghi 675 mm, 16 Ω passivi, 2 Speakon NL4 in parallelo
+// (pin 2±; i pin 1 non servono), angoli fra i moduli a scalini, fino a 12 appesi / 6 S1210 sul GSTK (modulo più basso entro ±10°),
+// 4 moduli per canale del finale. È un calcolo di PIANIFICAZIONE: carichi, foro del fly-bar e angoli definitivi si
+// controllano in NS-1 (gratuito, nexo-sa.com), come chiede il costruttore.
+const LA_DEG=Math.PI/180;
+const LA_MODELS={
+  s1210:{l:'GEO S1210',s:'S1210',kg:28.05,h:.344,w:.675,d:.378,v:10,key:'geo_s1210',splays:[.2,.315,.5,.8,1.25,2,3.15,5,6.3,8,10],
+    src:'344×675×378 mm (A×L×P) · 28,05 kg con il sistema di assemblaggio · 16 Ω · trapezio 10°'},
+  s1230:{l:'GEO S1230',s:'S1230',kg:26.8,h:.344,w:.675,d:.4,v:28.5,key:'geo_s1230',splays:[16,22.5,30],
+    src:'344×675×400 mm (A×L×P) · 26,8 kg senza accessori · 16 Ω · trapezio 30° (copertura accoppiata 28,5°)'}
+};
+const LA_RIG={bumper:{l:'Fly-bar / bumper Nexo GPT-BUMPER',kg:20,key:'geo_bumper'},gstk:{l:'Ground stack Nexo GPT-GSTK',kg:26.5,key:'geo_gstk'}};
+const LA_IMP=16,LA_BAR=.25,LA_MAXFLY=12,LA_MAXSTACK=6,LA_STACKTILT=10,LA_MIN=4,LA_MAX=16,LA_SPL=131,LA_PMAX=900;
+const LA_SUPS=[['fly','Appeso con il fly-bar'],['floor','Appoggiato a terra (GSTK)'],['stagef','Appoggiato sul palco (GSTK)'],['onsub','Appoggiato sopra il sub (GSTK)']];
+const LA_STOCK=[['geo_s1210','Nexo GEO S1210 (passivo)'],['geo_s1230','Nexo GEO S1230 (passivo)'],['geo_bumper','Fly-bar Nexo GPT-BUMPER'],['geo_gstk','Ground stack Nexo GPT-GSTK']];
+
+const laIs=o=>!!o&&o.sym==='linearray'&&!!(((catBy(o.k)||{}).spk||{}).arr);
+const laFmt=v=>String(+(+v).toFixed(3)).replace('.',',');
+const laRound=(v,d)=>{const m=Math.pow(10,d==null?1:d);return Math.round(v*m)/m};
+// «da 9,9 a 30,1 m» / «da subito a 30,1 m» / «da 9,9 m e oltre»: dove il fascio tocca il piano delle orecchie
+const laRange=q=>q.far===Infinity?`da ${q.near<=.05?'subito':fx(q.near,1)+' m'} e oltre (il bordo alto del fascio non scende mai alle orecchie)`:`da ${q.near<=.05?'subito':fx(q.near,1)} a ${fx(q.far,1)} m`;
+// il valore della lista più vicino (a pari distanza il più grande)
+const laSnap=(v,list)=>list.reduce((b,x)=>Math.abs(x-v)<Math.abs(b-v)-1e-9||(Math.abs(Math.abs(x-v)-Math.abs(b-v))<1e-9&&x>b)?x:b,list[0]);
+// angoli ammessi fra due moduli: la lista del modello (se sono diversi, il manuale non dice: le due liste insieme)
+function laSplays(a,b){const A=LA_MODELS[a]||LA_MODELS.s1210,B=LA_MODELS[b]||A;if(A===B)return A.splays;return A.splays.concat(B.splays).sort((x,y)=>x-y)}
+// angolo di un nuovo giunto: un gradino sopra il precedente (gli angoli crescono verso il basso)
+function laDefSplay(a,b,prev){if(a==='s1230'||b==='s1230')return 22.5;
+  const L=LA_MODELS.s1210.splays;if(prev==null||!(prev>0))return 1.25;const i=L.findIndex(x=>x>prev+1e-9);return L[i<0?L.length-1:i]}
+
+// configurazione dell'array, sempre completa e coerente (modelli validi, n-1 angoli, canali, supporto)
+function laCfg(o){
+  const p=o.p||(o.p={});let c=p.la;if(!c||typeof c!=='object'||Array.isArray(c))c=p.la={};
+  if(!Array.isArray(c.m))c.m=[];
+  c.m=c.m.filter(k=>LA_MODELS[k]).slice(0,LA_MAX);
+  if(!c.m.length)c.m=['s1210','s1210','s1210','s1210'];
+  const n=c.m.length,old=Array.isArray(c.sp)?c.sp:[],sp=[];
+  for(let i=0;i<n-1;i++){const v=old[i],x=(v===''||v==null)?NaN:+v;sp.push(isFinite(x)&&x>=0?x:laDefSplay(c.m[i],c.m[i+1],sp[i-1]))}
+  c.sp=sp;
+  const t0=parseFloat(c.t0);c.t0=isFinite(t0)?clamp(t0,-30,60):6;
+  c.per=clamp(Math.round(+c.per)||4,1,8);
+  c.hz=+c.hz===120?120:80;
+  ['tn','tf'].forEach(k=>{const v=parseFloat(c[k]);if(isFinite(v)&&v>0)c[k]=v;else delete c[k]});
+  if(!LA_SUPS.some(s=>s[0]===p.sup))p.sup='fly';
+  return c}
+// «6× S1210» oppure «4× S1210 + 2× S1230»
+function laTitle(c){const cnt={},ord=[];c.m.forEach(k=>{if(!cnt[k]){cnt[k]=0;ord.push(k)}cnt[k]++});return ord.map(k=>cnt[k]+'× '+LA_MODELS[k].s).join(' + ')}
+
+// forma verticale: partendo dallo spigolo alto-davanti del primo modulo (0;0), x verso il pubblico, y verso l'alto.
+// Il fronte di ogni modulo è un segmento di 344 mm inclinato di th (gradi sotto l'orizzontale); i giunti sono sul fronte, e l'angolo cresce verso il basso.
+function laShape(c){
+  const n=c.m.length;let th=+c.t0||0,x=0,y=0;const mods=[];
+  for(let i=0;i<n;i++){const M=LA_MODELS[c.m[i]],r=th*LA_DEG,x2=x-M.h*Math.sin(r),y2=y-M.h*Math.cos(r);
+    mods.push({i,m:c.m[i],th,v:M.v,kg:M.kg,d:M.d,x1:x,y1:y,x2,y2,cx:(x+x2)/2,cy:(y+y2)/2});
+    x=x2;y=y2;if(i<n-1)th+=+c.sp[i]||0}
+  return{mods,n,D:-y,lean:x,thBot:mods[n-1].th}}
+// dati «da cassa singola» che gli altri calcoli dell'editor si aspettano (altezza, copertura, picco, passiva)
+function laData(o,d){const c=laCfg(o),sh=laShape(c),a=sh.mods[0],z=sh.mods[sh.n-1];
+  d.arr=d.arr||'geo12';d.passive=1;d.imp=LA_IMP;d.pmax=LA_PMAX;d.H=laRound(sh.D,3);
+  d.cov=[c.hz,laRound((z.th+z.v/2)-(a.th-a.v/2),1)];d.spl=Math.round(LA_SPL+10*Math.log10(sh.n));d.ac=.5;return d}
+// geometria assoluta: base = quota del fondo dell'array (da terra)
+function laGeo(o,base){
+  const c=laCfg(o),sh=laShape(c),top=base+sh.D;
+  const mods=sh.mods.map(m=>Object.assign({},m,{ya:top+m.cy,yt:top+m.y1,yb:top+m.y2}));
+  const mid=mods[Math.floor((mods.length-1)/2)],a=mods[0],z=mods[mods.length-1];
+  return{c,sh,mods,n:mods.length,base,top,D:sh.D,hz:c.hz,V:laRound((z.th+z.v/2)-(a.th-a.v/2),1),axis:mid.ya,tilt:mid.th,mid}}
+// da dove a dove arriva il fascio sul piano delle orecchie: l'unione dei moduli (come spkReach per una cassa sola)
+function laReach(L,he){let near=Infinity,far=0;
+  L.mods.forEach(m=>{const r=spkReach({axis:m.ya,tilt:m.th,V:m.v},he);if(r.near<near)near=r.near;if(r.far>far)far=r.far});
+  const ax=spkReach({axis:L.mid.ya,tilt:L.mid.th,V:L.mid.v},he);
+  return{near,far,axis:ax.axis,dh:L.mid.ya-he}}
+
+// gruppi di cavo: i moduli vicini dello stesso modello che stanno su un canale del finale (16 Ω ÷ moduli)
+function laGroups(o){const c=laCfg(o),runs=[];
+  c.m.forEach((m,i)=>{const r=runs[runs.length-1];if(r&&r.m===m)r.idx.push(i);else runs.push({m,idx:[i]})});
+  const out=[];
+  runs.forEach(r=>{const len=r.idx.length,k=Math.ceil(len/c.per),b=Math.floor(len/k),ex=len%k;let at=0;
+    for(let j=0;j<k;j++){const cnt=b+(j<ex?1:0),idx=r.idx.slice(at,at+cnt);at+=cnt;
+      out.push({i:out.length,m:r.m,n:cnt,a:idx[0],b:idx[idx.length-1],Z:LA_IMP/cnt})}});
+  return out}
+function laWeight(c,fly){const mods=c.m.reduce((s,k)=>s+LA_MODELS[k].kg,0),acc=fly?LA_RIG.bumper.kg:LA_RIG.gstk.kg;return{mods,acc,total:mods+acc,fly}}
+
+// controlli: [livello, testo] con livello err / warn / info
+function laChecks(o,g){const L=g.la,c=L.c,n=L.n,fly=g.sup.t==='fly',out=[],n10=c.m.filter(k=>k==='s1210').length,n30=n-n10;
+  if(fly&&n>LA_MAXFLY)out.push(['err',`${n} moduli appesi: il manuale ne ammette al massimo ${LA_MAXFLY} (anche meno, lo dice NS-1)`]);
+  if(!fly&&n>LA_MAXSTACK)out.push(['err',`${n} moduli sul GSTK: ne regge al massimo ${LA_MAXSTACK} S1210`]);
+  if(!fly&&n30&&n<=LA_MAXSTACK)out.push(['warn',`GSTK con S1230: il manuale parla di ${LA_MAXSTACK} S1210; con gli S1230 verifica in NS-1`]);
+  if(!fly&&Math.abs(L.sh.thBot)>LA_STACKTILT+1e-9)out.push(['err',`il modulo più in basso sta a ${fx(L.sh.thBot,1)}°: sul GSTK deve restare entro ±${LA_STACKTILT}°`]);
+  if(n<LA_MIN)out.push(['warn',`${n} modul${n>1?'i':'o'}: sotto i ${LA_MIN} il costruttore non consiglia né supporta l'array`]);
+  if(n10&&n30)out.push(['info','Array misto S1210 + S1230: il manuale non lo descrive, verificalo in NS-1. Nel NXAMP ogni canale ha un solo preset (S1210 oppure S1230): i due modelli vanno su canali separati.']);
+  if(c.per>4)out.push(['warn',`${c.per} moduli per canale = ${fx(LA_IMP/c.per,1)} Ω: il manuale prevede 4 per canale (4 Ω); controlla che il finale regga questo carico`]);
+  for(let i=0;i<n-1;i++){const lst=laSplays(c.m[i],c.m[i+1]);if(!lst.some(x=>Math.abs(x-c.sp[i])<1e-6))out.push(['warn',`angolo ${i+1}→${i+2}: ${laFmt(c.sp[i])}° non è fra quelli del manuale (${lst.map(laFmt).join(' · ')}°)`])}
+  return out}
+
+// distinta del materiale (cat, item, q, note, k): moduli, fly-bar o GSTK, sicurezza, ponticelli Speakon
+function laBom(o,g){const L=g.la,c=L.c,fly=g.sup.t==='fly',rows=[],cnt={},Z='Audio — line array e rigging';
+  c.m.forEach(k=>cnt[k]=(cnt[k]||0)+1);
+  Object.keys(cnt).forEach(k=>rows.push({cat:'Audio',item:'Nexo '+LA_MODELS[k].l+' (passivo, 16 Ω)',q:cnt[k],note:'',k:LA_MODELS[k].key}));
+  if(fly){rows.push({cat:Z,item:LA_RIG.bumper.l,q:1,note:`${fx(LA_RIG.bumper.kg,0)} kg · il foro e l'inclinazione si controllano in NS-1`,k:LA_RIG.bumper.key});
+    rows.push({cat:Z,item:'Cavo di sicurezza secondario (portata uguale o maggiore dell\'impianto)',q:1,note:'uno per array'})}
+  else rows.push({cat:Z,item:LA_RIG.gstk.l,q:1,note:`${fx(LA_RIG.gstk.kg,1)} kg · max ${LA_MAXSTACK} S1210`,k:LA_RIG.gstk.key});
+  const gr=laGroups(o),jump=c.m.length-gr.length;
+  if(jump>0)rows.push({cat:'Cavi — '+FAM.audio.l,item:pieceName('nl4',1,'audio'),q:jump,note:'ponticelli fra i moduli dello stesso canale'});
+  return rows}
+
+// pubblico davanti all'array: da dove a dove (in pianta), dalle zone «Pubblico» dentro lo spicchio orizzontale
+function laAud(o){const zs=S.filter(z=>z.sym==='zone'&&(z.p||{}).zt==='pubblico');if(!zs.length)return null;
+  const th=(+o.r||0)*LA_DEG,fx_=-Math.sin(th),fy_=Math.cos(th),lim=Math.cos((laCfg(o).hz/2)*LA_DEG);let near=Infinity,far=0;
+  zs.forEach(z=>{const r=(+z.r||0)*LA_DEG,cs=Math.cos(r),sn=Math.sin(r);
+    for(let i=0;i<=24;i++)for(let j=0;j<=24;j++){const lx=(i/24-.5)*z.w,ly=(j/24-.5)*z.h,dx=z.x+lx*cs-ly*sn-o.x,dy=z.y+lx*sn+ly*cs-o.y,d=Math.hypot(dx,dy);
+      if(d<.5||(dx*fx_+dy*fy_)/d<lim)continue;if(d<near)near=d;if(d>far)far=d}});
+  return far>0&&near<Infinity?{near:laRound(near,1),far:laRound(far,1)}:null}
+// distanze da coprire: quelle scritte nel pannello, se no il pubblico in pianta, se no 8–40 m
+function laTarget(o){const c=laCfg(o),a=laAud(o);
+  if(c.tn&&c.tf&&c.tf>c.tn)return{near:c.tn,far:c.tf,src:'scritte da te'};
+  if(a)return{near:c.tn||a.near,far:c.tf&&c.tf>(c.tn||a.near)?c.tf:a.far,src:'dalla zona Pubblico in pianta'};
+  return{near:c.tn||8,far:c.tf&&c.tf>(c.tn||8)?c.tf:40,src:'valori di partenza: scrivi le tue distanze'}}
+
+// angoli che coprono il pubblico da «near» a «far»: il bordo alto del primo modulo arriva in fondo, il bordo basso dell'ultimo all'inizio;
+// in mezzo gli angoli crescono verso il basso (più stretti in alto) e si agganciano agli scalini del manuale
+function laAim(o,near,far){
+  const c=laCfg(o),g=spkGeo(o),he=earH(),n=c.m.length,fly=g.sup.t==='fly';
+  if(!(near>0)||!(far>near))return{err:'Servono due distanze: dove inizia il pubblico e dove finisce (la seconda più grande della prima).'};
+  const top0=g.la.top,base0=g.base,ys=()=>{const sh=laShape(c),top=fly?top0:base0+sh.D;return sh.mods.map(m=>top+m.cy)};
+  let y=ys();
+  if(y[0]<=he+.2)return{err:`L'array è troppo basso (${fx(y[0],2)} m): per coprire il pubblico deve stare sopra le orecchie (${fx(he,2)} m).`};
+  for(let it=0;it<5;it++){
+    const a0=Math.atan((y[0]-he)/far)/LA_DEG+LA_MODELS[c.m[0]].v/2,
+          a1=Math.max(a0,Math.atan((y[n-1]-he)/near)/LA_DEG-LA_MODELS[c.m[n-1]].v/2),sp=[];let prev=a0;
+    for(let i=0;i<n-1;i++){const want=a0+(a1-a0)*Math.pow((i+1)/(n-1),1.4);sp.push(laSnap(Math.max(0,want-prev),laSplays(c.m[i],c.m[i+1])));prev+=sp[i]}
+    c.t0=laRound(a0,1);c.sp=sp;y=ys()}
+  return{ok:1}}
+
+// testi
+function laInfoTxt(o,g){const L=g.la,fly=g.sup.t==='fly';
+  return`Array ${laTitle(L.c)} · ${fx(L.D,2)} m di altezza · copertura ${g.Hc}°×${fx(g.V,0)}°${g.d.spl?' · '+g.d.spl+' dB max':''} · ${fly?'cima '+fx(L.top,2)+' m':'base '+fx(g.base,2)+' m'}${g.note?' · '+esc(g.note):''} · asse ${fx(g.axis,2)} m`}
+function laShortInfo(o,g){const fly=g.sup.t==='fly';return`${laTitle(g.la.c)} · ${fly?'appeso a '+fx(g.la.top,1)+' m':'appoggiato'}`}
+
+// sezione verticale: moduli, fly-bar o GSTK, assi, bordi del fascio, pubblico e punti dove il fascio tocca il piano delle orecchie.
+// Le altezze sono ingrandite rispetto alle distanze (altrimenti i moduli sarebbero puntini): il fattore è scritto nel disegno.
+function laSectionSvg(o,g){
+  const L=g.la,he=earH(),Wd=340,Hd=215,fly=g.sup.t==='fly',r=laReach(L,he),tg=laTarget(o),n=L.n;
+  const dmax=clamp(Math.max(14,tg.far*1.12,(r.near===Infinity?0:r.near*1.3)),12,90),topY=Math.max(4.2,L.top+(fly?LA_BAR+.9:1.2)),
+    sx=(Wd-46)/dmax,sy=(Hd-52)/topY,X=x=>30+x*sx,Y=y=>Hd-26-y*sy,ex=sy/sx;
+  let s=`<line x1="4" y1="${Y(0)}" x2="${Wd-4}" y2="${Y(0)}" stroke="#90A4AE" stroke-width="1.5"/>`;
+  s+=`<line x1="4" y1="${Y(he)}" x2="${Wd-4}" y2="${Y(he)}" stroke="#90A4AE" stroke-dasharray="3 3"/><text x="${Wd-4}" y="${Y(he)+13}" font-size="10" fill="#8a929c" text-anchor="end">orecchie ${fx(he,2)} m</text>`;
+  if(g.stage)s+=`<rect x="${X(-1)}" y="${Y(g.stage)}" width="${X(.8)-X(-1)}" height="${Y(0)-Y(g.stage)}" fill="#D7CCC8" stroke="#6D4C41"/>`;
+  if(g.sup.t==='onsub'){const sub=subUnder(o),sh=sub?spkData(sub).H:.6,b0=sub?stageUnder(sub):g.stage;s+=`<rect x="${X(-.5)}" y="${Y(b0+sh)}" width="${X(.5)-X(-.5)}" height="${Y(b0)-Y(b0+sh)}" fill="${COL.sub}" fill-opacity=".3" stroke="${COL.sub}"/>`}
+  // il pubblico da coprire
+  if(tg.far>tg.near){const a_=Math.min(tg.near,dmax),b_=Math.min(tg.far,dmax);
+    s+=`<line x1="${X(a_)}" y1="${Y(he)}" x2="${X(b_)}" y2="${Y(he)}" stroke="#1565C0" stroke-width="7" stroke-opacity=".28" stroke-linecap="round"/><text x="${clamp((X(a_)+X(b_))/2,64,Wd-130)}" y="${Y(he)+13}" font-size="10" fill="#1565C0" text-anchor="middle">pubblico ${fx(tg.near,0)}–${fx(tg.far,0)} m</text>`}
+  const endOf=(m,ang)=>{const tn=Math.tan(ang*LA_DEG);let x=dmax,y=m.ya-(dmax-m.cx)*tn;if(tn>1e-4&&y<he){x=m.cx+(m.ya-he)/tn;y=he}return[x,y]};
+  const a=L.mods[0],z=L.mods[n-1],hi=endOf(a,a.th-a.v/2),lo=endOf(z,z.th+z.v/2);
+  s+=`<polygon points="${X(a.cx)},${Y(a.ya)} ${X(hi[0])},${Y(hi[1])} ${X(lo[0])},${Y(lo[1])} ${X(z.cx)},${Y(z.ya)}" fill="${o.c}" fill-opacity=".08"/>`;
+  s+=`<line x1="${X(a.cx)}" y1="${Y(a.ya)}" x2="${X(hi[0])}" y2="${Y(hi[1])}" stroke="${o.c}" stroke-dasharray="4 3"/><line x1="${X(z.cx)}" y1="${Y(z.ya)}" x2="${X(lo[0])}" y2="${Y(lo[1])}" stroke="${o.c}" stroke-dasharray="4 3"/>`;
+  L.mods.forEach(m=>{const e=endOf(m,m.th);s+=`<line x1="${X(m.cx)}" y1="${Y(m.ya)}" x2="${X(e[0])}" y2="${Y(e[1])}" stroke="${o.c}" stroke-opacity=".5" stroke-width="1"/>`});
+  // moduli: il fronte dal giunto alto al giunto basso, la profondità indietro
+  L.mods.forEach(m=>{const r_=m.th*LA_DEG,bx=-Math.cos(r_)*m.d,by=Math.sin(r_)*m.d;
+    s+=`<polygon points="${X(m.x1)},${Y(L.top+m.y1)} ${X(m.x2)},${Y(L.top+m.y2)} ${X(m.x2+bx)},${Y(L.top+m.y2+by)} ${X(m.x1+bx)},${Y(L.top+m.y1+by)}" fill="${o.c}" fill-opacity="${m.m==='s1230'?.7:.4}" stroke="${o.c}" stroke-width="1"/>`});
+  if(fly){const hk=L.top+LA_BAR;s+=`<line x1="${X(-.3)}" y1="${Y(L.top)}" x2="${X(.05)}" y2="${Y(L.top)}" stroke="#263238" stroke-width="3"/><line x1="${X(-.12)}" y1="${Y(L.top)}" x2="${X(-.12)}" y2="${Y(hk)}" stroke="#263238" stroke-width="1.4"/>`
+    +`<polygon points="${X(-.12)},${Y(hk)} ${X(-.12)-4},${Y(hk)-7} ${X(-.12)+4},${Y(hk)-7}" fill="#263238"/><text x="${X(-.12)+9}" y="${Y(hk)+1}" font-size="10.5" fill="#263238">gancio ${fx(hk,2)} m</text>`}
+  else s+=`<text x="${X(0)}" y="${Y(0)+12}" font-size="10" fill="#263238">GSTK · base ${fx(g.base,2)} m</text>`;
+  s+=`<text x="${X(0)+9}" y="12" font-size="10.5" fill="#263238">${n} moduli · ${fx(L.D,2)} m</text>`;
+  const dot=(x,t)=>`<circle cx="${X(x)}" cy="${Y(he)}" r="3.5" fill="#C62828"/><text x="${X(x)}" y="${Y(he)-7}" font-size="10.5" fill="#C62828" text-anchor="${X(x)>Wd-50?'end':'middle'}">${t}</text>`;
+  if(r.near!==Infinity&&r.near>0&&r.near<dmax)s+=dot(r.near,'da '+fx(r.near,1)+' m');
+  if(r.far!==Infinity&&r.far<dmax)s+=dot(r.far,'a '+fx(r.far,1)+' m');
+  else s+=`<text x="${Wd-4}" y="${Y(he)-7}" font-size="10.5" fill="#C62828" text-anchor="end">il fascio arriva oltre ${fx(dmax,0)} m</text>`;
+  for(let m=0;m<=dmax;m+=dmax>30?10:5)s+=`<text x="${X(m)}" y="${Hd-6}" font-size="10" fill="#8a929c" text-anchor="middle">${m} m</text>`;
+  if(ex>1.25)s+=`<text x="${Wd-4}" y="${Hd-6}" font-size="9" fill="#8a929c" text-anchor="end">altezze ×${fx(ex,1)}</text>`;
+  return`<svg class="chartsvg" viewBox="0 0 ${Wd} ${Hd}" style="width:100%;max-width:${Wd}px;display:block">${s}</svg>`}
+
+// simbolo in pianta: la sagoma dall'alto con il numero dei moduli; fly-bar dietro (appeso) o base tratteggiata (appoggiato)
+function laSymbol(o,opt){const w=o.w,h=o.h,c=o.c||'#7B2D8E',m=Math.min(w,h),g=spkGeo(o),fly=g.sup.t==='fly';let s='';
+  s+=SR(-w/2,-h/2,w,h,c,c,1.5,FO(.14))+SL(-w/2,h/2,w/2,h/2,c,3.2);
+  if(fly)s+=SR(-w*.56,-h/2-h*.14,w*1.12,h*.14,'none',c,1)+SC(-w*.27,-h/2-h*.07,m*.07,'none',c,1)+SC(w*.27,-h/2-h*.07,m*.07,'none',c,1);
+  else s+=SR(-w*.58,-h/2-h*.05,w*1.16,h*1.1,'none',c,1,' stroke-dasharray="4 3"');
+  s+=ST(0,m*.2,'×'+g.la.n,Math.max(.14,m*.5),c,'middle',800);
+  if(opt.cover)s+=coverFan(o,0,h/2);
+  return s}
+
+// pannello
+const LA_ROW='display:grid;grid-template-columns:22px minmax(0,1fr) minmax(0,1fr) 46px 30px;gap:6px;align-items:center;margin:3px 0;font-size:12px';
+function laSplayOpts(c,i){const lst=laSplays(c.m[i],c.m[i+1]),v=c.sp[i],has=lst.some(x=>Math.abs(x-v)<1e-6);
+  return(has?'':`<option value="${v}" selected>${laFmt(v)}° ⚠️</option>`)+lst.map(x=>`<option value="${x}"${Math.abs(x-v)<1e-6?' selected':''}>${laFmt(x)}°</option>`).join('')}
+function laModsHtml(o,g){const L=g.la,c=L.c,n=L.n;
+  let h=`<div class="grp" id="laMods"><b>📐 Moduli, dall'alto in basso</b>
+    <label class="field">Quanti moduli <input data-la="n" type="number" min="1" max="${LA_MAX}" step="1" value="${n}" style="width:60px"></label>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:4px 0"><button class="sm" data-act="laAdd" data-m="s1210">➕ S1210 in fondo</button><button class="sm" data-act="laAdd" data-m="s1230">➕ S1230 in fondo</button></div>
+    <div style="${LA_ROW};color:var(--mut);font-size:10.5px;text-transform:uppercase"><span>#</span><span>Modello</span><span>Angolo col successivo</span><span style="text-align:right">Asse</span><span></span></div>`;
+  L.mods.forEach((m,i)=>{h+=`<div style="${LA_ROW}"><span class="mono">${i+1}</span>
+    <select data-la="m:${i}">${Object.keys(LA_MODELS).map(k=>`<option value="${k}"${c.m[i]===k?' selected':''}>${LA_MODELS[k].s}</option>`).join('')}</select>
+    ${i<n-1?`<select data-la="sp:${i}">${laSplayOpts(c,i)}</select>`:'<span class="info">—</span>'}
+    <span class="mono" id="laax${i}" style="text-align:right">${fx(m.th,1)}°</span>
+    ${n>1?`<button class="sm danger" data-act="laRm" data-i="${i}" title="Togli questo modulo">✕</button>`:'<span></span>'}</div>`});
+  return h+`<span class="info">L'angolo va scelto fra quelli del manuale (S1210 da 0,2° a 10°, S1230 16° · 22,5° · 30°). «Asse» = quanti gradi sotto l'orizzontale guarda il modulo.</span></div>`}
+function laAimHtml(o,g){const c=g.la.c,a=laAud(o),tg=laTarget(o);
+  return`<div class="grp"><b>🎯 Calcola gli angoli sul pubblico</b>
+    <label class="field">Il pubblico va da <input data-la="tn" type="number" min="1" step="1" value="${c.tn!=null?c.tn:''}" placeholder="${f(tg.near)}" style="width:64px"> m</label>
+    <label class="field">fino a <input data-la="tf" type="number" min="1" step="1" value="${c.tf!=null?c.tf:''}" placeholder="${f(tg.far)}" style="width:64px"> m</label>
+    <span class="info">${a?`Dalla zona «Pubblico» in pianta, davanti all'array: da ${fx(a.near,0)} a ${fx(a.far,0)} m.`:'Davanti all\'array non c\'è una zona «Pubblico» in pianta: scrivi tu le distanze (se lasci vuoto uso '+fx(tg.near,0)+'–'+fx(tg.far,0)+' m).'}</span>
+    <button class="sm pri" data-act="laAim">🎯 Calcola gli angoli</button><span class="info" id="laAimMsg"></span></div>`}
+function laCableHtml(o,g){const c=g.la.c,gr=laGroups(o),AC=ampCalc();
+  let h=`<div class="grp"><b>🔌 Cavi Speakon e finale</b>
+    <label class="field">Moduli per canale del finale <select data-la="per">${[1,2,3,4,5,6,7,8].map(k=>`<option value="${k}"${c.per===k?' selected':''}>${k} → ${fx(LA_IMP/k,1)} Ω${k===4?' (come da manuale)':''}</option>`).join('')}</select></label>`;
+  let fed=0;
+  gr.forEach(x=>{const ch=AC.amps.flatMap(a=>a.chs.map(q=>({a,q}))).find(z=>z.q.loads.some(l=>l.o===o&&l.g===x.i));if(ch)fed++;
+    h+=`<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:3px 0;font-size:12px"><span class="mono">Gruppo ${x.i+1}</span><span>moduli ${x.a+1}${x.b>x.a?'–'+(x.b+1):''} (${LA_MODELS[x.m].s})</span><span class="mono">${fx(x.Z,1)} Ω</span>
+      ${ch?`<span class="chip ${ch.q.low?'err':'ok'}">${esc(ch.a.A.l)} CH${ch.q.c} · ${fx(ch.q.per,0)} W a modulo</span>`:'<span class="chip err">senza finale</span>'}</div>`});
+  if(fed<gr.length)h+=`<button class="sm pri" data-act="laAmp">➕ Aggiungi finale e collega ${gr.length-fed} cav${gr.length-fed>1?'i':'o'} Speakon</button>`;
+  return h+`<span class="info">Ogni modulo ha due Speakon NL4 (IN e THRU, in parallelo): il segnale entra nel primo modulo del gruppo e prosegue con un NL4 corto fino all'ultimo. Passivo: servono solo i pin 2+ e 2−. I cavi dal finale al line array si disegnano con 🔗 Collega → Audio → Speakon NL4 (uno per gruppo).</span></div>`}
+function laSumHtml(o,g){const L=g.la,c=L.c,fly=g.sup.t==='fly',W=laWeight(c,fly),ck=laChecks(o,g);
+  let h=`<b>⚖️ Peso e controlli</b><span class="chip">${L.n} moduli ${fx(W.mods,1)} kg</span><span class="chip">${fly?'fly-bar':'GSTK'} ${fx(W.acc,1)} kg</span><span class="chip ok">totale ${fx(W.total,1)} kg</span>`;
+  h+=fly?`<span class="info">Il punto d'aggancio (motore, americana, acciaio di sicurezza) deve reggere almeno 4 volte il peso del cluster: ${fx(W.total*4,0)} kg, motori e acciai esclusi. Cluster e carichi si validano in NS-1 prima di appenderlo.</span>`
+        :`<span class="info">Il GSTK regge fino a ${LA_MAXSTACK} S1210; il modulo più in basso (ora a ${fx(L.sh.thBot,1)}°) resta entro ±${LA_STACKTILT}°.</span>`;
+  ck.forEach(([lv,t])=>{h+=`<span class="chip ${lv==='err'?'err':lv==='warn'?'warn':''}" style="white-space:normal">${lv==='err'?'⚠️ ':''}${esc(t)}</span>`});
+  return h+`<span class="info">Pesi dal manuale NEXO. Calcolo di pianificazione: inclinazione del fly-bar (foro), carichi e angoli definitivi si verificano in NS-1 (gratuito, nexo-sa.com).</span>`}
+function arrayPanel(o){
+  const g=spkGeo(o),p=o.p||{},L=g.la,c=L.c,fly=g.sup.t==='fly';
+  let h=`<div class="grp"><b>🔊 Line array ${esc(laTitle(c))}</b>`
+    +sP('use','Uso',SPK_USES.filter(u=>u[0]!=='sub'&&u[0]!=='wedge'),g.use)
+    +sP('sup','Come sta',LA_SUPS,p.sup||'fly');
+  if(fly)h+=iP('ht','Altezza del gancio (cima del fly-bar)',+p.ht>0?p.ht:null,.1,'m',` placeholder="${laRound(L.top+LA_BAR,2)}" style="width:72px"`)
+    +(+p.ht>0?'':`<span class="info">${/«/.test(g.note)?'Segue l\'altezza del supporto ('+esc(g.note)+'): scrivi un valore per deciderla tu.':'Scrivi l\'altezza del gancio (ora '+fx(L.top+LA_BAR,1)+' m).'}</span>`);
+  h+=`<label class="field">Inclinazione del primo modulo <input data-la="t0" type="number" step="0.5" value="${f(c.t0)}">° verso il basso</label>`
+    +`<label class="field">Copertura orizzontale <select data-la="hz"><option value="80"${c.hz===80?' selected':''}>80°</option><option value="120"${c.hz===120?' selected':''}>120°</option></select></label>`
+    +iP('thr','Spicchio in pianta',+p.thr||25,1,'m')
+    +`<span class="info" id="spkInfo">${laInfoTxt(o,g)}</span></div>`
+    +`<div class="grp" id="spkSec">${laSectionSvg(o,g)}</div>`
+    +laModsHtml(o,g)+laAimHtml(o,g)+laCableHtml(o,g)+`<div class="grp" id="laSum">${laSumHtml(o,g)}</div>`;
+  return h}
+// dopo una modifica che non rifà il pannello (si sta scrivendo in un campo): aggiorna gli angoli, il riepilogo e il disegno
+function laRefresh(o){const g=spkGeo(o);if(!g.la)return;g.la.mods.forEach((m,i)=>{const e=$('laax'+i);if(e)e.textContent=fx(m.th,1)+'°'});const s=$('laSum');if(s)s.innerHTML=laSumHtml(o,g)}
+
+// tabella nel report «Diffusori e finali»: la lista da dare a chi monta (angoli, assi, da/a)
+function laTableHtml(arr){let h='';
+  arr.forEach(o=>{const g=spkGeo(o),L=g.la,c=L.c,fly=g.sup.t==='fly',he=earH(),W=laWeight(c,fly),r=laReach(L,he);
+    h+=`<div style="margin:12px 0 4px"><b>${esc(o.l)}</b> · ${esc(laTitle(c))} · ${fly?'appeso, gancio a '+fx(L.top+LA_BAR,2)+' m':'appoggiato (GSTK), base a '+fx(g.base,2)+' m'} · primo modulo a ${fx(c.t0,1)}° · ${fx(W.total,0)} kg in tutto (${fly?'fly-bar':'GSTK'} compreso) · copre ${laRange(r)}</div>
+      <div class="tbl-wrap"><table class="sched"><tr><th class="num">#</th><th>Modello</th><th class="num">Angolo col successivo</th><th class="num">Asse</th><th class="num">Altezza asse</th><th class="num">Copre da</th><th class="num">a</th></tr>`;
+    L.mods.forEach((m,i)=>{const q=spkReach({axis:m.ya,tilt:m.th,V:m.v},he);
+      h+=`<tr><td class="num">${i+1}</td><td>${LA_MODELS[m.m].s}</td><td class="num mono">${i<L.n-1?fx(c.sp[i],2)+'°':'—'}</td><td class="num mono">${fx(m.th,1)}°</td><td class="num mono">${fx(m.ya,2)} m</td><td class="num mono">${reachTxt(q.near)}</td><td class="num mono">${reachTxt(q.far)}</td></tr>`});
+    h+='</table></div>'});
+  return h+(arr.length?'<p class="hint" style="margin:4px 0 8px">Angoli e quote sono una stima di pianificazione (fronte dei moduli, giunti sul fronte). Foro del fly-bar, carichi e coupling si controllano in NS-1 prima di appendere.</p>':'')}
+
+// eventi del pannello: campi con data-la="campo" o "campo:indice"
+function laOnInput(o,t,ev){if(!laIs(o))return false;const c=laCfg(o),k=String(t.dataset.la).split(':'),i=k.length>1?+k[1]:-1,v=t.value;
+  if(k[0]==='t0'){if(ev!=='input')return true;const x=parseFloat(v);if(isNaN(x))return true;c.t0=clamp(x,-30,60)}
+  else if(k[0]==='tn'||k[0]==='tf'){if(ev!=='input')return true;const x=parseFloat(v);if(x>0)c[k[0]]=x;else delete c[k[0]];laRefresh(o);markDirty();scheduleAutosave();return true}
+  else if(k[0]==='hz'){if(ev!=='change')return true;c.hz=+v===120?120:80}
+  else if(k[0]==='per'){if(ev!=='change')return true;c.per=clamp(parseInt(v)||4,1,8)}
+  else if(k[0]==='n'){if(ev!=='change')return true;const n=clamp(parseInt(v)||c.m.length,1,LA_MAX);while(c.m.length>n)c.m.pop();while(c.m.length<n)c.m.push(c.m[c.m.length-1])}
+  else if(k[0]==='m'&&i>=0){if(ev!=='change'||!LA_MODELS[v])return true;c.m[i]=v;
+    [i-1,i].forEach(j=>{if(j>=0&&j<c.m.length-1){const lst=laSplays(c.m[j],c.m[j+1]);c.sp[j]=laSnap(c.sp[j]==null?lst[0]:c.sp[j],lst)}})}
+  else if(k[0]==='sp'&&i>=0){if(ev!=='change')return true;const x=parseFloat(v);if(!isNaN(x))c.sp[i]=x}
+  else return false;
+  laCfg(o);geom(o);hReset();
+  if(ev==='change'){afterEdit(true);pn()}else{afterEdit();refreshSpkSec(o)}
+  return true}
+// pulsanti del pannello (data-act="la…")
+function laAct(a,b,o){if(!laIs(o))return false;const c=laCfg(o);
+  if(a==='laAdd'){if(c.m.length>=LA_MAX){say(`Al massimo ${LA_MAX} moduli in un array.`);return true}push();c.m.push(LA_MODELS[b.dataset.m]?b.dataset.m:'s1210')}
+  else if(a==='laRm'){const i=+b.dataset.i;if(c.m.length<2||!(i>=0&&i<c.m.length))return true;push();c.m.splice(i,1);c.sp.splice(Math.min(i,c.sp.length-1),1)}
+  else if(a==='laAim'){const tg=laTarget(o);push();const r=laAim(o,tg.near,tg.far);
+    if(r.err){hist.pop();pn();const m=$('laAimMsg');if(m)m.textContent=r.err;return true}
+    laCfg(o);geom(o);hReset();afterEdit(true);pn();const g=spkGeo(o),q=laReach(g.la,earH()),m=$('laAimMsg');
+    if(m)m.textContent=`Fatto: primo modulo a ${fx(c.t0,1)}°, il fascio copre ${laRange(q)} (richiesto ${fx(tg.near,0)}–${fx(tg.far,0)} m). Controlla in NS-1.`;
+    return true}
+  else if(a==='laAmp'){laAddAmps(o);return true}
+  else return false;
+  laCfg(o);geom(o);hReset();afterEdit(true);pn();return true}
+// finali e cavi Speakon: un cavo per ogni gruppo ancora senza finale, 4 canali per NXAMP
+function laAddAmps(o){const gr=laGroups(o),AC=ampCalc(),fed=new Set();
+  AC.amps.forEach(a=>a.chs.forEach(q=>q.loads.forEach(l=>{if(l.o===o)fed.add(l.g)})));
+  const todo=gr.filter(x=>!fed.has(x.i));if(!todo.length)return;push();
+  const free=[];AC.amps.forEach(a=>{const used=new Set(a.chs.map(q=>q.c));for(let ch=1;ch<=a.a.ch;ch++)if(!used.has(ch))free.push({A:a.A,ch})});
+  let nAmp=0,left=todo.length;
+  while(left>free.length){const amp=mkObj('nxamp',snapV(o.x+1.4+nAmp*.7),snapV(o.y-1.1-nAmp*.6));S.push(amp);nAmp++;for(let ch=1;ch<=ampData(amp).ch;ch++)free.push({A:amp,ch})}
+  todo.forEach((x,j)=>{const slot=free.shift();let via=autoVia(slot.A,o,'audio');
+    if(!via.length&&j>0){const mx=(slot.A.x+o.x)/2+.25*j,my=(slot.A.y+o.y)/2;via=[{x:snapV(mx),y:snapV(my)}]}
+    Lk.push({id:uid(),k:'audio',spec:'nl4',n:1,a:slot.A.id,b:o.id,ch:slot.ch,via})});
+  afterEdit(true);pn();say(`Collegati ${todo.length} cav${todo.length>1?'i':'o'} Speakon dal finale al line array: ${gr.length} gruppi da ${laCfg(o).per} moduli al massimo.`)}
+
+// testo dei casse/moduli su un canale del finale: «Sala (3 moduli), Monitor 1»
+function laChText(ch){return ch.spk.map(o=>{const l=ch.loads.find(x=>x.o===o&&x.g!=null);return esc(o.l)+(l?` (${l.n} modul${l.n>1?'i':'o'}, ${LA_MODELS[l.m].s})`:'')}).join(', ')}
+/*LARR-END*/
 
 /* ============================== VISTA ============================== */
 const sv=$('stage');
@@ -2364,7 +2999,7 @@ function infoOf(o){
     case 'splitter':return'';
     case 'quadro':return distTxt(o);
     case 'strip':{const cl=cordOf(o);return`${p.posti||5} posti · spina ${connS(pinOf(o))}${cl!=null?' · cavo '+fx(cl,cl%1?1:0)+' m':''}`}
-    case 'spk':case 'linearray':{const g=spkGeo(o);if(g.use==='wedge'){const w=wedgeReach(o);return`monitor · asse ${fx(w.ang,0)}°${w.dist!==Infinity?' · artista ≈'+fx(w.dist,1)+' m':''}`}
+    case 'spk':case 'linearray':{const g=spkGeo(o);if(g.la)return laShortInfo(o,g);if(g.use==='wedge'){const w=wedgeReach(o);return`monitor · asse ${fx(w.ang,0)}°${w.dist!==Infinity?' · artista ≈'+fx(w.dist,1)+' m':''}`}
       const u=(SPK_USES.find(x=>x[0]===g.use)||['',''])[1];return g.sup.t==='floor'&&!g.stage?u:`${u} · asse ${fx(g.axis,2)} m${g.tilt?' · '+fx(g.tilt,1)+'°':''}`}
     case 'wedge':{if(spkUse(o)!=='wedge'){const g=spkGeo(o);return`${(SPK_USES.find(x=>x[0]===g.use)||['',''])[1]} · asse ${fx(g.axis,2)} m`}const w=wedgeReach(o);return`asse ${fx(w.ang,0)}°${monInfo(o).src==='nd'?' (da misurare)':''}${w.dist!==Infinity?' · artista ≈'+fx(w.dist,1)+' m':''}`}
     case 'mic':case 'micw':case 'michs':case 'micclip':case 'di':return p.model||'';
@@ -2622,7 +3257,7 @@ function pn(){
     case 'iem':case 'pmix':case 'monxlr':g+=monPanel(o);break;
   }
   if(g)h+=`<div class="grp">${g}</div>`;
-  if(isSub(o))h+=subOnePanel(o);else if(isSpk(o))h+=speakerPanel(o);
+  if(isSub(o))h+=subOnePanel(o);else if(isSpk(o))h+=laIs(o)?arrayPanel(o):speakerPanel(o);
   h+=instrPanel(o);
   if(ampData(o))h+=ampPanel(o);
   h+=powerPanel(o,role);
@@ -2706,7 +3341,7 @@ function speakerPanel(o){const g=spkGeo(o),p=o.p||{},d=g.d,use=g.use;
   return h}
 function ampPanel(o){const a=ampData(o),AC=ampCalc(),me=AC.amps.find(x=>x.A===o);
   return`<div class="grp"><b>🎛️ Finale</b><span class="info">${a.ch} canali · ${a.W8||'?'} W/8 Ω · ${a.W4||'?'} W/4 Ω${a.W2?' · '+a.W2+' W/2 Ω':''}</span>
-    ${me&&me.chs.length?me.chs.map(c=>`<span class="chip ${c.low||c.over?'err':'ok'}">CH${c.c}: ${c.spk.map(x=>esc(x.l)).join(', ')||'—'}${c.Z?' · '+fx(c.Z,1)+' Ω':''}</span>`).join(''):'<span class="info">collega le casse passive con 🔗 Collega → Audio → Speakon NL4</span>'}</div>`}
+    ${me&&me.chs.length?me.chs.map(c=>`<span class="chip ${c.low||c.over?'err':'ok'}">CH${c.c}: ${laChText(c)||'—'}${c.Z?' · '+fx(c.Z,1)+' Ω':''}</span>`).join(''):'<span class="info">collega le casse passive con 🔗 Collega → Audio → Speakon NL4</span>'}</div>`}
 function powerPanel(o,role){if(o.sym==='quadro'||o.sym==='strip'||o.sym==='splitter'||role==='supply')return'';
   const c=catBy(o.k)||{},hasPow=role==='load'||(pinOf(o)!=='none');if(!hasPow&&!(c.pin&&c.pin!=='none')&&!o.pin)return'';
   const cords=devCords(o),cl=cordOf(o),pin=pinOf(o);
@@ -2807,6 +3442,7 @@ $('pn').addEventListener('input',e=>{
     if(t.dataset.c==='provN'){lk.provN=t.value;afterEdit();return}
     if(t.dataset.c==='Lm'){const v=parseFloat(t.value);if(v>0)lk.Lm=v;else delete lk.Lm;afterEdit();return}return}
   if(!o)return;
+  if(t.dataset.la!=null&&laOnInput(o,t,'input'))return;
   if(t.dataset.g){const[i,k]=t.dataset.g.split(':'),gr=normDist(o).groups[+i];if(!gr)return;if(k==='mcb')gr.mcb=t.value;else if(k!=='t'){const v=parseFloat(t.value);if(isNaN(v))return;gr[k]=k==='n'?Math.max(0,v|0):v}afterEdit();return}
   if(t.dataset.p==='model'&&t.type==='text'){o.p.model=t.value;afterEdit();return}
   if(t.dataset.p==='rcd'){o.p.rcd=t.value;afterEdit();return}
@@ -2817,7 +3453,8 @@ $('pn').addEventListener('input',e=>{
     afterEdit();return}
   if(t.dataset.p&&t.type==='number'){const k=t.dataset.p,v=parseFloat(t.value);
     // campo svuotato: torna automatico (attacchi dei cavi, fondo cassa appesa, altezza di elevatore e stativo)
-    if(isNaN(v)){if(k==='hc'||k==='hf'||(k==='alt'&&(isLift(o)||o.sym==='lstand'))){delete o.p[k];hReset();afterEdit()}return}
+    if(isNaN(v)){if(k==='ht'&&laIs(o)){delete o.p.ht;hReset();geom(o);afterEdit();refreshSpkSec(o);return}
+      if(k==='hc'||k==='hf'||(k==='alt'&&(isLift(o)||o.sym==='lstand'))){delete o.p[k];hReset();afterEdit()}return}
     if(k==='len')return; // ricomposizione dei tratti su "change"
     if(o.sym==='stage'&&(k==='nx'||k==='ny')){if(v>=1)resizeStage(o,k==='nx'?v:o.p.nx,k==='ny'?v:o.p.ny);afterEdit();return}
     o.p[k]=v;if(k==='alt')rigSyncAlt(o);hReset();geom(o);afterEdit();if(isSpk(o))refreshSpkSec(o)}
@@ -2826,6 +3463,7 @@ $('pn').addEventListener('change',e=>{
   if(e.target.dataset.mprov!=null){push();curIds().forEach(id=>{const x=S.find(o=>o.id===id);if(x){x.prov=e.target.value;if(!x.prov)delete x.provN}});afterEdit(true);pn();return}
   if(e.target.dataset.setrot!=null){const v=parseFloat(e.target.value)||0;if(v){push();rotateSet(curIds(),v);afterEdit();pn()}return}
   const t=e.target,o=S.find(x=>x.id===sel);
+  if(o&&t.dataset.la!=null&&laOnInput(o,t,'change'))return;
   if(t.dataset.c&&selLk){const lk=Lk.find(x=>x.id===selLk);if(!lk)return;
     if(t.dataset.c==='k'){lk.k=t.value;lk.spec=(SPECS[lk.k]||[{}])[0].k}
     if(t.dataset.c==='spec')lk.spec=t.value;
@@ -2864,6 +3502,7 @@ $('pn').addEventListener('change',e=>{
 });
 $('pn').addEventListener('click',e=>{
   const b=e.target.closest('[data-act],[data-member]');if(!b||b.disabled)return;const a=b.dataset.act,o=S.find(x=>x.id===sel);
+  if(a&&a.startsWith('la')&&o&&laAct(a,b,o))return;
   if(a==='dmDel'){push();DM=DM.filter(x=>x.id!==selDm);selDm=null;afterEdit();pn();return}
   if(a==='lkDel'){push();Lk=Lk.filter(x=>x.id!==selLk);selLk=null;afterEdit();pn();return}
   if(a==='lkClr'){push();const lk=Lk.find(x=>x.id===selLk);if(lk)lk.via=[];afterEdit();pn();return}
@@ -3012,8 +3651,8 @@ function multiPanel(){const k=msel.size;
     <span class="info">${mselMode?'Tocca altri elementi o trascina un rettangolo per aggiungerli.':'Trascina uno degli elementi selezionati per spostarli insieme.'}</span>
     <label class="field">Fornito da <select data-mprov>${opt_(Object.entries(PROV),'')}</select></label></div>`+([...msel].filter(id=>isSub(S.find(o=>o.id===id))).length>1?subPanel([...msel]):'')}
 
-function spkInfoTxt(o){const g=spkGeo(o),d=g.d;return`Cassa ${fx(d.H,2)} m · copertura ${g.Hc}°×${g.V}°${d.spl?' · '+d.spl+' dB max':''}${g.note?' · '+esc(g.note):''} · fondo cassa ${fx(g.base,2)} m · asse ${fx(g.axis,2)} m`}
-function refreshSpkSec(o){const a=$('spkSec'),b=$('spkInfo');if(a)a.innerHTML=spkSectionSvg(o);if(b)b.innerHTML=spkInfoTxt(o)}
+function spkInfoTxt(o){const g=spkGeo(o),d=g.d;if(g.la)return laInfoTxt(o,g);return`Cassa ${fx(d.H,2)} m · copertura ${g.Hc}°×${g.V}°${d.spl?' · '+d.spl+' dB max':''}${g.note?' · '+esc(g.note):''} · fondo cassa ${fx(g.base,2)} m · asse ${fx(g.axis,2)} m`}
+function refreshSpkSec(o){const a=$('spkSec'),b=$('spkInfo');if(a)a.innerHTML=spkSectionSvg(o);if(b)b.innerHTML=spkInfoTxt(o);if(laIs(o))laRefresh(o)}
 
 /* ============================== STORICO ============================== */
 function stateObj(){return{v:3,meta:Meta,S,Lk,DM,GR,BG,bgA:BG.indexOf(Img),Img,G2,E,view:curVB()}}
@@ -3418,6 +4057,7 @@ function materials(){
       case 'zone':case 'note':case 'box':case 'supply':case 'wall':case 'door':case 'exit':case 'column':break;
       case 'strip':if(!fed.has(o.id)){const pl=pinOf(o),cl=cordOf(o);add('Elettrico e distribuzione',`Ciabatta ${p.posti||5} posti, spina ${connS(pl)}${cl!=null?', cavo '+fx(cl,cl%1?1:0)+' m':''}`,1)}break;
       default:{const cl=(CATS.find(x=>x[0]===c.cat)||[0,'Altro'])[1];
+        if(laIs(o)){laBom(o,spkGeo(o)).forEach(r=>add(r.cat,r.item,r.q,r.note,r.k||null));break}
         if(/^mic/.test(o.k)||o.sym==='mic'||o.sym==='micw'||o.sym==='michs'||o.sym==='micclip'){add('Audio — microfoni e DI',p.model||c.l,1);
           const a=astaTxt(p);if(a&&p.asta!=='nessuna')add('Audio — microfoni e DI',a.charAt(0).toUpperCase()+a.slice(1),1)}
         else if(o.sym==='di')add('Audio — microfoni e DI','DI '+(p.model||''),1);
@@ -3447,7 +4087,7 @@ function materials(){
   const byK={};Object.values(M).forEach(r=>{if(r.k)byK[r.k]=(byK[r.k]||0)+r.q});
   Object.values(M).forEach(r=>{if(!r.k)return;let have=null;if(r.k.startsWith('split:'))have=STOCK.split&&STOCK.split[r.k.slice(6)];else have=STOCK.items&&STOCK.items[r.k];
     if(have!=null)r.note=stockNote(byK[r.k],have)});
-  const order=['Audio','Audio — microfoni e DI','Audio — supporti casse','Luci','Video','Strumenti musicali','Elettrico e distribuzione','Americane e strutture','Palco e spazi','I tuoi tipi','Altro'];
+  const order=['Audio','Audio — line array e rigging','Audio — microfoni e DI','Audio — supporti casse','Luci','Video','Strumenti musicali','Elettrico e distribuzione','Americane e strutture','Palco e spazi','I tuoi tipi','Altro'];
   const rank=c=>c.startsWith('Fornito da')?90:c.startsWith('Cavi')?50:(order.indexOf(c)<0?60:order.indexOf(c));
   return Object.values(M).sort((a,b)=>(rank(a.cat)-rank(b.cat))||a.cat.localeCompare(b.cat)||a.item.localeCompare(b.item,'it',{numeric:true}));
 }
@@ -3755,28 +4395,36 @@ function ampCalc(){
   const byId={};S.forEach(o=>byId[o.id]=o);
   const nl=Lk.filter(lk=>lk.k==='audio'&&lk.spec==='nl4'&&byId[lk.a]&&byId[lk.b]),adj={};
   nl.forEach(lk=>{(adj[lk.a]=adj[lk.a]||[]).push(lk);(adj[lk.b]=adj[lk.b]||[]).push(lk)});
-  const amps=S.filter(o=>ampData(o)),fed=new Set(),out=[],warn=[];
+  const amps=S.filter(o=>ampData(o)),fed=new Set(),out=[],warn=[],gUsed={}; // gUsed: quanti gruppi di un line array hanno già il loro cavo
   amps.forEach(A=>{const a=ampData(A),links=(adj[A.id]||[]),used={},chs=[];
     links.forEach(lk=>{const c=lk.ch|0;if(c&&c<=a.ch&&!used[c]){used[c]=lk}});
     links.forEach(lk=>{if(Object.values(used).includes(lk))return;let c=1;while(used[c])c++;used[c]=lk});
     Object.keys(used).map(Number).sort((x,y)=>x-y).forEach(c=>{const lk=used[c],first=lk.a===A.id?lk.b:lk.a,spk=[],seen=new Set([A.id]);
       const walk=id=>{if(seen.has(id))return;seen.add(id);const o=byId[id];if(!o)return;if(isSpk(o))spk.push(o);if(ampData(o))return;(adj[id]||[]).forEach(l=>walk(l.a===id?l.b:l.a))};walk(first);
       spk.forEach(o=>fed.add(o.id));
-      const pas=spk.filter(isPassive),Z=pas.length?1/pas.reduce((s,o)=>s+1/(spkData(o).imp||8),0):0,P=Z?ampPowerAt(a,Z):0;
-      const ch={c,lk,spk,pas,Z,P,over:c>a.ch,low:Z&&Z<(a.min||2)-1e-6,per:pas.length?P/pas.length:0};chs.push(ch);
+      // carichi sul canale: una cassa = 1 × la sua impedenza; un line array = i moduli del suo gruppo (il primo cavo prende il gruppo 1, il secondo il 2…)
+      const pas=spk.filter(isPassive),loads=[];
+      pas.forEach(o=>{if(laIs(o)){const gr=laGroups(o),k=gUsed[o.id]||0;
+          if(k>=gr.length){warn.push(`${A.l} CH${c}: ${o.l} ha già tutti i ${gr.length} gruppi collegati, questo cavo in più non serve`);return}
+          gUsed[o.id]=k+1;loads.push({o,n:gr[k].n,imp:LA_IMP,g:k,m:gr[k].m})}
+        else loads.push({o,n:1,imp:spkData(o).imp||8})});
+      const nn=loads.reduce((t,l)=>t+l.n,0),Y=loads.reduce((t,l)=>t+l.n/l.imp,0),Z=Y?1/Y:0,P=Z?ampPowerAt(a,Z):0,arrOnly=loads.length&&loads.every(l=>l.g!=null);
+      const ch={c,lk,spk,pas,loads,n:nn,Z,P,over:c>a.ch,low:Z&&Z<(a.min||2)-1e-6,per:nn?P/nn:0};chs.push(ch);
       if(ch.over)warn.push(`${A.l}: il canale ${c} non esiste (il finale ha ${a.ch} canali)`);
-      if(ch.low)warn.push(`${A.l} CH${c}: ${pas.length} casse in parallelo = ${fx(Z,1)} Ω, sotto il minimo di ${a.min} Ω del finale`);
+      if(ch.low)warn.push(`${A.l} CH${c}: ${nn} ${arrOnly?'moduli':'casse'} in parallelo = ${fx(Z,1)} Ω, sotto il minimo di ${a.min} Ω del finale`);
+      if(new Set(loads.filter(l=>l.g!=null).map(l=>l.m)).size>1)warn.push(`${A.l} CH${c}: S1210 e S1230 sullo stesso canale, ma nel NXAMP ogni canale ha un solo preset: mettili su canali separati`);
       spk.filter(o=>!isPassive(o)).forEach(o=>warn.push(`${o.l} è una cassa attiva: non va collegata all'uscita Speakon di un finale`));
-      pas.forEach(o=>{const d=spkData(o);if(d.pmax&&ch.per>d.pmax*1.05)warn.push(`${A.l} CH${c}: ${fx(ch.per,0)} W per cassa su ${o.l}, oltre i ${d.pmax} W consigliati (limita il guadagno o usa un'altra impedenza)`)})});
+      loads.forEach(l=>{const d=spkData(l.o);if(d.pmax&&ch.per>d.pmax*1.05)warn.push(`${A.l} CH${c}: ${fx(ch.per,0)} W per ${l.g!=null?'modulo':'cassa'} su ${l.o.l}, oltre i ${d.pmax} W consigliati (limita il guadagno o usa un'altra impedenza)`)})});
     out.push({A,a,chs})});
   const orphan=S.filter(o=>isPassive(o)&&!fed.has(o.id)&&!provOf(o));
   orphan.forEach(o=>warn.push(`${o.l} è passiva: serve un finale (collegala con un cavo Speakon NL4)`));
+  S.filter(laIs).forEach(o=>{const gr=laGroups(o),k=gUsed[o.id]||0;if(k>0&&k<gr.length&&!provOf(o))warn.push(`${o.l}: ${gr.slice(k).map(x=>'moduli '+(x.a+1)+(x.b>x.a?'–'+(x.b+1):'')).join(', ')} senza finale (servono ${gr.length} cavi Speakon, ne ho trovati ${k})`)});
   return{amps:out,orphan,warn,fed};
 }
 
 // casse passive collegate fra loro con Speakon: impedenza risultante e verdetto sul finale
-function nl4Chain(lk){const AC=ampCalc();const ch=AC.amps.flatMap(a=>a.chs.map(c=>({a,c}))).find(x=>x.c.lk===lk||x.c.spk.some(o=>o.id===lk.a||o.id===lk.b));
-  if(ch){const{a,c}=ch,n=c.pas.length;if(!n)return null;const ok=!c.low;return{bad:!ok,txt:`${a.A.l} CH${c.c}: ${n} cass${n>1?'e':'a'} in parallelo = ${fx(c.Z,1)} Ω → ${ok?`ok (minimo ${a.a.min} Ω), ${fx(c.per,0)} W per cassa`:`troppo bassa: il finale regge ${a.a.min} Ω`}`}}
+function nl4Chain(lk){const AC=ampCalc();const all=AC.amps.flatMap(a=>a.chs.map(c=>({a,c}))),ch=all.find(x=>x.c.lk===lk)||all.find(x=>x.c.spk.some(o=>o.id===lk.a||o.id===lk.b));
+  if(ch){const{a,c}=ch,n=c.n;if(!n)return null;const ok=!c.low,arr=c.loads.length&&c.loads.every(l=>l.g!=null);return{bad:!ok,txt:`${a.A.l} CH${c.c}: ${n} ${arr?(n>1?'moduli':'modulo'):'cass'+(n>1?'e':'a')} in parallelo = ${fx(c.Z,1)} Ω → ${ok?`ok (minimo ${a.a.min} Ω), ${fx(c.per,0)} W per ${arr?'modulo':'cassa'}`:`troppo bassa: il finale regge ${a.a.min} Ω`}`}}
   const set=new Set(),stack=[lk.a,lk.b],nl=Lk.filter(l=>l.k==='audio'&&l.spec==='nl4');while(stack.length){const id=stack.pop();if(set.has(id))continue;set.add(id);nl.forEach(l=>{if(l.a===id)stack.push(l.b);if(l.b===id)stack.push(l.a)})}
   const pas=[...set].map(id=>S.find(o=>o.id===id)).filter(o=>o&&isPassive(o));if(!pas.length)return null;const Z=1/pas.reduce((s,o)=>s+1/(spkData(o).imp||8),0);
   return{bad:true,txt:`${pas.length} cass${pas.length>1?'e':'a'} passiv${pas.length>1?'e':'a'} in parallelo = ${fx(Z,1)} Ω: manca il finale (NXAMP 4x4 regge fino a 2 Ω, PC9500N fino a 2 Ω)`}}
@@ -3785,7 +4433,8 @@ const earH=()=>+G2.ear||1.2;
 function reachTxt(v){return v===Infinity?'—':v<=0.05?'da subito':fx(v,1)+' m'}
 function renderAudio(){
   const box=$('audioBox');if(!box)return;const AC=ampCalc(),sp=S.filter(o=>isSpk(o));
-  $('audioChip').textContent=sp.length?`${sp.length} diffusori · ${AC.amps.length} finali`:'';$('audioChip').className='chip'+(AC.warn.length?' warn':'');
+  const nCab=sp.reduce((t,o)=>t+(laIs(o)?laCfg(o).m.length:1),0);
+  $('audioChip').textContent=sp.length?`${nCab} diffusori · ${AC.amps.length} finali`:'';$('audioChip').className='chip'+(AC.warn.length?' warn':'');
   let h='';
   if(!sp.length&&!AC.amps.length){box.innerHTML='<p class="empty-note">Aggiungi casse e finali: qui trovi uso, supporto, altezza, inclinazione e da dove a dove coprono, più i canali dei finali.</p>';return}
   const he=earH();
@@ -3794,7 +4443,8 @@ function renderAudio(){
     tops.forEach(o=>{const g=spkGeo(o),r=spkReach(g,he),d=g.d,spl=d.spl?d.spl-20*Math.log10(20):null;
       h+=`<tr><td>${esc(o.l)}<div class="info">${esc((catBy(o.k)||{}).l||'')}</div></td><td>${esc((SPK_USES.find(u=>u[0]===g.use)||['',''])[1])}</td><td>${esc(g.sup.l.replace(/ \(.*\)$/,''))}<div class="info">${esc(g.note)}</div></td>`
         +`<td class="num mono">${fx(g.axis,2)} m</td><td class="num mono">${fx(g.tilt,1)}°</td><td class="num mono">${g.Hc}°×${g.V}°</td><td class="num mono">${reachTxt(r.near)}</td><td class="num mono">${reachTxt(r.axis)}</td><td class="num mono">${spl!=null?fx(spl,0)+' dB':'—'}</td></tr>`});
-    h+='</table></div><p class="hint" style="margin:4px 0 8px">"Copre da": distanza dalla cassa dove il bordo inferiore della copertura arriva all\'altezza delle orecchie (prima di lì il pubblico è sotto il fascio). SPL di picco stimato con −6 dB a ogni raddoppio di distanza. Altezza orecchie nelle Impostazioni.</p>'}
+    h+='</table></div><p class="hint" style="margin:4px 0 8px">"Copre da": distanza dalla cassa dove il bordo inferiore della copertura arriva all\'altezza delle orecchie (prima di lì il pubblico è sotto il fascio). SPL di picco stimato con −6 dB a ogni raddoppio di distanza. Altezza orecchie nelle Impostazioni.</p>'
+    h+=laTableHtml(tops.filter(laIs))}
   if(wed.length){h+=`<div class="tbl-wrap"><table class="sched"><tr><th>Monitor</th><th class="num">Frontale / asse</th><th class="num">Testa artista</th><th class="num">Distanza ideale</th><th>Finale</th></tr>`;
     wed.forEach(o=>{const w=wedgeReach(o),mi=monInfo(o),fedBy=AC.amps.find(x=>x.chs.some(c=>c.spk.includes(o)));const ch=fedBy?fedBy.chs.find(c=>c.spk.includes(o)):null;
       h+=`<tr><td>${esc(o.l)}<div class="info">${esc((catBy(o.k)||{}).l||'')}</div></td><td class="num mono">${fx(mi.b,0)}° / asse ${fx(w.ang,0)}°${mi.src==='nd'?' ⚠️':''}</td><td class="num mono">${fx(w.head,2)} m</td><td class="num mono">${w.dist===Infinity?'—':'≈ '+fx(w.dist,2)+' m'}</td><td>${isPassive(o)?(ch?`${esc(fedBy.A.l)} CH${ch.c}`:'<span class="chip err">senza finale</span>'):'attivo'}</td></tr>`});
@@ -3803,10 +4453,10 @@ function renderAudio(){
   AC.amps.forEach(({A,a,chs})=>{h+=`<div style="margin:12px 0 4px"><b>${esc(A.l)}</b> · ${a.ch} canali · ${a.W8||'?'} W/8 Ω · ${a.W4||'?'} W/4 Ω${a.W2?` · ${a.W2} W/2 Ω`:''} · minimo ${a.min||'?'} Ω</div>
     <div class="tbl-wrap"><table class="sched"><tr><th>Canale</th><th>Casse</th><th class="num">Impedenza</th><th class="num">Potenza</th><th class="num">Per cassa</th></tr>`;
     for(let c=1;c<=Math.max(a.ch,...chs.map(x=>x.c));c++){const ch=chs.find(x=>x.c===c);
-      h+=ch?`<tr><td class="mono">CH${c}${ch.over?' ⚠️':''}</td><td>${ch.spk.map(o=>esc(o.l)).join(', ')||'—'}</td><td class="num mono">${ch.Z?fx(ch.Z,1)+' Ω':'—'}</td><td class="num mono">${ch.P?fx(ch.P,0)+' W':'—'}</td><td class="num">${ch.pas.length?`<span class="chip ${ch.low?'err':'ok'}">${fx(ch.per,0)} W</span>`:''}</td></tr>`
+      h+=ch?`<tr><td class="mono">CH${c}${ch.over?' ⚠️':''}</td><td>${laChText(ch)||'—'}</td><td class="num mono">${ch.Z?fx(ch.Z,1)+' Ω':'—'}</td><td class="num mono">${ch.P?fx(ch.P,0)+' W':'—'}</td><td class="num">${ch.pas.length?`<span class="chip ${ch.low?'err':'ok'}">${fx(ch.per,0)} W</span>`:''}</td></tr>`
         :`<tr><td class="mono">CH${c}</td><td class="info">libero</td><td></td><td></td><td></td></tr>`}
     h+='</table></div>'});
-  const W=AC.warn.slice();sp.forEach(o=>{const ov=supOver(o);if(ov)W.unshift(`${o.l}: pesa ${fx(ov.kg,1)} kg, il supporto ${ov.l} ne regge ${ov.max}: scegli un'altra piantana`);const pc=poleCheck(o);if(pc)W.unshift(o.l+': '+pc.replace('⚠️ ',''));
+  const W=AC.warn.slice();sp.forEach(o=>{if(laIs(o)){laChecks(o,spkGeo(o)).forEach(([lv,t])=>{if(lv!=='info')W.push(o.l+': '+t)});return}const ov=supOver(o);if(ov)W.unshift(`${o.l}: pesa ${fx(ov.kg,1)} kg, il supporto ${ov.l} ne regge ${ov.max}: scegli un'altra piantana`);const pc=poleCheck(o);if(pc)W.unshift(o.l+': '+pc.replace('⚠️ ',''));
     if(spkUse(o)==='wedge'&&monInfo(o).src==='nd')W.push(`${o.l}: angolo da monitor non indicato dal manuale, usato 45° — misuralo e salvalo dal pannello`)});
   if(W.length)h+=`<div class="callout warn" style="margin-top:10px;display:grid;gap:4px">${W.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`;
   $('audioChip').className='chip'+(W.length?' warn':'');
@@ -3814,7 +4464,7 @@ function renderAudio(){
 }
 // sezione verticale di una cassa per il pannello: supporto, asse, fascio, piano orecchie
 function spkSectionSvg(o){
-  const g=spkGeo(o),he=earH(),Wd=560,Hd=170;
+  const g=spkGeo(o),he=earH(),Wd=560,Hd=170;if(g.la)return laSectionSvg(o,g);
   if(g.use==='wedge'){const w=wedgeReach(o),dmax=Math.max(2.2,(w.dist===Infinity?2:w.dist)*1.6),X=x=>30+x*(Wd-60)/dmax,top=2.1,Y=y=>Hd-22-y*(Hd-40)/top;
     let s=`<line x1="10" y1="${Y(0)}" x2="${Wd-10}" y2="${Y(0)}" stroke="#90A4AE" stroke-width="1.5"/>`;
     const dp=clamp(+o.h||.42,.3,.8);s+=`<polygon points="${X(0)},${Y(0)} ${X(dp)},${Y(0)} ${X(.06)},${Y(.4)}" fill="${o.c}" fill-opacity=".35" stroke="${o.c}"/>`;
@@ -4036,6 +4686,7 @@ function renderItemStock(){
   Object.entries(SPLIT).forEach(([k,v])=>h+=row('split:'+k,'Sdoppio '+v.l,COL.el));
   h+=row('adapt:cee16|civ','Adattatori CEE 16A ↔ civile (i due versi insieme)',COL.el)+row('adapt:civ|pcon','Adattatori civile ↔ powerCON',COL.el);
   Object.entries(SUPPORTS).filter(([k,v])=>v.t==='stand'||v.t==='pole').forEach(([k,v])=>h+=row('sup:'+k,v.l.replace(/ \(.*\)$/,''),COL.audio));
+  LA_STOCK.forEach(([k,l])=>h+=row(k,l,COL.audio));
   $('itemStockBox').innerHTML=h}
 $('itemStockBox').addEventListener('change',e=>{const key=e.target.dataset.istock;if(!key)return;const v=e.target.value===''?null:Math.max(0,parseInt(e.target.value)||0);
   const[g,k]=key.split(':');const tgt=g==='split'?(STOCK.split=STOCK.split||{}):g==='adapt'?(STOCK.adapt=STOCK.adapt||{}):(STOCK.items=STOCK.items||{}),kk=g==='split'||g==='adapt'?k:key;
@@ -7403,7 +8054,7 @@ function hConn(o){hCache();const m=_hMem.get(o.id);if(m)return m;
   if(p.hc!=null&&p.hc!==''&&isFinite(+p.hc)){const h=Math.max(lv,+p.hc),R=h-lv>.05?supOf(o):null;r={h,lv,rig:R&&Math.abs(supTop(R)-h)<.6?rigKey(R):null,why:'altezza scelta da te',set:1}}
   else if(isSpk(o)){const g=spkGeo(o),t=g.sup.t;
     if(t==='stand'||t==='pole'||t==='fly'){const R=t==='fly'?supOf(o):null,H=(g.d&&+g.d.H)||.6;
-      r={h:g.base+H*.4,lv,rig:R?rigKey(R):null,why:t==='fly'?(R?`appesa a ${SUP_NAME[R.sym]} «${R.l}»`:'appesa'):g.note}}}
+      r={h:g.la?g.la.top-.3:g.base+H*.4,lv,rig:R?rigKey(R):null,why:t==='fly'?(R?`appesa a ${SUP_NAME[R.sym]} «${R.l}»`:'appesa'):g.note}}}
   else if(RIG_UP[o.sym]||p.mnt){const R=supOf(o);if(R)r={h:supTop(R),lv,rig:rigKey(R),why:`su ${SUP_NAME[R.sym]} «${R.l}»`,R}}
   _hMem.set(o.id,r);return r}
 // metri di salita e discesa di un cavo

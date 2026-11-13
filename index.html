@@ -537,6 +537,61 @@ details.mat[open]>summary::after{transform:rotate(-135deg);margin-bottom:-3px}
 .chipbtn:hover{background:rgba(127,127,127,.12)}
 .chipbtn .ico{width:16px;height:16px}
 .cvt{color:var(--ink);font-weight:600}
+/* ceste e case: cosa caricare (4.6) */
+.cbox{margin-top:12px;padding:10px 12px 12px;border:2px solid var(--line);border-left:7px solid var(--tape);border-radius:6px;background:var(--card)}
+.cbox h5{font:700 19px/1 var(--cond);color:var(--ink);margin:2px 0 6px}
+.cbl{list-style:none;margin:0;padding:0}
+.cbl li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;padding:8px 0;border-top:1px solid var(--line2)}
+.cbl li:first-child{border-top:0}
+.cbn{flex:1 0 100%;line-height:1.2}
+.cbn small{font-size:14px;color:var(--ink2);margin-left:4px}
+.cbt{flex:1;min-width:0;font-weight:600;line-height:1.3}
+.cbox .row{margin-top:10px}
+.cbn1{line-height:1.35}
+/* luoghi, sopralluoghi e foto (4.6) */
+.lubox{margin-top:12px;padding:10px 12px 12px;border:2px solid var(--line);border-left:7px solid var(--st-sopralluogo);border-radius:6px;background:var(--card)}
+.lubox:empty{display:none}
+.lubox h5{display:flex;align-items:center;gap:6px;font:700 19px/1.15 var(--cond);margin:2px 0 4px}
+.lubox h5 .ico{flex:none;width:18px;height:18px}
+.lubox p{margin-top:4px;font-size:15px;line-height:1.35}
+.lubox .row{margin-top:10px}
+.lubox .luc2{color:var(--ink2);font-size:14.5px}
+.lusrc{font-size:13px !important;color:var(--ink2)}
+.luk{color:var(--ink2)}
+.luhint{margin-top:2px}
+.lunr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line2)}
+.lunr:first-of-type{border-top:0}
+.lunr span{display:flex;flex-direction:column;min-width:0}
+.lunr small{font-size:14px;color:var(--ink2)}
+.lu h4{font:700 20px/1.1 var(--cond);margin:20px 0 6px}
+.luaddr{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:15px;color:var(--ink2)}
+.luaddr .ico{flex:none;width:16px;height:16px}
+.luadd{margin-top:14px;padding:10px 12px 12px;border:2px solid var(--line);border-radius:6px;background:var(--card)}
+.luq{font:700 19px/1.1 var(--cond)}
+.luprog{min-height:18px;margin-top:8px;font-size:14px;color:var(--ink2)}
+.lug{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+@media(min-width:560px){.lug{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.lut{position:relative;display:block;aspect-ratio:4/3;padding:0;border:2px solid var(--line);border-radius:6px;overflow:hidden;background:var(--line2);cursor:pointer}
+.lut:hover{border-color:var(--ink)}
+.lut img{display:block;width:100%;height:100%;object-fit:cover}
+.lutag{position:absolute;left:0;top:0;padding:3px 6px;background:var(--tape);color:var(--on-tape);font:700 13px/1 var(--cond)}
+.lucap{position:absolute;left:0;right:0;bottom:0;padding:3px 5px;background:rgba(0,0,0,.66);color:#fff;font-size:12px;line-height:1.25;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.luv{margin-top:10px;padding:10px 12px;border:2px solid var(--line);border-left:7px solid var(--line);border-radius:6px;background:var(--card)}
+.luv p{margin-top:4px;font-size:15px;line-height:1.35}
+.luvh{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px}
+.lurow{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:56px;margin-top:8px;padding:8px 12px;border:2px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.lurow:hover{background:rgba(127,127,127,.12)}
+.lun{display:flex;flex-direction:column;min-width:0}
+.lun b{font:700 21px/1.1 var(--cond)}
+.lun small{font-size:14px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.luc{flex:none;max-width:45%;font-size:14px;color:var(--ink2);text-align:right}
+.lunav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
+.luview{margin-top:10px;max-height:62vh;max-height:62dvh;overflow:auto;border:2px solid var(--line);border-radius:6px;background:#000;text-align:center;-webkit-overflow-scrolling:touch}
+.lupic{display:block;max-width:100%;margin:0 auto}
+.luview.zoom .lupic{max-width:none;width:230%}
+.lufo{margin-top:10px}
+.lufo p{margin-top:4px}
+.lumerge{margin-top:6px}
 .cvban{display:block}
 .cvban>b{display:block;font:700 21px/1.1 var(--cond);color:var(--warn)}
 .cvban>span{display:block;margin-top:2px;font-size:14px;color:var(--ink2)}
@@ -884,15 +939,48 @@ details.mat[open]>summary::after{transform:rotate(-135deg);margin-bottom:-3px}
 .imx .pill{margin-right:6px}
 .imm,.imw{display:block;margin-top:3px}
 .imw{color:var(--warn);font-weight:600}
+/* Il computer in magazzino (4.6): pagina più larga, e la scheda di un evento su due colonne (squadra a sinistra, materiale e furgoni a destra) */
+body.whmode .wrap{max-width:1180px}
+body.whmode .sheet{max-width:880px}
+.whbar{padding-bottom:6px}
+.whbar .cats{margin-top:0}
+.whpanel .whc>h4:first-child{margin-top:16px}
+.whpanel .whc>.pjtech:last-child{margin-bottom:6px}
+.whbox .row .btn{min-height:44px}
+@media(min-width:1000px){
+  .whpanel .whcols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:0 32px;align-items:start}
+  .whpanel .whc+.whc{border-left:1px dashed var(--line);padding-left:30px}
+  body.whmode .lbtns{grid-template-columns:1fr 1fr}
+}
+/* Il server non risponde (4.6): avviso in cima alla pagina, sopra tutto */
+.offbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:var(--warnbg);border-bottom:4px solid var(--warn);color:var(--ink);font-size:15px;line-height:1.3}
+.offbar b{font-weight:700}
+.offbar small{display:block;margin-top:2px;color:var(--ink2);font-size:13px}
+.offbar .btn{flex:none}
+/* Archivio, scheda storica e copie di sicurezza (4.6) */
+.ar .arbtns{margin-top:12px}
+.ar .arbtns .btn{min-height:46px}
+.arhead{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:16px}
+.arhead b{font:700 21px/1.1 var(--cond)}
+.arsc h4{margin:20px 0 6px;font:700 20px/1.1 var(--cond);color:var(--ink2);padding-bottom:4px;border-bottom:2px solid var(--line)}
+.arrows{list-style:none;margin:0;padding:0}
+.arrows>li{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px;padding:8px 0;border-top:1px solid var(--line2)}
+.arrows>li:first-child{border-top:0}
+.arrows>li>small{color:var(--ink2);font-size:14px;text-align:right}
+.arfoot{flex-wrap:wrap}
+.arfoot .btn{flex:1 1 auto;white-space:nowrap}
+.ar details.free>p{margin:2px 0 12px;font-size:15px;line-height:1.4}
 @media(max-width:380px){
   .wrap{--gut:12px}
   .evt{font-size:23px}
+  .offbar{padding:10px 12px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body data-mode="" data-token="">
 <div id="bar"></div>
+<div id="offbar"></div>
 <div id="app"></div>
 <div id="sheet"></div>
 <div id="toast" role="status" aria-live="polite"></div>
@@ -941,11 +1029,11 @@ const CARICO_LABEL = { gia: 'furgone già carico', da_caricare: 'furgone da cari
 const PAUSE_DINNER_FROM = 16 * 60;   // una pausa dalle 16 in poi è la cena
 
 /* Aperta da Google, modo e token stanno nel <body> (li scrive il server). Aperta da GitHub il <body> è vuoto:
-   modo e token si leggono dall'indirizzo (?t=TOKEN, ?c=TOKEN, o niente = coordinatore). */
+   modo e token si leggono dall'indirizzo (?t=TOKEN, ?c=TOKEN, ?m=TOKEN del magazzino, o niente = coordinatore). */
 const QS = new URLSearchParams(window.location.search);
 const S = {
-  mode: document.body.getAttribute('data-mode') || (QS.get('c') ? 'confirm' : QS.get('t') ? 'tech' : 'coord'),
-  token: document.body.getAttribute('data-token') || QS.get('c') || QS.get('t') || '',
+  mode: document.body.getAttribute('data-mode') || (QS.get('c') ? 'confirm' : QS.get('t') ? 'tech' : QS.get('m') ? 'wh' : 'coord'),
+  token: document.body.getAttribute('data-token') || QS.get('c') || QS.get('t') || QS.get('m') || '',
   sheet: null,
   locked: false,
 };
@@ -955,7 +1043,7 @@ const INP = {};   // scrittura in un campo, a ogni carattere (data-inp)
 const SUB = {};   // invio dei moduli (data-submit)
 /* Con che cosa ci si fa riconoscere dal server nelle funzioni che può usare anche un responsabile tecnico:
    il coordinatore con il suo codice, il tecnico con il suo link (il server non conta mai i suoi errori tra quelli del codice) */
-function CRED() { return S.mode === 'tech' ? { t: S.token } : S.pin; }
+function CRED() { return S.mode === 'tech' ? { t: S.token } : S.mode === 'wh' ? { m: S.token } : S.pin; }
 
 /* ---------- testo e dati ---------- */
 const $ = (sel, root) => (root || document).querySelector(sel);
@@ -1246,6 +1334,7 @@ function toast(msg, kind) {
 function cleanErr(e) {
   let m = (e && e.message) ? e.message : String(e || '');
   m = m.replace(/^\s*(Error|Exception|Errore|Eccezione):\s*/i, '').trim();
+  if (/failed to fetch|networkerror|network request failed|load failed|err_internet|err_network/i.test(m)) return 'Nessuna connessione con il server. Controlla internet e riprova.';
   return m || 'Qualcosa non ha funzionato. Riprova.';
 }
 /* Indirizzo /exec dello script: serve solo alla copia della pagina ospitata su GitHub (lo scrive build.sh);
@@ -1281,6 +1370,7 @@ async function callRemote(fn, args) {
 }
 function call(fn) {
   const args = Array.prototype.slice.call(arguments, 1);
+  if (S.offline && !OFF_INIT[fn]) return Promise.reject(new Error('Il server non risponde: stai guardando i dati salvati e non puoi modificare. Premi «Riprova» in alto.'));
   if (!(window.google && google.script && google.script.run)) {
     bar(1);
     return callRemote(fn, args).finally(() => bar(-1));
@@ -1299,9 +1389,95 @@ async function mutate(fn, quiet) {
   S.locked = true;
   document.body.classList.add('busy');
   try { await fn(); return { ok: true, err: '' }; }
-  catch (e) { if (!quiet) toast(e.message, 'err'); return { ok: false, err: e.message }; }
+  catch (e) {
+    if (S.mode === 'wh' && whIsBad(e)) whGone(e.message);        // il link del magazzino è stato cambiato o spento
+    else if (!quiet) toast(e.message, 'err');
+    return { ok: false, err: e.message };
+  }
   finally { S.locked = false; document.body.classList.remove('busy'); }
 }
+
+/* ---------- se il server non risponde (4.6) ----------
+   A ogni caricamento riuscito la pagina tiene una copia dei dati su questo dispositivo. Se alla prima apertura il server non c'è (rete assente,
+   Google fuori servizio, limite giornaliero superato) si mostrano quei dati, solo da guardare, con un avviso in alto e «Riprova»: finché il
+   server non risponde ogni altra chiamata è bloccata. Non vale quando è il server a dire no (codice errato, link spento).
+   La copia vale solo per chi l'ha fatta: ricorda un'impronta del codice (o il link), non il codice. */
+const OFF = { up: {}, busy: false };
+const OFF_KEY = { c: 'snap_c', t: 'snap_t', w: 'snap_w' };
+const OFF_INIT = { api_coordInit: 1, api_techInit: 1, api_whInit: 1 };
+const OFF_MAX = 3000000;           // oltre questa lunghezza non si salva: il browser concede circa 5 MB per sito
+function offHash(s) {
+  let h = 2166136261;
+  s = String(s || '');
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  return String(h);
+}
+function offWho(kind) { return kind === 'c' ? offHash(S.pin) : String(S.token || ''); }
+function offStamp() {
+  const n = new Date();
+  return n.getFullYear() + '-' + pad(n.getMonth() + 1) + '-' + pad(n.getDate()) + ' ' + pad(n.getHours()) + ':' + pad(n.getMinutes());
+}
+function offSave(kind, d) {                // store.set non dà mai errore: se non c'è spazio o l'archivio è bloccato, l'app funziona lo stesso
+  const txt = JSON.stringify({ t: offStamp(), who: offWho(kind), d: d });
+  if (txt.length <= OFF_MAX) store.set(OFF_KEY[kind], txt); else store.del(OFF_KEY[kind]);
+}
+function offLoad(kind) {
+  try {
+    const j = JSON.parse(store.get(OFF_KEY[kind]) || 'null');
+    return (j && j.d && j.t && j.who === offWho(kind)) ? j : null;
+  } catch (e) { return null; }
+}
+function offDrop(kind) { store.del(OFF_KEY[kind]); }
+function offIsAuth(e) {
+  return /codice coordinatore|tentativi errati|link non valido|tecnico non attivo|link del magazzino|solo il coordinatore/i.test(String((e && e.message) || ''));
+}
+/* Il caricamento iniziale di una pagina: dal server (e la copia si rinnova) oppure, se non risponde e non c'è ancora niente a video, la copia */
+async function offCall(kind, fn, arg) {
+  try {
+    const d = await call(fn, arg);
+    S.offline = null; OFF.up[kind] = true;
+    offSave(kind, d);
+    return d;
+  } catch (e) {
+    if (OFF.up[kind] || offIsAuth(e)) throw e;       // già a video: un aggiornamento che fallisce non deve far tornare indietro i dati
+    const snap = offLoad(kind);
+    if (!snap) throw e;
+    OFF.up[kind] = true;
+    S.offline = { kind: kind, fn: fn, arg: arg, quando: snap.t, perche: cleanErr(e) };
+    return snap.d;
+  }
+}
+const OFF_APPLY = { c: d => coordApply(d), t: d => techApply(d), w: d => whApply(d) };
+async function offTry() {
+  const o = S.offline;
+  if (!o || OFF.busy || S.locked) return false;
+  OFF.busy = true;
+  try {
+    const d = await call(o.fn, o.arg);
+    S.offline = null;
+    offSave(o.kind, d);
+    OFF_APPLY[o.kind](d);
+    return true;
+  } catch (e) {
+    if (offIsAuth(e)) offDrop(o.kind);               // nel frattempo il codice o il link sono cambiati: la copia non serve più
+    return false;
+  } finally { OFF.busy = false; }
+}
+function offBannerHtml() {
+  const o = S.offline;
+  if (!o) return '';
+  const when = fmtStamp(o.quando) || o.quando;
+  return '<div class="offbar" role="status"><div><b>Il server non risponde: vedi i dati salvati il ' + esc(when) + '.</b> ' +
+    'Puoi solo guardare; per modificare serve che il server torni a rispondere. <small>' + esc(o.perche) + '</small></div>' +
+    '<button type="button" class="btn sm" data-act="offRetry">Riprova</button></div>';
+}
+ACT.offRetry = async () => {
+  if (!S.offline) { paint(); return; }
+  const ok = await offTry();
+  toast(ok ? 'Di nuovo in linea: dati aggiornati.' : 'Il server non risponde ancora. Riprovo tra poco.', ok ? 'ok' : 'err');
+};
+setInterval(() => { if (S.offline && document.visibilityState === 'visible') offTry(); }, 60000);
+window.addEventListener('online', () => { if (S.offline) offTry(); });
 
 async function copyText(text) {
   try {
@@ -1364,6 +1540,8 @@ const ICO = {
   minus: '<path d="M6 12h12"/>',
   more: '<path d="M5 12h.01M12 12h.01M19 12h.01"/>',
   plan: '<rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 11h7M11 4v10M15 14v6M11 14h9"/>',
+  cam: '<path d="M4 8h3l1.5-2.5h7L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/>',
+  img: '<rect x="4" y="5" width="16" height="14" rx="1"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 4 3.5 3-2.5 4 3.5"/>',
 };
 function ico(n) {
   return '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" ' +
@@ -1376,6 +1554,8 @@ function paint(html) {
   clearArm();
   if (html !== undefined) $('#app').innerHTML = html;
   else if (typeof S.view === 'function') $('#app').innerHTML = S.view();
+  const ob = $('#offbar');
+  if (ob) ob.innerHTML = offBannerHtml();
   if (y) window.scrollTo(0, y);
   if (typeof S.afterPaint === 'function') S.afterPaint();
 }
@@ -1686,26 +1866,26 @@ async function runLQ() {
       if (it.cv) {
         const tech = S.mode === 'tech';
         const res = it.cv === 'set'
-          ? (tech ? await call('api_techCvarSet', S.token, it.evId, it.lineId, it.spec) : await call('api_cvarSet', S.pin, it.evId, it.lineId, it.spec))
-          : (tech ? await call('api_techCvarRestore', S.token, it.evId, it.ids, it.on) : await call('api_cvarRestore', S.pin, it.evId, it.ids, it.on));
+          ? (tech ? await call('api_techCvarSet', S.token, it.evId, it.lineId, it.spec) : await call('api_cvarSet', CRED(), it.evId, it.lineId, it.spec))
+          : (tech ? await call('api_techCvarRestore', S.token, it.evId, it.ids, it.on) : await call('api_cvarRestore', CRED(), it.evId, it.ids, it.on));
         LQ.items.shift();
         if (LQ.items.some(x => x.evId === it.evId && x.cv)) adoptVarIds(it.evId, res);   // altri tocchi in coda: tengo i loro numeri, prendo solo le sigle vere
         else setVars(it.evId, res);
       } else if (it.bulk) {
         const res = S.mode === 'tech' ? await call('api_techListAll', S.token, it.evId, it.kind, it.bulk)
-          : await call('api_listAll', S.pin, it.evId, it.kind, it.bulk);
+          : await call('api_listAll', CRED(), it.evId, it.kind, it.bulk);
         LQ.items.shift();
         if (!LQ.items.some(x => x.evId === it.evId)) setAllLines(it.evId, res);
       } else {
         const res = S.mode === 'tech' ? await call('api_techListSet', S.token, it.evId, it.kind, it.lineId, it.vals)
-          : await call('api_listSet', S.pin, it.evId, it.kind, it.lineId, it.vals);
+          : await call('api_listSet', CRED(), it.evId, it.kind, it.lineId, it.vals);
         LQ.items.shift();
         if (!LQ.items.some(x => x.evId === it.evId && x.kind === it.kind && (x.bulk || x.lineId === it.lineId))) mergeLine(it.evId, res.riga);
       }
     } catch (e) {
       LQ.items.length = 0;
       toast(e.message, 'err');
-      try { if (S.mode === 'tech') await techLoad(); else await coordLoad(); } catch (e2) { /* resta quello che c'è */ }
+      try { if (S.mode === 'tech') await techLoad(); else if (S.mode === 'wh') await whLoad(); else await coordLoad(); } catch (e2) { /* resta quello che c'è */ }
     }
     lrender();
   }
@@ -1725,7 +1905,7 @@ async function pollList() {
   if (!evId || !S.sheet || L.view !== 'list' || LQ.running || LQ.items.length || S.locked) return;
   const gen = LQ.gen;
   let res;
-  try { res = S.mode === 'tech' ? await call('api_techEventLists', S.token, evId) : await call('api_eventLists', S.pin, evId); } catch (e) { return; }
+  try { res = S.mode === 'tech' ? await call('api_techEventLists', S.token, evId) : await call('api_eventLists', CRED(), evId); } catch (e) { return; }
   if (gen !== LQ.gen || LQ.running || LQ.items.length || L.evId !== evId || !S.sheet) return;
   const before = JSON.stringify(listSrc(evId));
   if (S.mode === 'tech') { const it = techItem(evId); if (it) { it.materiale = res.materiale || []; it.liste = res.liste || it.liste; } }
@@ -1899,6 +2079,8 @@ function lineSmall(l, noVar) {
   if (cs) bits.push(esc(cs));
   const vt = noVar ? '' : variaTxt(l);      // nello scarico le variazioni sono già nel riquadro «Rimetti a posto»
   if (vt) bits.push('<span class="cvt">' + esc(vt) + '</span>');
+  const pt = presoText(l, noVar ? 'scarico' : 'carico');      // pezzi presi da dentro le ceste (4.6): nel carico si prendono, nello scarico si rimettono
+  if (pt) bits.push('<span class="cvt">' + esc(cap(pt)) + '</span>');
   return bits.length ? '<small>' + bits.join(' · ') + '</small>' : '';
 }
 function lstepHtml(l, field, val, max, label, noMax) {
@@ -2299,8 +2481,9 @@ function listBodyHtml(src) {
   } else if (kind === 'scarico' && !lists.caricoQuando && !used) {
     h += '<p class="hint">Il carico non è stato segnato: al rientro si controlla tutto quello che era previsto.</p>';
   }
-  if (kind === 'scarico' && !closed && S.mode === 'tech') {
-    h += '<p class="hint">Tu spunti cosa rientra e cosa è rotto o manca. Lo scarico lo chiude poi il coordinatore, che sistema magazzino e riparazioni.</p>';
+  if (kind === 'scarico' && !closed && S.mode !== 'coord') {
+    h += '<p class="hint">' + (S.mode === 'wh' ? 'Qui spunti cosa rientra e cosa è rotto o manca.' : 'Tu spunti cosa rientra e cosa è rotto o manca.') +
+      ' Lo scarico lo chiude poi il coordinatore, che sistema magazzino e riparazioni.</p>';
   }
   if (kind === 'scarico' && !closed) {
     const nc = lines.filter(l => isCase(l) && varOpen(l).length).length;
@@ -2310,6 +2493,7 @@ function listBodyHtml(src) {
     return h + '<p class="empty">' + (kind === 'carico' ? 'Non c\'è materiale in elenco.' : 'Non c\'è niente da far rientrare: il materiale non è stato caricato.') + '</p>' + listFootHtml(src, pr, closed);
   }
   GIRO = giroGroups(src);
+  if (kind === 'carico' && !closed && canPickApply()) h += pickBoxHtml(S.evById[ev.id]);
   h += giroHtml(kind, lines);
   if (!locked) {
     const none = !lines.some(l => (kind === 'carico' ? toI(l.caricato) : retDoneL(l)) > 0);
@@ -2347,7 +2531,7 @@ function listFootHtml(src, pr, closed) {
       const lm = loadMissing(src.lines.filter(l => toI(l.quantita) >= 1));
       h += '<button type="button" class="btn pri" data-act="lloadClose"' + (lm.pieces ? ' data-confirm="' + (lm.pieces === 1 ? 'Manca 1 pezzo' : 'Mancano ' + lm.pieces + ' pezzi') + '. Chiudo? Tocca di nuovo"' : '') + '>Carico finito</button>';
     }
-  } else if (!closed && S.mode !== 'tech' && pr.total) {
+  } else if (!closed && S.mode === 'coord' && pr.total) {
     h += '<button type="button" class="btn pri" data-act="lunloadReview">Chiudi lo scarico…</button>';
   }
   return h + '</div>';
@@ -2418,7 +2602,7 @@ ACT.lbulk = el => {
 async function loadClose(close) {
   await drainLQ();
   await mutate(async () => {
-    const res = S.mode === 'tech' ? await call('api_techLoadClose', S.token, L.evId, close) : await call('api_loadClose', S.pin, L.evId, close);
+    const res = S.mode === 'tech' ? await call('api_techLoadClose', S.token, L.evId, close) : await call('api_loadClose', CRED(), L.evId, close);
     setLists(L.evId, res.liste);
     const src = listSrc(), lm = src ? loadMissing(src.lines.filter(l => toI(l.quantita) >= 1)) : { pieces: 0 };
     if (close && lm.pieces) toast('Carico chiuso, ma ' + (lm.pieces === 1 ? 'manca 1 pezzo' : 'mancano ' + lm.pieces + ' pezzi') + '. Tocca «Da dove arriva?» sulle voci che mancano.');
@@ -2523,7 +2707,7 @@ ACT.lunloadBack = () => { L.view = 'list'; lrender(); };
 ACT.lcvall = async () => {
   const evId = L.evId;
   const r = await mutate(async () => {
-    const res = await call('api_cvarRestore', S.pin, evId, null, true);
+    const res = await call('api_cvarRestore', CRED(), evId, null, true);
     setVars(evId, res);
   });
   if (r.ok) await loadPlan(); else lrender();
@@ -2531,7 +2715,7 @@ ACT.lcvall = async () => {
 ACT.lunloadRest = async () => {
   const evId = L.evId;
   const r = await mutate(async () => {
-    const res = await call('api_listAll', S.pin, evId, 'scarico', 'rest');
+    const res = await call('api_listAll', CRED(), evId, 'scarico', 'rest');
     setLines(evId, res.righe);
   });
   if (r.ok) await loadPlan(); else lrender();
@@ -2729,7 +2913,7 @@ Object.assign(S, {
   comp: [], cvar: [],              // composizione standard dei case; cosa si è aggiunto o tolto dentro un case per un evento
   compFor: '', compQ: {},          // finestra «Cosa c'è dentro» di un case: quale case e le quantità scelte
   tecById: {}, evById: {}, asgByEv: {}, asgByTec: {}, dmap: {}, matById: {}, carByEv: {}, useByEq: {},
-  compByCase: {}, holdIn: {}, cvarByLine: {}, cvarByEv: {}, demandByEv: {},
+  compByCase: {}, holdIn: {}, cvarByLine: {}, cvarByEv: {}, demandByEv: {}, viaByEv: {},
   furById: {}, feByEv: {}, feByVan: {}, speByEv: {}, ripByEq: {},
   countTent: store.get('countTent') !== '0',   // i preventivi non ancora confermati occupano il materiale? (si ricorda la scelta)
   reuseSame: store.get('reuseSame') !== '0',   // due eventi lo stesso giorno, uno dopo l'altro: possono usare gli stessi pezzi? (di base sì, se gli orari non si sovrappongono)
@@ -2776,12 +2960,16 @@ function derive() {
     (S.cvarByLine[v.line_id] = S.cvarByLine[v.line_id] || []).push(v);
     (S.cvarByEv[v.event_id] = S.cvarByEv[v.event_id] || []).push(v);
   });
-  // quanti pezzi di ogni articolo servono a ogni evento (righe di materiale + variazioni dei case non ancora rimesse a posto)
-  S.useByEq = {}; S.demandByEv = {};
+  // quanti pezzi di ogni articolo servono a ogni evento (righe di materiale + quello che c'è dentro i contenitori presi + variazioni dei case non
+  // ancora rimesse a posto). via = quanti di questi pezzi arrivano dentro un contenitore (per dirlo a chi guarda i conti)
+  S.useByEq = {}; S.demandByEv = {}; S.viaByEv = {}; S.pickCache = {};
   S.ev.forEach(e => {
     const d = evDemand(e);
     S.demandByEv[e.id] = d;
-    Object.keys(d).forEach(id => { if (d[id]) (S.useByEq[id] = S.useByEq[id] || []).push({ e: e, q: d[id] }); });
+    const via = S.viaByEv[e.id] || {};
+    Object.keys(d).forEach(id => {
+      if (d[id]) (S.useByEq[id] = S.useByEq[id] || []).push({ e: e, q: d[id], via: viaQ(via[id]) });
+    });
   });
   S.furById = {}; S.fur.forEach(v => { S.furById[v.id] = v; });
   S.feByEv = {}; S.feByVan = {};
@@ -2954,22 +3142,47 @@ function fromStock(c) {
   const q = Number(c.quantita) || 0;
   return Math.max(0, q - Math.min(q, Number(c.subnoleggio) || 0));
 }
-/* Quanti pezzi di ogni articolo servono a un evento dal nostro magazzino: le righe di materiale (meno il noleggio da fuori) più
-   le variazioni dei case non ancora rimesse a posto. Una variazione in più (+) prende pezzi sciolti; una in meno (−) li lascia
-   sciolti, quindi pesa meno: il numero può anche essere negativo. */
+/* Quanti pezzi di ogni articolo servono a un evento dal nostro magazzino: le righe di materiale (meno il noleggio da fuori), quello che c'è
+   dentro ai case e alle ceste che l'evento prende (di standard, per ogni copia) e le variazioni dei case non ancora rimesse a posto.
+   Una variazione in più (+) prende pezzi sciolti; una in meno (−) li lascia sciolti, quindi pesa meno: il numero può anche essere negativo.
+   Il contenuto dei contenitori si segna anche in S.viaByEv[evento][articolo] = [{c: contenitore, q: pezzi}], per poterlo dire a parole. */
 function evDemand(e) {
-  const d = {};
-  (S.carByEv[e.id] || []).forEach(c => { if (c.equipment_id) d[c.equipment_id] = (d[c.equipment_id] || 0) + fromStock(c); });
+  const d = {}, via = {};
+  (S.carByEv[e.id] || []).forEach(c => {
+    if (!c.equipment_id) return;
+    const own = fromStock(c);
+    d[c.equipment_id] = (d[c.equipment_id] || 0) + own;
+    const m = S.matById[c.equipment_id];
+    if (m && isCase(m) && own > 0) {
+      const copies = Math.min(own, stockOf(m));     // di un contenitore che non c'è (fuori uso, dismesso) non si contano i pezzi dentro
+      (S.compByCase[m.id] || []).forEach(x => {
+        const n = copies * x.q;
+        if (n < 1) return;
+        d[x.id] = (d[x.id] || 0) + n;
+        (via[x.id] = via[x.id] || []).push({ c: m, q: n });
+      });
+    }
+  });
   (S.cvarByEv[e.id] || []).forEach(v => { if (v.equipment_id && !v.rimesso) d[v.equipment_id] = (d[v.equipment_id] || 0) + toSI(v.delta); });
+  S.viaByEv[e.id] = via;
   return d;
+}
+function viaQ(list) { return (list || []).reduce((n, x) => n + x.q, 0); }
+/* Dove sono i pezzi di un articolo che un evento porta dentro ai suoi contenitori: «dentro Case cavi», «di cui 10 dentro Case cavi» */
+function viaWhere(e, m, q) {
+  const via = ((S.viaByEv[e.id] || {})[m.id]) || [];
+  const n = viaQ(via);
+  if (!n) return '';
+  const names = via.map(x => x.c.nome).join(', ');
+  return n >= q ? 'dentro ' + names : 'di cui ' + n + ' dentro ' + names;
 }
 /* Quanti pezzi di un articolo servono, in tutto, a un evento */
 function ownNet(e, equipId) { return ((S.demandByEv[e.id] || {})[equipId]) || 0; }
 
 /* ---------- case: cosa c'è dentro e quanti pezzi restano sciolti ---------- */
-/* Un case pronto tiene dentro (di standard) dei pezzi di altri articoli: sono già nel totale di quell'articolo, ma finché il case è
-   pronto non sono sciolti, quindi non si possono dare a un altro evento. I pezzi sciolti sono quelli che restano:
-   utilizzabili − pezzi nei case (quanti case utilizzabili × quanti ne ha ognuno). */
+/* Un case pronto tiene dentro (di standard) dei pezzi di altri articoli: sono già nel totale di quell'articolo. Dalla 4.6 contano come
+   disponibili: se il case non lo usa un altro evento, quei pezzi si possono caricare (il case intero, oppure qualche pezzo tolto da dentro).
+   «Nei case» e «sciolti» restano per dire dove stanno: sciolti = utilizzabili − pezzi nei case (case utilizzabili × quanti ne ha ognuno). */
 function inCaseRaw(m) {
   return (S.holdIn[m.id] || []).reduce((n, h) => n + stockOf(h.c) * h.per, 0);
 }
@@ -3005,7 +3218,7 @@ function varShorts(e) {
         const a = availFor(art, e);
         const total = Math.max(0, ownNet(e, art.id) - Math.max(0, a.free));
         const lineNeed = (S.carByEv[e.id] || []).filter(c => c.equipment_id === art.id).reduce((n, c) => n + fromStock(c), 0);
-        left[art.id] = Math.max(0, total - Math.min(lineNeed, total));
+        left[art.id] = Math.max(0, total - Math.min(lineNeed, total));        // prima la riga dell'articolo, poi quello che si aggiunge nei case
       }
       short = Math.min(dl, left[art.id]);
       left[art.id] -= short;
@@ -3027,7 +3240,7 @@ function usersOfRange(equipId, r0, r1, exceptId, forEv) {
     const r = occRange(u.e);
     if (!r || r[0] > r1 || r[1] < r0) return;
     if (forEv && sameDayReuse(forEv, u.e)) return;
-    if (u.q) out.push({ e: u.e, q: u.q });
+    if (u.q) out.push({ e: u.e, q: u.q, via: u.via || 0 });
   });
   return out;
 }
@@ -3044,14 +3257,14 @@ function neededTogether(users) {
   return best;
 }
 /* Quanti pezzi di un articolo restano all'evento e, dopo quelli degli altri eventi negli stessi giorni.
-   stock = pezzi utilizzabili; locked = quelli dentro i case pronti; loose = sciolti (gli unici che si danno agli eventi);
-   free = sciolti meno quelli che servono agli altri eventi. */
+   stock = pezzi utilizzabili; locked = quelli dentro i case pronti; loose = sciolti; free = stock meno quelli che servono agli altri eventi.
+   Dalla 4.6 i pezzi dentro i case contano: si caricano insieme al case, o togliendoli da dentro (vedi pickPlan). */
 function availFor(m, e) {
   const r = occRange(e);
   const used = r ? usersOfRange(m.id, r[0], r[1], e.id, e) : [];
   const usedQ = neededTogether(used);
   const stock = stockOf(m), locked = lockedOf(m);
-  return { stock: stock, locked: locked, loose: stock - locked, used: used, usedQ: usedQ, free: stock - locked - usedQ };
+  return { stock: stock, locked: locked, loose: stock - locked, used: used, usedQ: usedQ, free: stock - usedQ };
 }
 /* Situazione di una riga: pezzi che servono dal magazzino, a noleggio, e quanti ne mancano.
    Per una riga di un case: vars = le variazioni e quanti pezzi sciolti mancano per ognuna, vshort = in tutto. */
@@ -3259,9 +3472,10 @@ function viewEventi() {
   const past = S.ev.filter(e => !isUpcoming(e)).sort((a, b) => cmpEv(b, a));
   const hasCal = S.asg.some(a => a.calendarEventId);
   let h = '<div class="toolbar"><button class="btn pri" data-act="newEv">' + ico('plus') + ' Nuovo evento</button>' +
-    (hasCal ? '<button class="btn sm" data-act="syncCal">' + ico('cal') + ' Leggi le risposte da Calendar</button>' : '') +
+    (hasCal ? '<button class="btn sm" data-act="syncCal">' + ico('cal') + ' Leggi le risposte da Calendar</button>' : '') + luEntryHtml() + arEntryHtml() +
     '<label class="chk"><input type="checkbox" data-chg="showPast"' + (S.showPast ? ' checked' : '') +
     '> Mostra passati e annullati</label></div>';
+  h += arBannerHtml();
   h += todoBoxHtml();
   if (!up.length && !(S.showPast && past.length)) {
     h += '<p class="empty">Nessun evento in programma. Tocca «Nuovo evento» per aggiungere il primo.</p>';
@@ -3320,6 +3534,7 @@ function evRow(e) {
 }
 
 function evPanel(e, cov) {
+  if (S.mode === 'wh') return whPanel(e, cov);       // la pagina del magazzino ha la sua scheda (wh.js)
   const cancelled = e.stato === 'annullato';
   let h = '<div class="panel">' + timesHtml(e);
   const facts = [];
@@ -3328,6 +3543,7 @@ function evPanel(e, cov) {
   if (e.telefonoCliente) facts.push('<div><span class="k">Telefono cliente: </span><a href="tel:' + esc(String(e.telefonoCliente).replace(/[^\d+]/g, '')) + '">' + esc(fmtPhone(e.telefonoCliente)) + '</a></div>');
   if (e.noteSopralluogo) facts.push('<div><span class="k">Sopralluogo: </span>' + esc(e.noteSopralluogo) + '</div>');
   if (facts.length) h += '<div class="facts">' + facts.join('') + '</div>';
+  if (!cancelled) h += luBlockHtml(e.luogo, e.id);
   const when = fmtStamp(e.statoAggiornato);
   h += '<div class="stline"><span class="pill ' + (STAGE_PILL[e.stato] || 'muted') + '">' + esc(STAGE_LABEL[e.stato] || e.stato) + '</span>' +
     (when ? '<span class="muted">dal ' + esc(when) + '</span>' : '') +
@@ -3336,7 +3552,8 @@ function evPanel(e, cov) {
   h += '<div class="row" style="margin-top:12px"><button type="button" class="btn sm" data-act="stageOpen" data-id="' + esc(e.id) + '">' +
     ico('bell') + ' Cambia stato</button><button type="button" class="btn sm" data-act="editEv" data-id="' + esc(e.id) + '">' +
     ico('edit') + ' Modifica evento</button><button type="button" class="btn sm" data-act="evDup" data-id="' + esc(e.id) + '">' +
-    ico('copy') + ' Duplica evento</button></div>';
+    ico('copy') + ' Duplica evento</button><button type="button" class="btn sm" data-act="evScheda" data-id="' + esc(e.id) + '">' +
+    ico('hist') + ' Scheda storica</button></div>';
   h += '<h4>Squadra</h4>' + squadraHtml(e, cancelled);
   if (!cancelled) h += openRolesHtml(e, cov);
   else h += '<p class="note muted" style="margin-top:12px">Evento annullato: non si possono fare nuove convocazioni.</p>';
@@ -3507,12 +3724,18 @@ function matSectionHtml(e) {
   const cancelled = e.stato === 'annullato';
   const ms = matSummary(e);
   let h = '<h4>Materiale</h4>';
-  if (!lines.length) {
+  if (!lines.length && S.mode === 'coord' && e.nMateriali > 0) {       // c'è, ma non è ancora stato letto dal foglio (evento vecchio)
+    const n = plural(e.nMateriali, 'voce', 'voci');
+    h += S.offline ? '<p class="muted">L\'elenco del materiale (' + n + ') non è nei dati salvati: lo vedi quando il server torna a rispondere.</p>'
+      : LZ[e.id] === 'err' ? '<p class="note warn" role="alert">Non sono riuscito a leggere l\'elenco del materiale. <button type="button" class="btn sm" data-act="lzRetry" data-id="' + esc(e.id) + '">Riprova</button></p>'
+      : '<p class="muted" role="status">Carico l\'elenco del materiale (' + n + ')…</p>';
+  } else if (!lines.length) {
     h += '<p class="muted">Non c\'è ancora l\'elenco di cosa si monta.' + (cancelled ? '' : ' Aggiungilo qui: i tecnici lo vedono nella loro pagina.') + '</p>';
   } else {
     h += '<p class="matsum">' + plural(ms.lines, 'voce', 'voci') + ', ' + plural(ms.pieces, 'pezzo', 'pezzi') +
       (ms.rent ? ' <span class="pill blue">' + ms.rent + ' a noleggio</span>' : '') +
       (ms.shortLines ? ' <span class="pill bad">manca materiale</span>' : (cancelled ? '' : ' <span class="pill ok">tutto disponibile</span>')) + '</p>';
+    h += pickBoxHtml(e);
     h += groupLines(lines).map(g => '<h5>' + esc(catLabel(g.cat)) + '</h5><ul class="mats">' + g.items.map(c => lineRow(e, c)).join('') + '</ul>').join('');
   }
   if (cancelled) return h;
@@ -3541,10 +3764,11 @@ function lineRow(e, c) {
   return '<li class="mrow' + (miss > 0 ? ' short' : '') + (open ? ' open' : '') + (ro ? ' ro' : '') + '">' +
     (ro ? '<div class="mline">' : '<button type="button" class="mline" data-act="lineToggle" data-id="' + esc(c.id) + '" aria-expanded="' + open + '">') +
     '<span class="mq">' + q + '</span><span class="mn">' + esc(lineName(c)) + (i.m && isCase(i.m) ? ' ' + CASE_PILL : '') +
-    (c.note ? '<small>' + esc(c.note) + '</small>' : '') + (i.m && caseSub(i.m) ? '<small class="cs">' + esc(caseSub(i.m)) + '</small>' : '') + '</span>' +
+    (c.note ? '<small>' + esc(c.note) + '</small>' : '') + (i.m && caseSub(i.m) ? '<small class="cs">' + esc(caseSub(i.m)) + '</small>' : '') +
+    (presoParse(c.preso).length ? '<small class="cs">' + esc(cap(presoText(c, 'carico'))) + '</small>' : '') + '</span>' +
     (pills ? '<span class="mp">' + pills + '</span>' : '') + (ro ? '</div>' : '</button>') + (open ? lineEditor(e, c, i) : '') + '</li>';
 }
-function availHtml(i, lineId) {
+function availHtml(i, lineId, e) {
   if (!i.m) return '<p class="note muted">Questo articolo non è nel magazzino (noleggio da fuori o scritto a mano): non controllo la disponibilità.</p>';
   const a = i.a, m = i.m;
   let t = 'In magazzino ' + (Number(m.quantita) || 0) + (m.fuoriServizio ? ' (' + m.fuoriServizio + ' fuori uso)' : '') + '.';
@@ -3556,9 +3780,19 @@ function availHtml(i, lineId) {
   if (String(m.stato) === 'dismesso') t = 'Questo articolo è stato dismesso: non è più in magazzino.';
   else if (others.length) {
     t += ' Negli stessi giorni servono anche a: ' + others.map(u => u.e.cliente + ' ' + u.q +
+      (u.via && u.via >= u.q ? ' (dentro ' + viaNames(u.e, m) + ')' : '') +
       (u.e.stato === 'confermato' || u.e.stato === 'concluso' ? '' : ' (' + STAGE_LABEL[u.e.stato].toLowerCase() + ')')).join(', ') + '.';
-  } else t += ' Negli stessi giorni nessun altro evento ' + (a.locked > 0 ? 'li usa sciolti.' : 'li usa.');
+  } else t += ' Negli stessi giorni nessun altro evento li usa.';
+  const inConts = e ? viaQ((S.viaByEv[e.id] || {})[m.id]) : 0;
+  if (inConts > 0) t += ' Le ceste di questo evento ne portano già ' + inConts + ' (' + viaNames(e, m) + ').';
   let h = '<p class="note ' + (i.short ? 'bad' : 'muted') + '">' + esc(t + (i.short ? ' Per questo evento ne mancano ' + i.short + '.' : '')) + '</p>';
+  const plan = e && !isCase(m) ? pickPlan(e, m) : null;
+  if (plan && (plan.whole.length || plan.part.length)) {
+    h += '<p class="note ok cbn1"><b>Da caricare:</b> ' + esc(pickText(plan)) + '.</p>';
+    if (pickPending(e, plan) && canPickApply()) {
+      h += '<div class="row" style="margin-top:6px"><button type="button" class="btn sm pri" data-act="pickApply" data-id="' + esc(e.id) + '" data-art="' + esc(m.id) + '">Sistema con le ceste</button></div>';
+    }
+  }
   if (i.short) {
     h += '<div class="row" style="margin-top:6px"><button type="button" class="btn sm" data-act="lineRent" data-id="' + esc(lineId) + '" data-n="' + i.short + '">Segna ' +
       (i.short === 1 ? 'il pezzo mancante' : 'i ' + i.short + ' mancanti') + ' come noleggio</button></div>';
@@ -3589,7 +3823,7 @@ function lineEditor(e, c, i) {
     '<div class="grid2 qtys"><div class="fld"><span>Quanti pezzi</span>' + qtyField('quantita', q, 1, 9999, 'Quanti pezzi') + '</div>' +
     '<div class="fld"><span>Di cui a noleggio</span>' + qtyField('subnoleggio', i.sub, 0, 9999, 'Pezzi a noleggio da fuori') + '</div></div>' +
     '<label class="fld"><span>Nota (la leggono anche i tecnici)</span><input type="text" name="note" value="' + esc(c.note || '') + '" maxlength="200" autocomplete="off"></label>' +
-    caseLineHtml(e, c, i) + availHtml(i, c.id) +
+    caseLineHtml(e, c, i) + availHtml(i, c.id, e) +
     '<p class="ferr" role="alert"></p><div class="row"><button type="submit" class="btn pri sm">Salva</button>' +
     '<button type="button" class="btn sm danger" data-act="lineDel" data-id="' + esc(c.id) + '" data-confirm="Sicuro?">Togli dall\'evento</button></div></form>';
 }
@@ -3600,14 +3834,14 @@ function pickRow(e, m) {
   const mine = (S.carByEv[e.id] || []).filter(c => c.equipment_id === m.id).reduce((s, c) => s + fromStock(c), 0);
   const free = a.free - ownNet(e, m.id), cat = catKey(m.categoria) || 'generale';
   const av = stockOf(m) === 0 ? ['bad', 'nessuno utilizzabile'] :
-    a.loose <= 0 ? ['warn', 'tutti nei case (' + a.locked + ')'] :
-      free <= 0 ? ['bad', 'tutti impegnati' + (a.locked ? ' · ' + a.locked + ' nei case' : '')] :
-        [free < a.loose ? 'warn' : 'ok', 'liberi ' + free + ' su ' + a.loose + (a.locked ? ' sciolti · ' + a.locked + ' nei case' : '')];
+    free <= 0 ? ['bad', 'tutti impegnati' + (a.locked ? ' · ' + a.locked + ' nei case' : '')] :
+      [free < a.stock ? 'warn' : 'ok', 'liberi ' + free + ' su ' + a.stock + (a.locked ? ' · ' + a.locked + ' nei case' : '')];
   const text = (m.nome + ' ' + (m.marca || '') + ' ' + catLabel(cat) + ' ' + (m.posizione || '') + ' ' + (isCase(m) ? 'case cesta ' + caseInside(m) : '')).toLowerCase();
   const q = S.pick[m.id] || 0;
   return '<li class="pk' + (q ? ' sel' : '') + '" data-id="' + esc(m.id) + '" data-cat="' + esc(cat) + '" data-case="' + (isCase(m) ? '1' : '') + '" data-q="' + esc(text) + '">' +
     '<div class="pkm"><b>' + esc(m.nome) + (isCase(m) ? ' ' + CASE_PILL : '') + '</b><small>' + esc([m.marca, catLabel(cat)].filter(Boolean).join(' · ')) + '</small>' +
     (caseSub(m) ? '<small class="cs">' + esc(caseSub(m)) + '</small>' : '') +
+    (!isCase(m) && a.locked > 0 ? '<small class="cs">nelle ceste: ' + esc(holdersText(m)) + '</small>' : '') +
     '<span class="pkav ' + av[0] + '">' + esc(av[1]) + '</span>' + (mine ? '<span class="pkin">già nell\'evento: ' + mine + '</span>' : '') + '</div>' +
     qtyField('q-' + m.id, q, 0, 9999, 'Quanti ' + m.nome, ' data-inp="pickQty" data-id="' + esc(m.id) + '"') + '</li>';
 }
@@ -3809,6 +4043,7 @@ function goEvent(id, from) {
     const hd = $('.evh', n);
     if (hd) hd.focus({ preventScroll: true });
   }
+  lazyOpenLines();
 }
 ACT.goEv = el => goEvent(el.dataset.id, 'disp');
 ACT.backDisp = () => {
@@ -3870,6 +4105,7 @@ function viewTecnici() {
   h += '<div class="toolbar"><button class="btn pri" data-act="techNew">' + ico('plus') + ' Nuovo tecnico</button>' +
     '<span class="muted">' + S.tec.filter(isActive).length + ' in squadra</span></div>';
   h += rimbBoxHtml();
+  h += whLinkBoxHtml();                                  // il link del computer in magazzino (wh.js)
   if (!list.length) return h + '<p class="empty">Nessun tecnico. Aggiungi il primo: bastano il nome e una mansione.</p>';
   const end = addDays(S.oggi, 13);
   return h + list.map(t => {
@@ -3908,11 +4144,11 @@ function stockOnDay(m, dn) {
     if (!holdsStock(u.e)) return;
     const r = occRange(u.e);
     if (!r || dn < r[0] || dn > r[1]) return;
-    if (u.q) used.push({ e: u.e, q: u.q });
+    if (u.q) used.push({ e: u.e, q: u.q, via: u.via || 0 });
   });
   const usedQ = neededTogether(used);
   const stock = stockOf(m), locked = lockedOf(m);
-  return { stock: stock, locked: locked, loose: stock - locked, used: used, usedQ: usedQ, free: stock - locked - usedQ };
+  return { stock: stock, locked: locked, loose: stock - locked, used: used, usedQ: usedQ, free: stock - usedQ };
 }
 /* I conti dei case non tornano: i case dicono di avere dentro più pezzi di quelli che ci sono (l'articolo, o i pezzi dentro il case) */
 function caseBad(m) {
@@ -3946,7 +4182,6 @@ function stkRow(m, dn) {
   if (dismissed) pill = '<span class="pill muted">dismesso</span>';
   else if (u.free < 0) pill = '<span class="pill bad">sovraprenotato di ' + (-u.free) + '</span>';
   else if (u.stock === 0) pill = '<span class="pill muted">nessuno utilizzabile</span>';
-  else if (u.free === 0 && u.usedQ === 0 && u.locked > 0) pill = '<span class="pill muted">tutti nei case</span>';
   else if (u.free === 0) pill = '<span class="pill warn">tutti impegnati</span>';
   else pill = '<span class="pill ok">' + (u.free === 1 ? '1 libero' : u.free + ' liberi') + '</span>';
   if (!dismissed && caseBad(m)) pill += '<span class="pill bad">non tornano i conti</span>';
@@ -3961,6 +4196,7 @@ function stkRow(m, dn) {
     const others = u.used.filter(x => x.q > 0);
     if (others.length) {
       det += '<p>Quel giorno servono a: ' + others.map(x => '<b>' + esc(x.e.cliente) + '</b> ' + x.q +
+        (viaWhere(x.e, m, x.q) ? ' <span class="muted">(' + esc(viaWhere(x.e, m, x.q)) + ')</span>' : '') +
         (x.e.stato === 'confermato' || x.e.stato === 'concluso' ? '' : ' <span class="muted">(' + esc(STAGE_LABEL[x.e.stato].toLowerCase()) + ')</span>')).join(', ') + '.</p>';
     } else if (!dismissed) det += '<p class="muted">Quel giorno nessun evento li usa' + (u.locked ? ' sciolti' : '') + '.</p>';
     const spec = [];
@@ -4010,7 +4246,7 @@ function viewArticoli() {
   let h = '<div class="toolbar">' + (ro ? '' : '<div class="row"><button class="btn pri" data-act="matNew">' + ico('plus') + ' Nuovo articolo</button>' +
     '<button class="btn" data-act="invOpen">' + ico('list') + ' Inventario</button>' +
     '<button class="btn" data-act="impOpen">' + ico('up') + ' Importa</button>' +
-    '<button class="btn" data-act="stkPlan">' + ico('plan') + ' Dalla pianta</button></div>') +
+    '<button class="btn" data-act="stkPlan">' + ico('plan') + ' Collegamenti editor</button></div>') +
     '<span class="muted">' + plural(active.length, 'articolo', 'articoli') + ', ' + plural(pieces, 'pezzo', 'pezzi') + '</span></div>';
   if (!all.length) {
     return h + '<p class="empty">' + (ro ? 'Il magazzino è vuoto: lo riempie il coordinatore.' :
@@ -4124,7 +4360,8 @@ function stagePreview(e, to) {
 function avvisiHtml(e) {
   const av = S.av;
   const rec = avRecipients(e);
-  const kinds = [['stato', 'Stato'], ['materiale', 'Materiale'], ['orari', 'Orari e luogo']];
+  const kinds = S.mode === 'wh' ? [['materiale', 'Materiale'], ['orari', 'Orari e luogo']]      // lo stato dell'evento lo cambia e lo comunica il coordinatore
+    : [['stato', 'Stato'], ['materiale', 'Materiale'], ['orari', 'Orari e luogo']];
   if (av.ctx.changes && av.ctx.changes.length) kinds.unshift(['dati', 'Cosa è cambiato']);
   return '<p class="hint" style="margin-top:0">Il messaggio è già scritto e lo puoi cambiare. Tocca «WhatsApp» accanto a chi vuoi avvisare: si apre il messaggio pronto, devi solo premere invio.</p>' +
     '<div class="cats" role="group" aria-label="Di cosa parla il messaggio">' + kinds.map(k =>
@@ -4214,7 +4451,8 @@ function evFormHtml(e) {
   return '<form data-submit="evForm" novalidate><input type="hidden" name="id" value="' + esc(v.id || '') + '">' +
     '<label class="fld"><span>Cliente o nome dell\'evento</span><input type="text" name="cliente" value="' + esc(v.cliente || '') + '" autocomplete="off"></label>' +
     '<label class="fld"><span>Data</span><input type="date" name="data" value="' + esc(v.data || S.oggi) + '"></label>' +
-    '<label class="fld"><span>Luogo</span><input type="text" name="luogo" value="' + esc(v.luogo || '') + '" autocomplete="off"></label>' +
+    '<label class="fld"><span>Luogo</span><input type="text" name="luogo" value="' + esc(v.luogo || '') + '" autocomplete="off" data-inp="luType"></label>' +
+    '<div id="luhint" class="luhint">' + luHintHtml(v.luogo) + '</div>' +
     (v.id
       ? '<input type="hidden" name="stato" value="' + esc(v.stato) + '"><p class="hint">Stato: <b>' + esc(STAGE_LABEL[v.stato]) + '</b>. Per cambiarlo usa «Cambia stato» nella scheda dell\'evento: così puoi anche avvisare i tecnici.</p>'
       : '<label class="fld"><span>Stato</span><select name="stato">' + STAGES.map(s => '<option value="' + s + '"' + (s === (v.stato || 'richiesta') ? ' selected' : '') + '>' + STAGE_LABEL[s] + '</option>').join('') + '</select></label>') +
@@ -4260,6 +4498,7 @@ ACT.tab = el => {
   if (S.tab === 'disp') restoreDisp();
 };
 ACT.refresh = async () => {
+  if (S.offline) { ACT.offRetry(); return; }          // il server non risponde: si riprova da lì
   try {
     await coordLoad();
     if (PJ.list !== null) { await pjLoad(); pjRepaint(); }   // l'elenco dei progetti, se l'avevi aperto
@@ -4267,7 +4506,11 @@ ACT.refresh = async () => {
   } catch (e) { toast(e.message, 'err'); }
 };
 ACT.coordRetry = () => coordBoot();
-ACT.logout = () => { store.del('pin'); S.pin = ''; S.ready = false; S.back = null; S.dispKeep = null; S.dispGo = ''; pjReset(); paint(loginView()); };
+ACT.logout = () => {
+  store.del('pin'); S.pin = ''; S.ready = false; S.back = null; S.dispKeep = null; S.dispGo = '';
+  offDrop('c'); OFF.up.c = false; S.offline = null; S.copie = null;       // uscendo, sul dispositivo non resta una copia dei dati
+  pjReset(); luReset(); arReset(); paint(loginView());
+};
 ACT.toggleEv = el => {
   const id = el.dataset.id;
   S.openEv = S.openEv === id ? null : id;
@@ -4275,6 +4518,7 @@ ACT.toggleEv = el => {
   paint();
   const n = document.getElementById('ev-' + id);
   if (S.openEv && n) n.scrollIntoView({ block: 'nearest' });
+  lazyOpenLines();
 };
 CHG.showPast = el => { S.showPast = el.checked; paint(); };
 CHG.allowDouble = el => {
@@ -4441,6 +4685,24 @@ function setLines(evId, righe, liste) {
   if (e) { e.nMateriali = righe.length; if (liste) Object.assign(e, liste); }
   derive();
 }
+/* Il caricamento iniziale porta le righe di materiale degli eventi di oggi, futuri e di pochi giorni fa (e di quelli da scaricare):
+   quelle degli eventi più vecchi si leggono dal foglio quando l'evento si apre (o si rimette tra gli eventi). */
+const LZ = {};            // id evento -> 'loading' | 'err'
+function lazyLines(evId) {
+  const e = S.evById[evId];
+  if (!e || !(e.nMateriali > 0) || (S.carByEv[evId] || []).length || LZ[evId] === 'loading' || S.offline || S.mode !== 'coord' || !S.pin) return;
+  LZ[evId] = 'loading';
+  call('api_eventLists', S.pin, evId).then(res => {
+    delete LZ[evId];
+    S.cvar = S.cvar.filter(v => v.event_id !== evId).concat(res.variazioni || []);
+    setLines(evId, res.righe || [], res.liste);
+    if (S.mode === 'coord' && S.ready) paint();
+  }).catch(() => { LZ[evId] = 'err'; if (S.mode === 'coord' && S.ready) paint(); });
+}
+function lazyOpenLines() {
+  if (S.mode === 'coord' && S.ready && S.tab === 'eventi' && S.openEv && LZ[S.openEv] !== 'err') lazyLines(S.openEv);
+}
+ACT.lzRetry = el => { delete LZ[el.dataset.id]; paint(); lazyLines(el.dataset.id); };
 ACT.qstep = el => {
   const inp = $('input', el.parentNode);
   const min = +inp.min, max = +inp.max;
@@ -4497,7 +4759,7 @@ ACT.lineRent = el => {
 ACT.matClear = el => {
   const id = el.dataset.id;
   mutate(async () => {
-    const res = await call('api_cclear', S.pin, id);
+    const res = await call('api_cclear', CRED(), id);
     setLines(id, res.righe, res.liste);
     S.openLine = null; paint();
     toast('Elenco svuotato.');
@@ -4570,7 +4832,7 @@ ACT.matCopy = el => {
 ACT.copyFrom = el => {
   const to = el.dataset.to, from = el.dataset.from;
   mutate(async () => {
-    const res = await call('api_ccopy', S.pin, from, to);
+    const res = await call('api_ccopy', CRED(), from, to);
     setLines(to, res.righe, res.liste);
     closeSheet(); paint();
     toast('Copiate ' + plural(res.copiate, 'voce', 'voci') + '. Controlla le quantità e il noleggio.', 'ok');
@@ -4603,7 +4865,7 @@ SUB.stageForm = async form => {
   }, true);
   if (!r.ok) err.textContent = r.err;
 };
-ACT.avOpen = el => { if (S.evById[el.dataset.id]) openAvvisi(el.dataset.id, el.dataset.kind || 'stato'); };
+ACT.avOpen = el => { if (S.evById[el.dataset.id]) openAvvisi(el.dataset.id, el.dataset.kind || (S.mode === 'wh' ? 'orari' : 'stato')); };
 function avRelink() {
   const e = S.av && S.evById[S.av.evId];
   if (!e) return;
@@ -4797,8 +5059,8 @@ SUB.login = async form => {
   try { await coordLoad(); store.set('pin', pin); }
   catch (e) { S.pin = ''; paint(loginView(e.message)); }
 };
-async function coordLoad() {
-  const d = await call('api_coordInit', S.pin);
+async function coordLoad() { coordApply(await offCall('c', 'api_coordInit', S.pin)); }
+function coordApply(d) {
   S.url = d.url || ''; S.oggi = d.oggi; S.cfg = d.config;
   S.tec = d.tecnici; S.ev = d.eventi; S.disp = d.disponibilita; S.asg = d.assegnazioni;
   S.mat = d.materiali || []; S.car = d.carico || []; S.mancano = d.mancano || [];
@@ -4806,8 +5068,12 @@ async function coordLoad() {
   S.mov = d.movimenti || []; S.movAll = false;
   S.comp = d.composizione || []; S.cvar = d.variazioni || [];
   S.modResp = d.modificheResp || [];
+  S.whLink = d.magazzino || null;
+  S.copie = d.copie || null;                     // com'è messa la copia di sicurezza (arch.js)
   S.ready = true; S.view = coordView;
   derive(); paint();
+  lazyOpenLines();                                // l'evento aperto è vecchio: se non ha ancora le righe di materiale, si leggono
+  arLazy();                                       // se l'ultima copia è vecchia, una nuova parte da sola (una volta per apertura)
 }
 async function coordBoot() {
   S.view = coordView;
@@ -4815,12 +5081,17 @@ async function coordBoot() {
   paint(loadingView());
   try { await coordLoad(); }
   catch (e) {
-    if (/codice|tentativi/i.test(e.message)) { S.pin = ''; store.del('pin'); paint(loginView(e.message)); }
+    if (/codice|tentativi/i.test(e.message)) {
+      S.pin = ''; store.del('pin'); paint(loginView(e.message));
+      if (/errato|non impostato/i.test(e.message)) offDrop('c');      // il codice è cambiato: i dati salvati con quello vecchio non servono più
+    }
     else paint(errorView(e.message, 'coordRetry'));
   }
 }
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && S.mode === 'coord' && S.ready && !S.sheet && !S.locked && !LQ.running && !LQ.items.length) {
+  if (document.visibilityState !== 'visible' || S.mode !== 'coord' || !S.ready) return;
+  if (S.offline) { offTry(); return; }
+  if (!S.sheet && !S.locked && !LQ.running && !LQ.items.length) {
     coordLoad().catch(() => { /* aggiornamento silenzioso: se fallisce resta la vista di prima */ });
   }
 });
@@ -4839,7 +5110,7 @@ function lineView(c) {
     id: c.id, nome: lineName(c), categoria: m ? catKey(m.categoria) : '', consumabile: m ? isTrue(m.consumabile) : false,
     quantita: toI(c.quantita), subnoleggio: toI(c.subnoleggio), caricato: toI(c.caricato), scaricato: toI(c.scaricato),
     danneggiato: toI(c.danneggiato), mancante: toI(c.mancante), van_id: c.van_id || '', note: c.note || '',
-    mancaDa: c.mancaDa || '', mancaNota: c.mancaNota || '',
+    mancaDa: c.mancaDa || '', mancaNota: c.mancaNota || '', preso: c.preso || '',
     tipo: m && isCase(m) ? 'case' : '', posizione: m ? (m.posizione || '') : '', contenuto: m && isCase(m) ? (m.contenuto || '') : '',
     key: c.equipment_id ? 'e:' + c.equipment_id : 'n:' + String(lineName(c)).trim().toLowerCase(),
   };
@@ -5030,8 +5301,10 @@ function vanSectionHtml(e) {
   const locked = !!e.scaricoQuando;
   let h = '<h4>Furgoni e carico</h4>';
   if (!S.fur.length && !vans.length) {
-    h += '<p class="muted">Non hai ancora inserito i furgoni. Aggiungili dalla scheda Magazzino, voce «Furgoni»: poi li assegni qui agli eventi.</p>' +
-      '<div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-act="goTab" data-tab="mag" data-sub="furgoni">' + ico('truck') + ' Aggiungi i furgoni</button></div>';
+    h += S.mode === 'wh'
+      ? '<p class="muted">I furgoni non sono ancora stati inseriti: li aggiunge il coordinatore.</p>'
+      : '<p class="muted">Non hai ancora inserito i furgoni. Aggiungili dalla scheda Magazzino, voce «Furgoni»: poi li assegni qui agli eventi.</p>' +
+        '<div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-act="goTab" data-tab="mag" data-sub="furgoni">' + ico('truck') + ' Aggiungi i furgoni</button></div>';
   } else {
     if (!vans.length) h += '<p class="muted">Nessun furgone assegnato. Scegli quali portare: sai così chi guida e cosa va su ciascuno.</p>';
     else h += '<ul class="vans">' + vans.map(v => vanRowHtml(e, v, vans, lines, locked)).join('') + '</ul>';
@@ -5061,7 +5334,7 @@ function applyVanState(evId, res) {
 ACT.vanAdd = el => {
   const evId = el.dataset.ev, van = S.furById[el.dataset.van];
   mutate(async () => {
-    const res = await call('api_vanAssign', S.pin, evId, el.dataset.van, '');
+    const res = await call('api_vanAssign', CRED(), evId, el.dataset.van, '');
     applyVanState(evId, res); paint();
     toast((van ? van.nome : 'Furgone') + ' aggiunto.' + (res.fe.length > 1 ? ' Con più furgoni scegli cosa va su ciascuno.' : ''), 'ok');
   });
@@ -5070,7 +5343,7 @@ ACT.vanDel = el => {
   const fe = S.fe.filter(f => f.id === el.dataset.id)[0];
   if (!fe) return;
   mutate(async () => {
-    const res = await call('api_vanUnassign', S.pin, fe.id);
+    const res = await call('api_vanUnassign', CRED(), fe.id);
     applyVanState(fe.event_id, res); paint();
     toast('Furgone tolto dall\'evento.');
   });
@@ -5078,7 +5351,7 @@ ACT.vanDel = el => {
 CHG.vanDriver = el => {
   const evId = el.dataset.ev, vanId = el.dataset.van, who = el.value;
   mutate(async () => {
-    const res = await call('api_vanAssign', S.pin, evId, vanId, who);
+    const res = await call('api_vanAssign', CRED(), evId, vanId, who);
     const dr = who ? (S.asgByEv[evId] || []).filter(x => x.technician_id === who)[0] : null;
     if (dr && directOf(dr)) dr.direttoLocation = '';   // chi guida parte dal magazzino: il server ha tolto «direttamente in location»
     applyVanState(evId, res); paint();
@@ -5136,7 +5409,7 @@ ACT.vlSave = async () => {
   const ids = Object.keys(vl.sel).filter(k => vl.sel[k]);
   const err = $('#sheet .ferr');
   const r = await mutate(async () => {
-    const res = await call('api_linesVan', S.pin, vl.evId, vl.vanId, ids);
+    const res = await call('api_linesVan', CRED(), vl.evId, vl.vanId, ids);
     applyVanState(vl.evId, res);
     closeSheet();
     toast('Salvato.', 'ok');
@@ -5196,13 +5469,15 @@ function dayEvents(date) { return S.ev.filter(x => x.data === date && x.stato !=
 function dayShared(date) {
   const byEq = {};
   dayEvents(date).filter(holdsStock).forEach(e => {
-    const d = S.demandByEv[e.id] || {};
-    Object.keys(d).forEach(id => { if (d[id]) (byEq[id] = byEq[id] || []).push({ e: e, q: d[id] }); });
+    const d = S.demandByEv[e.id] || {}, via = S.viaByEv[e.id] || {};
+    Object.keys(d).forEach(id => { if (d[id]) (byEq[id] = byEq[id] || []).push({ e: e, q: d[id], via: viaQ(via[id]) }); });
   });
   return Object.keys(byEq).map(id => {
     const m = S.matById[id], users = byEq[id];
     if (!m || users.length < 2) return null;
-    const need = neededTogether(users), stock = looseOf(m), locked = lockedOf(m);
+    // se tutti i pezzi arrivano dentro gli stessi contenitori, il conflitto è quello del contenitore (che compare per conto suo)
+    if (users.every(u => u.via >= u.q)) return null;
+    const need = neededTogether(users), stock = stockOf(m), locked = lockedOf(m);
     return { m: m, users: users, need: need, stock: stock, locked: locked, short: Math.max(0, need - stock), sum: users.reduce((s, x) => s + x.q, 0) };
   }).filter(Boolean).sort((a, b) => (b.short - a.short) || cmpName(a.m.nome, b.m.nome));
 }
@@ -5267,7 +5542,7 @@ function dayBodyHtml(date) {
   h += '<h3 class="dsec">Materiale richiesto da più eventi</h3>';
   if (!sh.length) h += '<p class="note muted">Nessun articolo del magazzino è richiesto da due eventi.</p>';
   else h += '<ul class="dayl">' + sh.map(x => '<li class="col"><b>' + esc(x.m.nome) + '</b><span class="dsub">' +
-    x.users.map(u => esc(u.e.cliente) + ' ' + (u.q < 0 ? '−' + (-u.q) : u.q)).join(' + ') + ' = ' + x.sum + ' · ne hai ' + x.stock + (x.locked ? ' sciolti (e ' + x.locked + ' nei case)' : ' utilizzabili') + '</span>' +
+    x.users.map(u => esc(u.e.cliente) + ' ' + (u.q < 0 ? '−' + (-u.q) : u.q)).join(' + ') + ' = ' + x.sum + ' · ne hai ' + x.stock + (x.locked ? ' (di cui ' + x.locked + ' nei case)' : ' utilizzabili') + '</span>' +
     (x.short > 0 ? '<p class="note bad">Mancano ' + x.short + (S.reuseSame && x.need < x.sum ? ' (contando che alcuni eventi usano gli stessi pezzi uno dopo l\'altro)' : '') + '.</p>'
       : (x.need < x.sum ? '<p class="note ok">Bastano: gli eventi si susseguono e usano gli stessi pezzi.</p>' : '<p class="note ok">Bastano.</p>')) + '</li>').join('') + '</ul>';
   h += '<label class="chk dreuse"><input type="checkbox" data-chg="reuseSame"' + (S.reuseSame ? ' checked' : '') + '> Due eventi uno dopo l\'altro possono usare gli stessi pezzi</label>' +
@@ -5372,7 +5647,10 @@ function stkExtraHtml(m) {
 /* ---------- le sezioni del magazzino ---------- */
 function viewMag() {
   const nRip = S.rip.filter(r => REP_OPEN.indexOf(r.stato) >= 0).length;
-  const tabs = [['articoli', 'Articoli'], ['cont', 'Contenitori'], ['rip', 'Riparazioni' + (nRip ? ' (' + nRip + ')' : '')], ['mov', 'Movimenti'], ['furgoni', 'Furgoni']];
+  // il computer in magazzino guarda gli articoli e i contenitori; riparazioni, movimenti e furgoni restano del coordinatore
+  const tabs = S.mode === 'wh' ? [['articoli', 'Articoli'], ['cont', 'Contenitori']]
+    : [['articoli', 'Articoli'], ['cont', 'Contenitori'], ['rip', 'Riparazioni' + (nRip ? ' (' + nRip + ')' : '')], ['mov', 'Movimenti'], ['furgoni', 'Furgoni']];
+  if (!tabs.some(t => t[0] === S.magTab)) S.magTab = 'articoli';
   return '<div class="cats subtabs" role="group" aria-label="Sezioni del magazzino">' + tabs.map(t =>
     '<button type="button" class="cat" data-act="magTab" data-tab="' + t[0] + '" aria-pressed="' + (S.magTab === t[0]) + '">' + t[1] + '</button>').join('') + '</div>' +
     (S.magTab === 'rip' ? viewRip() : S.magTab === 'mov' ? viewMov() : S.magTab === 'furgoni' ? viewFurgoni() : S.magTab === 'cont' ? viewContenitori() : viewArticoli());
@@ -6199,6 +6477,288 @@ ACT.dsGo = async () => {
     toast(items.length ? 'Salvato: dove sta «' + a.nome + '».' : '«' + a.nome + '»: tutti sciolti.', 'ok');
   }, true);
   if (!r.ok && err) { err.textContent = r.err; err.scrollIntoView({ block: 'center' }); }
+};
+
+/* ====================================================================================================================
+   Ceste e case: cosa caricare (4.6)
+   I pezzi dentro una cesta o un case pronti contano come disponibili, se nessun altro evento usa quella cesta negli stessi giorni
+   (vedi availFor e evDemand in coord.js). Per ogni articolo con una riga nell'evento il programma dice cosa caricare:
+   1. i contenitori interi, dal più pieno (senza prenderne più del necessario);
+   2. i pezzi sciolti;
+   3. se avanza poco, un contenitore intero in più (resta un po' di scorta);
+   4. se manca ancora qualcosa, qualche pezzo tolto da dentro un altro contenitore libero.
+   «Sistema con le ceste» (api_cpick) mette i contenitori interi nell'elenco dell'evento, lascia nella riga solo i pezzi da prendere fuori
+   e annota nella colonna `preso` della riga da quali contenitori si prendono: lo leggono anche i tecnici nelle liste di carico e di scarico.
+   ==================================================================================================================== */
+
+const PICK_SPARE_PCT = 0.2;   // un contenitore intero si carica anche se ha qualche pezzo più del necessario, fino al 20% dei suoi pezzi
+const PICK_MIN_USE = 0.34;    // ...ma solo se all'evento serve almeno un terzo di quello che ha dentro (altrimenti si prendono i pezzi da dentro)
+
+/* ---------- le parole: «dalla Cesta XRL 1», «dal Case cavi», «da Contenitore 3» ---------- */
+function contGender(nome) {
+  const w = String(nome || '').trim().toLowerCase().split(/\s+/)[0] || '';
+  if (/^(cesta|ceste|valigia|valigie|borsa|cassa|custodia|scatola|busta|cassetta|sacca|rastrelliera|vaschetta)$/.test(w)) return 'f';
+  if (/^(case|contenitore|cestello|baule|trolley|sacco|rack|bauletto|flightcase|flight|box)$/.test(w)) return 'm';
+  return '';
+}
+function fromCont(nome) { const g = contGender(nome); return (g === 'f' ? 'dalla ' : g === 'm' ? 'dal ' : 'da ') + nome; }
+function intoCont(nome) { const g = contGender(nome); return (g === 'f' ? 'nella ' : g === 'm' ? 'nel ' : 'in ') + nome; }
+function viaNames(e, m) {
+  const via = ((S.viaByEv[e.id] || {})[m.id]) || [];
+  return via.map(x => x.c.nome).join(', ');
+}
+
+/* ---------- da dove vengono i pezzi degli articoli di un evento ---------- */
+/* Si sceglie quali contenitori caricare interi guardando tutti gli articoli dell'evento insieme (una cesta porta con sé tutto quello che ha
+   dentro, anche per gli altri articoli). Tra le scelte possibili vince quella con meno pezzi tolti da dentro altri contenitori, poi meno pezzi
+   sciolti, meno scorta e meno contenitori. Regole:
+   - un articolo non si carica per più della scorta ammessa (il 20% del contenitore più grande, e comunque non più dei pezzi liberi);
+   - un contenitore usato da un altro evento negli stessi giorni, o già nell'elenco di questo, non si può caricare un'altra volta;
+   - gli altri eventi prendono prima i pezzi sciolti con le loro righe e solo dopo quelli da dentro i contenitori.
+   Restituisce {list: [piano per articolo], add: [{c, copies}], short}. Il piano di un articolo:
+   need = pezzi chiesti con una riga propria; short = quelli che non ci sono; whole = contenitori interi che gli portano pezzi [{c, copies, q}];
+   loose = pezzi sciolti; part = pezzi da togliere da dentro altri contenitori [{c, q}]; spare = pezzi in più portati dai contenitori interi. */
+const PICK_MAX_COMBOS = 4096;
+function pickSolve(e) {
+  const out = { list: [], add: [], short: 0 };
+  const lines = S.carByEv[e.id] || [];
+  // gli articoli con una riga propria che stanno in qualche contenitore
+  const arts = [];
+  const seenA = {};
+  lines.forEach(c => {
+    if (!c.equipment_id || seenA[c.equipment_id]) return;
+    seenA[c.equipment_id] = true;
+    const m = S.matById[c.equipment_id];
+    if (!m || isCase(m) || String(m.stato) === 'dismesso') return;
+    const hold = (S.holdIn[m.id] || []).filter(h => isCase(h.c) && String(h.c.stato) !== 'dismesso' && stockOf(h.c) > 0 && h.per > 0);
+    if (!hold.length) return;
+    const need = lines.filter(x => x.equipment_id === m.id).reduce((n, x) => n + fromStock(x), 0);
+    if (need < 1) return;
+    const a = availFor(m, e), own = ownNet(e, m.id);
+    const short = Math.min(need, Math.max(0, own - Math.max(0, a.free)));
+    const direct = neededTogether(a.used.map(u => ({ e: u.e, q: u.q - (u.via || 0) })).filter(u => u.q !== 0));
+    arts.push({ m: m, need: need, short: short, t: need - short, slack: Math.max(0, a.free - own),
+      looseFree: Math.max(0, a.loose - direct), spill: Math.max(0, direct - a.loose), hold: hold });
+  });
+  if (!arts.length) return out;
+  // i contenitori che si possono caricare interi: quelli che hanno dentro almeno uno di quegli articoli e copie libere
+  const conts = [], seenC = {};
+  arts.forEach(A => A.hold.forEach(h => {
+    if (seenC[h.c.id]) return;
+    seenC[h.c.id] = true;
+    const free = Math.max(0, availFor(h.c, e).free - ownNet(e, h.c.id));
+    conts.push({ c: h.c, free: free, per: {}, key: 0 });
+  }));
+  conts.forEach(k => { (S.compByCase[k.c.id] || []).forEach(x => { k.per[x.id] = x.q; }); k.key = arts.reduce((n, A) => n + (k.per[A.m.id] || 0), 0); });
+  // articoli «di passaggio»: dentro i contenitori ma senza una riga propria; contano solo per i pezzi liberi (non si tolgono ad altri eventi)
+  const extra = {};
+  conts.forEach(k => Object.keys(k.per).forEach(id => {
+    if (seenA[id] || extra[id]) return;
+    const m = S.matById[id];
+    if (m) extra[id] = Math.max(0, availFor(m, e).free - ownNet(e, id));
+  }));
+  conts.sort((x, y) => (y.key - x.key) || cmpNat(x.c.nome, y.c.nome));
+  // quante combinazioni: si prova ogni numero di copie di ogni contenitore (di solito 0 o 1)
+  let combos = 1;
+  const cand = [];
+  conts.forEach(k => {
+    if (k.free < 1) return;
+    if (combos * (k.free + 1) > PICK_MAX_COMBOS) return;
+    combos *= k.free + 1;
+    cand.push(k);
+  });
+  const x = cand.map(() => 0);
+  let best = null;
+  const evalX = () => {
+    const prov = {};
+    cand.forEach((k, i) => { if (x[i]) Object.keys(k.per).forEach(id => { prov[id] = (prov[id] || 0) + x[i] * k.per[id]; }); });
+    // la scorta ammessa: qualche pezzo in più per gli articoli dell'evento (fino al 20% del contenitore), e per gli altri articoli che i
+    // contenitori portano con sé solo quelli che nessun altro evento usa
+    let dead = 0;
+    for (const id of Object.keys(prov)) {
+      const A = arts.filter(z => z.m.id === id)[0];
+      const over = Math.max(0, prov[id] - (A ? A.t : 0));
+      if (!over) continue;
+      const maxper = Math.max.apply(null, cand.map((k, i) => (x[i] && k.per[id]) || 0));
+      const allowed = A ? Math.min(A.slack, Math.floor(maxper * PICK_SPARE_PCT)) : (extra[id] || 0);
+      if (over > allowed) return;
+      dead += over;
+    }
+    // un contenitore si carica intero solo se all'evento serve una buona parte di quello che ha dentro
+    for (let i = 0; i < cand.length; i++) {
+      if (!x[i]) continue;
+      let tot = 0, use = 0;
+      Object.keys(cand[i].per).forEach(id => {
+        const A = arts.filter(z => z.m.id === id)[0];
+        tot += cand[i].per[id];
+        if (A) use += Math.min(cand[i].per[id] * x[i], A.t) / x[i];
+      });
+      if (use < tot * PICK_MIN_USE) return;
+    }
+    const left = cand.map((k, i) => k.free - x[i]);
+    const plan = { arts: [], broken: {}, partial: 0, loose: 0, dead: dead, unplaced: 0 };
+    arts.forEach(A => {
+      const got = prov[A.m.id] || 0;
+      let r = Math.max(0, A.t - got);
+      const lo = Math.min(r, A.looseFree);
+      r -= lo;
+      const part = [];
+      if (r > 0) {
+        // i pezzi che si possono togliere da dentro i contenitori che non si caricano interi (meno quelli che servono ad altri eventi)
+        let avail = 0;
+        const order = [];
+        cand.forEach((k, i) => {
+          const have = left[i] * (k.per[A.m.id] || 0);
+          if (have > 0) { order.push({ k: k, have: have }); avail += have; }
+        });
+        avail = Math.max(0, avail - A.spill);
+        order.sort((a, b) => (a.have - b.have) || cmpNat(a.k.c.nome, b.k.c.nome));
+        while (r > 0 && avail > 0 && order.length) {
+          const h = order.filter(z => z.have >= r)[0] || order[order.length - 1];
+          const take = Math.min(r, h.have, avail);
+          if (take < 1) break;
+          part.push({ c: h.k.c, q: take });
+          r -= take; avail -= take;
+          order.splice(order.indexOf(h), 1);
+          plan.broken[h.k.c.id] = true;
+          plan.partial += take;
+        }
+      }
+      plan.loose += lo; plan.unplaced += r;
+      plan.arts.push({ A: A, got: got, loose: lo, part: part, spare: Math.max(0, got - A.t), un: r });
+    });
+    const used = cand.reduce((n, k, i) => n + x[i], 0);
+    const cost = [plan.unplaced, Object.keys(plan.broken).length, plan.partial, plan.loose, plan.dead, used];
+    if (!best || cmpCost(cost, best.cost) < 0) best = { cost: cost, plan: plan, x: x.slice() };
+  };
+  const rec = i => {
+    if (i === cand.length) { evalX(); return; }
+    for (let n = 0; n <= cand[i].free; n++) { x[i] = n; rec(i + 1); }
+    x[i] = 0;
+  };
+  rec(0);
+  if (!best) {
+    // nessuna combinazione ammessa (non dovrebbe succedere: non caricare niente è sempre ammesso)
+    return out;
+  }
+  const chosen = cand.map((k, i) => ({ k: k, n: best.x[i] })).filter(z => z.n > 0);
+  out.add = chosen.map(z => ({ c: z.k.c, copies: z.n }));
+  best.plan.arts.forEach(r => {
+    const whole = [];
+    chosen.forEach(z => { const per = z.k.per[r.A.m.id]; if (per) whole.push({ c: z.k.c, copies: z.n, q: z.n * per, have: ownNet(e, z.k.c.id) }); });
+    out.list.push({ m: r.A.m, need: r.A.need, short: r.A.short + r.un, whole: whole, loose: r.loose, part: r.part, spare: r.spare,
+      inLines: viaQ((S.viaByEv[e.id] || {})[r.A.m.id]) });
+    out.short += r.A.short;
+  });
+  out.list = out.list.filter(p => p.whole.length || p.part.length).sort((a, b) => cmpName(a.m.nome, b.m.nome));
+  return out;
+}
+function cmpCost(a, b) {
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] - b[i];
+  return 0;
+}
+/* Il piano dell'evento, in memoria finché i dati non cambiano (derive lo azzera) */
+function pickAll(e) {
+  const k = S.pickCache = S.pickCache || {};
+  if (!k[e.id]) k[e.id] = pickSolve(e);
+  return k[e.id];
+}
+/* I piani degli articoli dell'evento in cui i contenitori servono a qualcosa (interi o a pezzi), in ordine di nome */
+function pickPlans(e) { return pickAll(e).list; }
+function pickPlan(e, m) { return pickPlans(e).filter(p => p.m.id === m.id)[0] || null; }
+/* «Cesta XRL 1 intera (35) + 1 dalla Cesta Xrl 2» */
+function pickParts(p) {
+  const bits = [];
+  p.whole.forEach(w => {
+    // se l'evento ha già quel contenitore nell'elenco, quello da caricare è un altro
+    const g = contGender(w.c.nome), more = w.have > 0, full = g === 'f' ? 'intera' : 'intero';
+    bits.push(w.copies === 1 ? (more ? (g === 'f' ? 'un\'altra ' : 'un altro ') + w.c.nome : w.c.nome + ' ' + full) + ' (' + w.q + ')'
+      : w.copies + (more ? ' in più × ' : ' × ') + w.c.nome + ' (' + w.q + ')');
+  });
+  if (p.loose > 0) bits.push(p.loose + (p.loose === 1 ? ' sciolto' : ' sciolti'));
+  p.part.forEach(x => bits.push(x.q + ' ' + fromCont(x.c.nome)));
+  return bits;
+}
+function pickText(p) {
+  let t = pickParts(p).join(' + ');
+  if (p.spare > 0) t += ' (' + p.spare + ' di scorta)';
+  return t;
+}
+/* Il piano è già sistemato nell'elenco? I contenitori interi ci sono già e la riga ha annotato da dove si prendono i pezzi sciolti da dentro */
+function pickPending(e, p) {
+  if (p.whole.length) return true;
+  if (!p.part.length) return false;
+  const line = (S.carByEv[e.id] || []).filter(c => c.equipment_id === p.m.id)[0];
+  const have = presoParse(line && line.preso);
+  if (have.length !== p.part.length) return true;
+  return p.part.some(x => !have.some(h => h.c === x.c.id && h.q === x.q));
+}
+function canPickApply() { return S.mode === 'coord' || S.mode === 'wh'; }
+
+/* ---------- l'annotazione «da dove si prendono» sulla riga (colonna preso) ---------- */
+function presoParse(v) {
+  if (Array.isArray(v)) return v.filter(x => x && x.n && toI(x.q) > 0).map(x => ({ c: String(x.c || ''), n: String(x.n), q: toI(x.q) }));
+  const s = String(v || '').trim();
+  if (!s || s.charAt(0) !== '[') return [];
+  try { return presoParse(JSON.parse(s)); } catch (err) { return []; }
+}
+/* «prendi 1 dalla Cesta Xrl 2» nel carico, «rimetti 1 nella Cesta Xrl 2» nello scarico */
+function presoText(l, kind) {
+  return presoParse(l.preso).map(x => (kind === 'scarico' ? 'rimetti ' + x.q + ' ' + intoCont(x.n) : 'prendi ' + x.q + ' ' + fromCont(x.n))).join(', ');
+}
+
+/* ---------- il riquadro «Cosa caricare con le ceste» (nel materiale dell'evento e nella lista di carico) ---------- */
+function pickBoxHtml(e) {
+  if (!e || e.stato === 'annullato' || e.scaricoQuando) return '';
+  const plans = pickPlans(e);
+  if (!plans.length) return '';
+  const pend = plans.filter(p => pickPending(e, p));
+  let h = '<section class="cbox" aria-label="Ceste e case"><h5>Cosa caricare con le ceste</h5><ul class="cbl">';
+  plans.forEach(p => {
+    h += '<li><span class="cbn"><b>' + esc(p.m.nome) + '</b> <small>' + p.need + (p.need === 1 ? ' pezzo' : ' pezzi') + '</small></span>' +
+      '<span class="cbt">' + esc(pickText(p)) + '</span>' +
+      (p.short ? '<span class="pill bad">mancano ' + p.short + '</span>' : '') +
+      (pickPending(e, p) ? '' : '<span class="pill ok">sistemato</span>') + '</li>';
+  });
+  h += '</ul>';
+  if (pend.length && canPickApply()) {
+    h += '<div class="row"><button type="button" class="btn sm pri" data-act="pickApply" data-id="' + esc(e.id) + '">Sistema con le ceste</button></div>' +
+      '<p class="hint">Mette le ceste intere nell\'elenco dell\'evento, lascia nella riga solo i pezzi da prendere da dentro le ceste e li scrive nelle liste di carico e di scarico.</p>';
+  } else if (pend.length) {
+    h += '<p class="hint">Il coordinatore può mettere le ceste nell\'elenco con «Sistema con le ceste».</p>';
+  }
+  return h + '</section>';
+}
+
+/* ---------- «Sistema con le ceste» ---------- */
+/* Cosa chiedere al server: aggiungere i contenitori interi scelti, ridurre le righe che quei contenitori coprono (con tutto quello che
+   portano dentro, anche per gli altri articoli), annotare nelle righe da dove si prendono i pezzi da dentro (una riga che resta a 0 pezzi si toglie) */
+function pickOps(e, P) {
+  const lines = [];
+  P.list.forEach(p => {
+    let cover = p.whole.reduce((n, w) => n + w.q, 0);
+    const preso = p.part.map(x => ({ c: x.c.id, n: x.c.nome, q: x.q }));
+    (S.carByEv[e.id] || []).filter(c => c.equipment_id === p.m.id).forEach((c, i) => {
+      const take = Math.min(fromStock(c), cover);
+      cover -= take;
+      lines.push({ line_id: c.id, quantita: toI(c.quantita) - take, preso: i === 0 ? preso : [] });
+    });
+  });
+  return { add: P.add.map(z => ({ equipment_id: z.c.id, quantita: z.copies })), lines: lines };
+}
+ACT.pickApply = el => {
+  const e = S.evById[el.dataset.id];
+  if (!e || !canPickApply()) return;
+  const P = pickAll(e);
+  if (!P.list.some(p => pickPending(e, p))) return;
+  const ops = pickOps(e, P);
+  mutate(async () => {
+    const res = await call('api_cpick', CRED(), e.id, ops);
+    setLines(e.id, res.righe, res.liste);
+    S.openLine = null;
+    if (L.evId === e.id && $('#lbody')) lrender(); else paint();
+    toast(P.add.length ? 'Nell\'elenco ho messo: ' + P.add.map(z => (z.copies > 1 ? z.copies + ' × ' : '') + z.c.nome).join(', ') + '.' : 'Ho annotato da dove prendere i pezzi.', 'ok');
+  });
 };
 
 /* =====================================================================
@@ -7188,10 +7748,10 @@ function matBlock(e, lines, roles, defOpen) {
       (isMine && others && some && k !== 'generale' ? '<small>il tuo reparto</small>' : '') + '</h4><ul class="ml">' +
       g[k].slice().sort((a, b) => String(a.nome).localeCompare(String(b.nome), 'it', { sensitivity: 'base' })).map(l => {
         const q = Number(l.quantita) || 0, sub = Math.min(q, Number(l.subnoleggio) || 0);
-        const cs = caseSub(l), vt = variaTxt(l);
+        const cs = caseSub(l), vt = variaTxt(l), pt = presoText(l, 'carico');
         return '<li><span class="lq">' + q + '</span><span class="ln">' + esc(l.nome) + (isCase(l) ? ' ' + CASE_PILL : '') +
           (l.note ? '<small>' + esc(l.note) + '</small>' : '') + (cs ? '<small class="cs">' + esc(cs) + '</small>' : '') +
-          (vt ? '<small class="cs cvt">' + esc(vt) + '</small>' : '') + '</span>' +
+          (vt ? '<small class="cs cvt">' + esc(vt) + '</small>' : '') + (pt ? '<small class="cs cvt">' + esc(pt) + '</small>' : '') + '</span>' +
           (sub ? '<span class="pill blue">' + (sub >= q ? 'tutto a noleggio' : sub + ' a noleggio') + '</span>' : '') + '</li>';
       }).join('') + '</ul>';
   });
@@ -7349,6 +7909,7 @@ function convBody(e, a, lines, defOpen, m, extra) {
   if (e.luogo) facts.push('<div><span class="k">Luogo: </span>' + esc(e.luogo) + '</div>');
   if (e.noteTecnici) facts.push('<div><span class="k">Note: </span>' + esc(e.noteTecnici) + '</div>');
   if (facts.length) h += '<div class="facts">' + facts.join('') + '</div>';
+  if (m && a.stato !== 'rifiutato') h += luBlockHtml(e.luogo, e.id);       // il posto: foto, richieste del cliente (4.6)
   if (m && a.stato !== 'rifiutato') h += pjTechBlock(e.id);       // la pianta dell'evento (4.3): subito sotto luogo e note, prima della squadra e del materiale
   if (extra) h += teamBlock(extra.squadra, e);
   h += matBlock(e, lines || [], roles, defOpen);
@@ -7384,6 +7945,8 @@ function techView() {
   h += '<h1 class="hello">Ciao ' + esc(firstName(T.nome)) + '</h1>';
   h += '<div class="row" style="margin-top:10px">' + T.ruoli.map(r => '<span class="chip r-' + r + '">' + r + '</span>').join('') + '</div>';
   h += respEntryHtml();
+  const lu = luEntryHtml();
+  if (lu) h += '<div class="row" style="margin-top:10px">' + lu + '</div>';
   if (T.annullati.length) {
     h += '<section class="sec"><h2>Annullati</h2>';
     T.annullati.forEach(x => {
@@ -7517,6 +8080,7 @@ ACT.respond = el => {
   });
 };
 ACT.techRefresh = async () => {
+  if (S.offline) { ACT.offRetry(); return; }          // il server non risponde: si riprova da lì
   try {
     await techLoad();
     if (RS.loaded) await respLoad();
@@ -7524,8 +8088,8 @@ ACT.techRefresh = async () => {
     toast('Aggiornato.', 'ok');
   } catch (e) { toast(e.message, 'err'); }
 };
-async function techLoad() {
-  const d = await call('api_techInit', S.token);
+async function techLoad() { techApply(await offCall('t', 'api_techInit', S.token)); }
+function techApply(d) {
   T.nome = d.tecnico.nome; T.ruoli = uniq(rolesOf(d.tecnico.ruoli)); T.oggi = d.oggi; T.mie = d.mie; T.annullati = d.annullati || [];
   T.recenti = d.recenti || []; T.tariffa = toN(d.tariffa_km); T.piante = d.piante || [];
   T.resp = { fisso: !!(d.resp && d.resp.fisso), nomine: (d.resp && d.resp.nomine) || [] };
@@ -7541,7 +8105,7 @@ async function techLoad() {
 async function techBoot() {
   S.view = techView;
   paint(loadingView());
-  try { await techLoad(); } catch (e) { paint(linkErrorView(e.message)); }
+  try { await techLoad(); } catch (e) { if (offIsAuth(e)) offDrop('t'); paint(linkErrorView(e.message)); }
 }
 
 /* ---------- conferma rapida ---------- */
@@ -7610,10 +8174,10 @@ const PJ_GEN_BASE = [
 ];
 
 /* ---------- chi sei, cosa c'è ---------- */
-function pjAuth() { return S.mode === 'tech' ? { t: S.token } : { pin: S.pin }; }
+function pjAuth() { return S.mode === 'tech' ? { t: S.token } : S.mode === 'wh' ? { m: S.token } : { pin: S.pin }; }
 function pjCoord() { return S.mode === 'coord'; }
-/* Chi può portare il materiale di una pianta in un evento: il coordinatore e i tecnici responsabili (nei limiti dei loro reparti: lo controlla anche il server) */
-function pjCanUse() { return S.mode === 'coord' || (S.mode === 'tech' && typeof respIs === 'function' && respIs()); }
+/* Chi può portare il materiale di una pianta in un evento: il coordinatore, il magazzino e i tecnici responsabili (nei limiti dei loro reparti: lo controlla anche il server) */
+function pjCanUse() { return S.mode === 'coord' || S.mode === 'wh' || (S.mode === 'tech' && typeof respIs === 'function' && respIs()); }
 function pjById(id) { return (PJ.list || []).filter(p => p.id === id)[0] || null; }
 function pjLive() { return (PJ.list || []).filter(p => !p.cestino); }
 function pjNorm(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
@@ -7623,7 +8187,7 @@ function pjReset() { PJ.list = null; PJ.gen = []; PJ.gaps = []; PJ.err = ''; PJ.
 
 /* Le piante di un evento: l'elenco completo se è già stato caricato, altrimenti quello che il server manda con la pagina del tecnico */
 function pjPlansFor(eventId) {
-  const src = PJ.list !== null ? pjLive() : (S.mode === 'tech' ? (T.piante || []) : []);
+  const src = PJ.list !== null ? pjLive() : (S.mode === 'tech' ? (T.piante || []) : S.mode === 'wh' ? (S.piante || []) : []);
   return src.filter(p => p.event_id === eventId && (p.tipo === undefined || p.tipo === 'progetto'));
 }
 
@@ -7737,6 +8301,7 @@ function pjCardHtml(p) {
   if (p.cestino) pill = '<span class="pill bad">nel cestino</span>';
   else if (p.tipo === 'modello') pill = '<span class="pill blue">modello</span>';
   else if (p.event_id && p.eventoStato === 'annullato') pill = '<span class="pill bad">evento annullato</span>';
+  else if (p.event_id && p.eventoStato === 'archiviato') pill = '<span class="pill muted">evento in archivio</span>';
   const side = p.cestino
     ? 'tolto ' + (p.cestinatoIl ? fmtWhen(p.cestinatoIl) : '') + (p.cestinatoDa ? ' · ' + firstName(p.cestinatoDa) : '')
     : pjSavedText(p);
@@ -7749,6 +8314,7 @@ function pjCardHtml(p) {
       (p.tipo === 'progetto' && p.nMat ? '<button type="button" class="btn sm" data-act="pjMat" data-id="' + esc(p.id) + '">' + ico('list') + ' Materiale</button>' : '') +
       '<button type="button" class="btn sm" data-act="pjMore" data-id="' + esc(p.id) + '" aria-label="Altro su ' + esc(p.nome) + '">' + ico('more') + ' Altro</button>';
   }
+  if (!p.cestino && p.luogo) acts += luBtnHtml(p.luogo, p.event_id, 'Foto del posto');          // il posto: foto, piantine e richieste (4.6)
   const pc = typeof pcBadge === 'function' ? pcBadge(p) : '';
   if (pc && !p.cestino && typeof pcMay === 'function' && pcMay(p)) {
     acts += '<button type="button" class="btn sm" data-act="pcOpen" data-id="' + esc(p.id) + '">' + ico('check') + ' Da approvare</button>';
@@ -7856,6 +8422,7 @@ function pjNewForm(o) {
       '<option value="modello"' + (tipo === 'modello' ? ' selected' : '') + '>Il modello di un artista, da riusare</option></select></label>' +
     '<label class="fld" data-tipo="progetto"' + (tipo === 'progetto' ? '' : ' hidden') + '><span>Evento collegato (facoltativo)</span><select name="event_id">' +
       pjEventOptions(o.event_id || '') + '</select></label>' +
+    (o.event_id && S.evById && S.evById[o.event_id] ? luNoteHtml(S.evById[o.event_id].luogo) : '') +       // dov'è l'evento e cosa si sa del posto (4.6)
     '<label class="fld"><span>Artista o gruppo (facoltativo)</span><input type="text" name="artista" maxlength="80" autocomplete="off" placeholder="es. Coro San Luca"' +
       (src && src.artista ? ' value="' + esc(src.artista) + '"' : '') + '></label>' +
     '<label class="chk" style="margin-top:12px"><input type="checkbox" name="apri" checked> Apri subito la pianta</label>' +
@@ -8299,7 +8866,7 @@ document.addEventListener('visibilitychange', () => {
 /* =====================================================================
    DALLA PIANTA AL MAGAZZINO E ALL'EVENTO (4.0, tappa 2)
    - «Usa il materiale»: porta nell'elenco di un evento il materiale di una pianta e controlla cosa è libero in magazzino
-   - «Dalla pianta» (scheda Magazzino): crea o aggiorna gli articoli partendo dalle scorte scritte nel catalogo della pianta
+   - «Collegamenti editor» (scheda Magazzino): come le scorte scritte nel catalogo della pianta si collegano agli articoli (l'allineamento è automatico: lo fa l'editor, vedi api_pjSync)
    - «Duplica evento»: un evento che si ripete, con il suo materiale e le sue piante
    Il lavoro vero lo fanno api_pjUse, api_pjStockLoad e api_pjDupEvent (progetti.gs): qui si sceglie e si controlla.
    Solo per il coordinatore. Le disponibilità si calcolano con le funzioni dell'evento (availFor, ownNet, fromStock): stessi conti.
@@ -8393,6 +8960,10 @@ function puLink(x, mappa, arts) {
     if (id === '') { out.how = 'mappa'; return out; }
     if (m && String(m.stato) !== 'dismesso') { out.eq = id; out.how = 'mappa'; return out; }
   }
+  if (x.k && String(x.k).indexOf('wh_') === 0) {          // un tipo nato da un articolo del magazzino («Usa in pianta» nell'editor) resta legato a quell'articolo
+    const m = S.matById[String(x.k).slice(3)];
+    if (m && String(m.stato) !== 'dismesso' && !isCase(m)) { out.eq = m.id; out.how = 'mappa'; return out; }
+  }
   const f = puFind(tok, norm, arts);
   if (f) { out.eq = f.m.id; out.how = f.kind; }
   return out;
@@ -8477,11 +9048,11 @@ function puAvInfo(r, calc) {
   if (g) {
     if (g.short) {
       const o = puOthers(a);
-      return { cls: 'bad', text: 'Mancano ' + g.short + ': servono ' + g.after + ', liberi ' + free + ' su ' + a.loose + (a.locked ? ' sciolti' : '') + (o ? ' · negli stessi giorni servono anche a ' + o : '') + '.' };
+      return { cls: 'bad', text: 'Mancano ' + g.short + ': servono ' + g.after + ', liberi ' + free + ' su ' + a.stock + (a.locked ? ' (' + a.locked + ' nei case)' : '') + (o ? ' · negli stessi giorni servono anche a ' + o : '') + '.' };
     }
-    return { cls: 'ok', text: 'Servono ' + g.after + ' · liberi ' + free + ' su ' + a.loose + (a.locked ? ' sciolti' : '') + '.' };
+    return { cls: 'ok', text: 'Servono ' + g.after + ' · liberi ' + free + ' su ' + a.stock + (a.locked ? ' (' + a.locked + ' nei case)' : '') + '.' };
   }
-  return { cls: 'mut', text: 'Liberi ' + free + ' su ' + a.loose + (a.locked ? ' sciolti' : '') + '.' };
+  return { cls: 'mut', text: 'Liberi ' + free + ' su ' + a.stock + (a.locked ? ' (' + a.locked + ' nei case)' : '') + '.' };
 }
 /* L'articolo scelto per una voce, con il pulsante per cambiarlo */
 function puArtHtml(r, noneText) {
@@ -8795,7 +9366,7 @@ function pjMatEnsure(p) {
 }
 
 /* =====================================================================
-   «DALLA PIANTA» NELLA SCHEDA MAGAZZINO: articoli nuovi o quantità dalle scorte del catalogo della pianta
+   «COLLEGAMENTI EDITOR» NELLA SCHEDA MAGAZZINO: come le scorte del catalogo della pianta si collegano al magazzino (e, a mano, articoli nuovi o quantità)
    ===================================================================== */
 let PS = null;      // {rows, stock}
 function psBuild(r) {
@@ -8816,7 +9387,7 @@ function psBuild(r) {
 }
 function psRowHtml(r) {
   const m = r.eq ? S.matById[r.eq] : null;
-  const sub = m ? 'In magazzino ne hai ' + r.have + (r.st === 'diff' ? ' · nella pianta ' + r.qty : '') : 'Nuovo articolo · ' + catLabel(r.wh);
+  const sub = m ? 'In magazzino ne hai ' + r.have + (r.st === 'diff' ? ' · nell\'editor ' + r.qty : '') : 'Nuovo articolo · ' + catLabel(r.wh);
   return '<li class="pk pur psr' + (r.on ? ' sel' : '') + '" data-i="' + r.n + '">' +
     '<label class="puc"><input type="checkbox" data-chg="psOn" data-i="' + r.n + '"' + (r.on ? ' checked' : '') + ' aria-label="' + (m ? 'Aggiorna' : 'Crea') + ': ' + esc(r.item) + '"></label>' +
     '<div class="pkm"><b>' + esc(r.item) + '</b><small class="pssub">' + esc(sub) + '</small>' +
@@ -8825,16 +9396,17 @@ function psRowHtml(r) {
 }
 function psSheetHtml() {
   const P = PS, news = P.rows.filter(r => r.st === 'new'), diffs = P.rows.filter(r => r.st === 'diff'), same = P.rows.filter(r => r.st === 'same');
-  let h = '<p class="hint" style="margin-top:0">Le scorte che hai scritto nel catalogo della pianta' + (P.stock.quando ? ' (lette ' + esc(fmtWhen(P.stock.quando)) + ')' : '') +
-    '. Spunta quello che vuoi nel magazzino: i nuovi articoli si creano, per gli altri puoi aggiornare la quantità. Ogni cambio resta nel registro dei movimenti.</p>';
+  let h = '<p class="hint" style="margin-top:0">Le scorte del catalogo dell\'editor' + (P.stock.quando ? ' (lette ' + esc(fmtWhen(P.stock.quando)) + ')' : '') +
+    ' e il magazzino si allineano da soli, quando apri l\'editor e a ogni scorta che cambi: dove i numeri sono diversi vale il magazzino. ' +
+    'Qui sistemi le voci che non si sono collegate da sole. Ogni cambio resta nel registro dei movimenti.</p>';
   if (news.length) {
     h += '<h3 class="catsep">Non sono ancora in magazzino (' + news.length + ')</h3><ul class="pick pusel">' + news.map(psRowHtml).join('') + '</ul>';
   }
   if (diffs.length) {
     h += '<h3 class="catsep">Ci sono già, con un numero diverso (' + diffs.length + ')</h3>' +
-      '<p class="hint" style="margin-top:0">Se li spunti, la quantità in magazzino diventa quella indicata qui accanto.</p><ul class="pick pusel">' + diffs.map(psRowHtml).join('') + '</ul>';
+      '<p class="hint" style="margin-top:0">L\'editor prenderà da solo i pezzi del magazzino alla prossima apertura. Se spunti una voce, invece, il magazzino prende il numero dell\'editor.</p><ul class="pick pusel">' + diffs.map(psRowHtml).join('') + '</ul>';
   }
-  if (!news.length && !diffs.length) h += '<p class="empty">Il magazzino ha già tutto quello che c\'è nelle scorte della pianta, con le stesse quantità.</p>';
+  if (!news.length && !diffs.length) h += '<p class="empty">Il magazzino ha già tutto quello che c\'è nelle scorte dell\'editor, con le stesse quantità.</p>';
   if (same.length) {
     h += '<details class="free"><summary>Già in magazzino, uguali (' + same.length + ')</summary>' + puInfoList(same, r => '<b>' + r.have + ' ×</b> ' + esc(r.item)) + '</details>';
   }
@@ -8853,7 +9425,7 @@ function psUpdate() {
     const cb = $('input[type=checkbox]', li);
     if (cb && cb.checked !== r.on) cb.checked = r.on;
     const sub = $('.pssub', li), m = r.eq ? S.matById[r.eq] : null;
-    if (sub) sub.textContent = m ? 'In magazzino ne hai ' + r.have + (r.have !== r.qty ? ' · nella pianta ' + r.qty : '') : 'Nuovo articolo · ' + catLabel(r.wh);
+    if (sub) sub.textContent = m ? 'In magazzino ne hai ' + r.have + (r.have !== r.qty ? ' · nell\'editor ' + r.qty : '') : 'Nuovo articolo · ' + catLabel(r.wh);
   });
   const s = $('#pssum'), go = $('#psgo'), n = nNew + nUpd;
   if (s) {
@@ -8863,15 +9435,15 @@ function psUpdate() {
   if (go) { go.disabled = !n; go.textContent = n ? 'Metti in magazzino (' + n + ')' : 'Scegli le voci'; }
 }
 async function psOpen() {
-  const title = 'Carica il magazzino dalla pianta';
-  openSheet(title, '<p class="empty">Leggo le scorte della pianta…</p>', { noFocus: true });
+  const title = 'Collegamenti con l\'editor';
+  openSheet(title, '<p class="empty">Leggo le scorte dell\'editor…</p>', { noFocus: true });
   const mark = S.sheet;
   let r;
   try { r = await call('api_pjStock', S.pin); }
   catch (err) { if (S.sheet === mark) puFail(title, err.message); return; }
   if (S.sheet !== mark) return;
   if (!r.stock || !Array.isArray(r.stock.righe) || !r.stock.righe.length) {
-    openSheet(title, '<p>Non ho ancora le scorte della pianta.</p><p class="hint">Sono quelle che scrivi nel catalogo dell\'editor (americane, cavi, quadri…). Aprendo una pianta qualunque nell\'editor si leggono da sole: poi torna qui.</p>' +
+    openSheet(title, '<p>Non ho ancora le scorte dell\'editor.</p><p class="hint">Sono quelle che scrivi nel catalogo dell\'editor (americane, cavi, quadri…). Aprendo una pianta qualunque nell\'editor si leggono da sole: poi torna qui.</p>' +
       '<div class="sheetfoot"><button type="button" class="btn pri" data-act="closeSheet">Chiudi</button></div>', { noFocus: true });
     return;
   }
@@ -9046,6 +9618,748 @@ async function pmOpen(pid) {
   S.onClose = () => { PM = null; };
 }
 ACT.pjMat = el => { pmOpen(el.dataset.id); };
+/* ============================================================================================================
+   LUOGHI, SOPRALLUOGHI E FOTO (4.6)
+
+   I posti dove si lavora hanno una scheda: foto (spazio da usare, dove prendere la corrente, dove mettere i materiali, piantina del
+   posto), le richieste del cliente e il tipo di spettacolo. Tutti (coordinatore, tecnici, responsabili, magazzino) le possono
+   guardare e aggiungere; la scheda si ritrova da sola quando un evento ha lo stesso luogo (il testo del campo «Luogo»).
+
+   Ogni foto ha due destinazioni: la copia bella su Google Drive (cartella del posto) e una copia ridotta nel Foglio, che l'app
+   mostra a tutti. La riduzione si fa qui, nel telefono, prima di mandare la foto: miniatura (~170 px), copia per l'app (~1100 px)
+   e copia grande per Drive (~2400 px). Il server (luoghi.gs) tiene al massimo foto_max_app copie ridotte.
+   ============================================================================================================ */
+
+const LU = {
+  places: null,          // l'elenco leggero dei posti (api_luInit); null = non ancora caricato
+  gaps: [],              // schede o colonne che mancano nel foglio (serve lanciare setup)
+  drive: null,           // Google Drive è collegato? (null = non lo so ancora)
+  max: 20, nApp: 0,      // quante foto con la copia ridotta tiene l'app, e quante ne ha adesso
+  off: false,            // il server non conosce i luoghi (Code.gs vecchio): nessun pulsante
+  err: '', loading: null,
+  full: {},              // id del posto -> scheda aperta {luogo, visite, foto}
+  big: {}, bigOrder: [], // id foto -> copia ridotta già scaricata (per guardarla a schermo intero)
+  cur: null,             // il posto nella finestra: {id, text, ev, list}
+  viewId: '', zoom: false,
+  tipo: 'spazio', cap: '',
+  busy: false, prog: '',
+  q: '', hintT: 0,
+};
+
+const LU_TIPI = [
+  ['spazio', 'Spazio', 'Lo spazio che si può usare'],
+  ['corrente', 'Corrente', 'Dove prendere la corrente'],
+  ['materiali', 'Materiali', 'Dove mettere i materiali'],
+  ['piantina', 'Piantina', 'La piantina del posto'],
+  ['altro', 'Altro', 'Qualunque altra cosa utile'],
+];
+function luByName(a, b) { return String(a.nome).localeCompare(String(b.nome), 'it', { numeric: true, sensitivity: 'base' }); }
+function luTipo(t) { return LU_TIPI.filter(x => x[0] === t)[0] || LU_TIPI[LU_TIPI.length - 1]; }
+
+/* Come sul server (luKey_): maiuscole, accenti e punteggiatura non contano */
+function luKey(s) {
+  return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+}
+function luUsable() {
+  if (LU.off) return false;
+  if (S.mode === 'coord') return !!S.ready;
+  return S.mode === 'tech' || S.mode === 'wh';
+}
+function luReset() {
+  LU.places = null; LU.gaps = []; LU.drive = null; LU.err = ''; LU.loading = null; LU.full = {}; LU.big = {}; LU.bigOrder = [];
+  LU.cur = null; LU.viewId = ''; LU.busy = false; LU.prog = ''; LU.q = ''; LU.off = false;
+}
+function luToday() { return S.oggi || (typeof T !== 'undefined' && T && T.oggi) || ''; }
+function luEvName(id) {
+  if (!id) return '';
+  const e = S.evById && S.evById[id];
+  if (e) return e.cliente || '';
+  if (typeof T !== 'undefined' && T && T.mie) {
+    const m = T.mie.filter(x => x.evento && x.evento.id === id)[0];
+    if (m) return m.evento.cliente || '';
+  }
+  return '';
+}
+function luCounts(p) {
+  const b = [];
+  if (p.nFoto) b.push(plural(p.nFoto, 'foto', 'foto'));
+  if (p.nVisite) b.push(plural(p.nVisite, 'appunto', 'appunti'));
+  return b.join(' · ');
+}
+function luClip(s, n) { s = String(s || '').replace(/\s*\n\s*/g, ' · ').trim(); return s.length > n ? s.slice(0, n - 1).trim() + '…' : s; }
+function luMulti(s) { return esc(s).replace(/\n/g, '<br>'); }
+
+/* ---------- caricamento ---------- */
+/* Non fallisce mai: se qualcosa va storto lo lascia in LU.err (o, se il server è vecchio, spegne i pulsanti) */
+function luLoad(force) {
+  if (LU.loading) return LU.loading;
+  if (LU.places !== null && !force) return Promise.resolve();
+  LU.loading = call('api_luInit', CRED())
+    .then(r => {
+      LU.places = r.luoghi || []; LU.gaps = r.mancano || []; LU.drive = r.drive === undefined ? null : !!r.drive;
+      LU.max = r.max || 20; LU.nApp = r.nApp || 0; LU.err = '';
+    })
+    .catch(e => {
+      if (/Script function not found|non è stata trovata|not found|non esiste/i.test(e.message)) LU.off = true;
+      else LU.err = e.message;
+    })
+    .then(() => { LU.loading = null; });
+  return LU.loading;
+}
+/* Chiamata mentre si disegna la pagina: parte il caricamento una volta sola e poi si aggiornano i riquadri, senza ridisegnare tutto */
+function luEnsure() {
+  if (LU.places !== null || LU.loading || LU.err || LU.off || !luUsable()) return;
+  luLoad().then(luRefreshBlocks);
+}
+function luFor(text) {
+  const k = luKey(text);
+  if (!k || !LU.places) return null;
+  return LU.places.filter(p => p.chiave === k || String(p.alias || '').split(',').indexOf(k) >= 0)[0] || null;
+}
+const LU_STOP = ['del', 'della', 'dei', 'delle', 'degli', 'dello', 'via', 'viale', 'piazza', 'corso', 'teatro', 'sala', 'hotel', 'villa', 'parco', 'centro',
+  'palazzo', 'casa', 'chiesa', 'sede', 'presso'];
+function luTokens(s) { return luKey(s).split(' ').filter(w => w.length >= 3 && LU_STOP.indexOf(w) < 0); }
+/* Posti che potrebbero essere lo stesso, scritto in un altro modo: serve a proporli, mai a collegarli da soli */
+function luNear(text) {
+  const t = luTokens(text), k = luKey(text);
+  if (!t.length || !LU.places) return [];
+  return LU.places.map(p => {
+    let best = 0;
+    [p.chiave].concat(String(p.alias || '').split(',').filter(Boolean)).forEach(n => {
+      const u = luTokens(n);
+      if (!u.length) return;
+      const common = t.filter(w => u.indexOf(w) >= 0);
+      if (!common.length || !common.some(w => w.length >= 4)) return;
+      best = Math.max(best, common.length / Math.min(t.length, u.length));
+    });
+    return { p: p, score: best };
+  }).filter(x => x.score > 0.5 && x.p.chiave !== k).sort((a, b) => b.score - a.score || luByName(a.p, b.p)).slice(0, 4).map(x => x.p);
+}
+function luSync(d) {
+  const L = d.luogo, last = d.visite[0];
+  const cur = (LU.places || []).filter(p => p.id === L.id)[0] || {};
+  const o = Object.assign({}, cur, L, { nFoto: d.foto.length, nVisite: d.visite.length,
+    ultimaVisita: last ? { data: last.data, tipoSpettacolo: last.tipoSpettacolo, richieste: luClip(last.richieste, 240), note: luClip(last.note, 160), chi: last.chi } : null });
+  if (LU.places) upsert(LU.places, o);
+}
+function luStore(d) {
+  LU.full[d.luogo.id] = d;
+  if (d.drive !== undefined) LU.drive = !!d.drive;
+  if (d.max) LU.max = d.max;
+  luSync(d);
+}
+
+/* ---------- il riquadro «Il posto» dentro un evento, il modulo dell'evento, le card dei progetti ---------- */
+function luLastHtml(v) {
+  if (!v) return '';
+  let h = '';
+  if (v.tipoSpettacolo) h += '<p><span class="luk">Tipo di spettacolo: </span>' + esc(v.tipoSpettacolo) + '</p>';
+  if (v.richieste) h += '<p><span class="luk">Richieste del cliente: </span>' + esc(luClip(v.richieste, 190)) + '</p>';
+  else if (v.note) h += '<p><span class="luk">Nota: </span>' + esc(luClip(v.note, 190)) + '</p>';
+  if (h && v.data) h += '<p class="lusrc">dal sopralluogo del ' + esc(fmtDMY(v.data)) + (v.chi ? ' · ' + esc(firstName(v.chi)) : '') + '</p>';
+  return h;
+}
+function luBlockHtml(text, evId) {
+  text = String(text == null ? '' : text).trim();
+  if (!text || !luUsable()) return '';
+  luEnsure();
+  const attr = ' data-lu="1" data-text="' + esc(text) + '" data-ev="' + esc(evId || '') + '"';
+  if (LU.places === null) return '<div class="lubox"' + attr + '></div>';
+  if (LU.gaps.length) {
+    return S.mode === 'coord'
+      ? '<div class="lubox"' + attr + '><h5>' + ico('cam') + ' Foto del posto</h5><p class="note muted">Il foglio non ha ancora la parte per le foto dei posti: ' +
+        'apri Apps Script, scegli la funzione <b>setup</b> e premi Esegui.</p></div>'
+      : '<div class="lubox"' + attr + '></div>';
+  }
+  const p = luFor(text);
+  const has = !!p && (p.nFoto > 0 || p.nVisite > 0);
+  let h = '<div class="lubox' + (has ? ' has' : '') + '"' + attr + '><h5>' + ico('cam') + ' Il posto' + (p ? ': ' + esc(p.nome) : '') + '</h5>';
+  if (has) {
+    h += '<p class="luc2">' + esc(luCounts(p)) + (p.ultima ? ' · ultima volta ' + esc(fmtDMY(p.ultima)) : '') + '</p>' + luLastHtml(p.ultimaVisita);
+  } else if (p) {
+    h += '<p class="muted">C\'è la scheda del posto, ma ancora senza foto né appunti.</p>';
+  } else {
+    h += '<p class="muted">Di questo posto non ci sono ancora foto né appunti.</p>';
+  }
+  const label = has ? 'Foto' + (p.nFoto ? ' (' + p.nFoto + ')' : '') + ' e richieste' : 'Aggiungi foto o appunti';
+  return h + '<div class="row"><button type="button" class="btn sm' + (has ? ' pri' : '') + '" data-act="luEv" data-text="' + esc(text) + '" data-ev="' + esc(evId || '') + '">' +
+    ico('cam') + ' ' + label + '</button></div></div>';
+}
+/* Il solo pulsante (per le card dei progetti) */
+function luBtnHtml(text, evId, label) {
+  text = String(text == null ? '' : text).trim();
+  if (!text || !luUsable()) return '';
+  return '<button type="button" class="btn sm" data-act="luEv" data-text="' + esc(text) + '" data-ev="' + esc(evId || '') + '">' + ico('cam') + ' ' + esc(label || 'Foto del posto') + '</button>';
+}
+function luEntryHtml() {
+  if (!luUsable()) return '';
+  return '<button type="button" class="btn sm" data-act="luList">' + ico('cam') + ' Luoghi e foto</button>';
+}
+/* Sotto il campo «Luogo» del modulo dell'evento: se ci siete già stati lo dice, senza far uscire dal modulo */
+function luHintHtml(text) {
+  text = String(text == null ? '' : text).trim();
+  if (!text || !luUsable()) return '';
+  luEnsure();
+  if (LU.places === null || LU.gaps.length) return '';
+  const p = luFor(text);
+  if (p) {
+    return '<div class="lubox has"><h5>' + ico('cam') + ' Qui siete già stati: ' + esc(p.nome) + '</h5>' +
+      (luCounts(p) ? '<p class="luc2">' + esc(luCounts(p)) + '</p>' : '') + luLastHtml(p.ultimaVisita) +
+      '<p class="hint">Dopo aver salvato l\'evento trovi le foto e le richieste del cliente nella sua scheda.</p></div>';
+  }
+  const near = luNear(text);
+  if (!near.length) return '';
+  return '<div class="lubox"><h5>' + ico('cam') + ' È lo stesso posto di uno già visto?</h5>' +
+    near.map(q => '<div class="lunr"><span><b>' + esc(q.nome) + '</b>' + (luCounts(q) ? '<small>' + esc(luCounts(q)) + '</small>' : '') + '</span>' +
+      '<button type="button" class="btn sm" data-act="luLinkHint" data-id="' + esc(q.id) + '" data-text="' + esc(text) + '">È questo</button></div>').join('') + '</div>';
+}
+/* Una riga di testo per il modulo di un nuovo progetto: dov'è l'evento e cosa si sa del posto */
+function luNoteHtml(text) {
+  text = String(text == null ? '' : text).trim();
+  if (!text || !luUsable()) return '';
+  luEnsure();
+  const p = LU.places && !LU.gaps.length ? luFor(text) : null;
+  if (!p || (!p.nFoto && !p.nVisite)) return '';
+  return '<div class="lubox has" data-lu="1" data-text="' + esc(text) + '" data-ev="" data-note="1"><h5>' + ico('cam') + ' Il posto: ' + esc(p.nome) + '</h5><p class="luc2">' + esc(luCounts(p)) + '</p>' +
+    luLastHtml(p.ultimaVisita) + '<p class="hint">Le foto e le piantine del posto si aprono da «Foto del posto» nella scheda del progetto.</p></div>';
+}
+function luRefreshBlocks() {
+  $$('.lubox[data-lu]').forEach(n => {
+    const t = n.getAttribute('data-text'), ev = n.getAttribute('data-ev');
+    const html = n.hasAttribute('data-note') ? luNoteHtml(t) : luBlockHtml(t, ev);
+    if (html) n.outerHTML = html; else n.remove();
+  });
+  const hint = $('#luhint');
+  const inp = hint && hint.closest('form') && $('[name=luogo]', hint.closest('form'));
+  if (hint && inp) hint.innerHTML = luHintHtml(inp.value);
+}
+function luAfterClose() { luRefreshBlocks(); }
+INP.luType = el => {
+  clearTimeout(LU.hintT);
+  LU.hintT = setTimeout(() => {
+    const hint = $('#luhint', el.form || document);
+    if (hint) hint.innerHTML = luHintHtml(el.value);
+  }, 250);
+};
+ACT.luLinkHint = async el => {
+  const r = await mutate(async () => {
+    const d = await call('api_luAlias', CRED(), el.dataset.id, el.dataset.text);
+    upsert(LU.places, Object.assign({}, (LU.places.filter(p => p.id === d.luogo.id)[0] || {}), d.luogo));
+    luRefreshBlocks();
+    toast('Collegato a «' + d.luogo.nome + '».', 'ok');
+  });
+  return r;
+};
+
+/* ---------- finestra: disegno e navigazione ---------- */
+function luPaint(title, html, keep) {
+  const box = $('#sheet .sheet');
+  const y = keep && box ? box.scrollTop : 0;
+  openSheet(title, '<div class="lu">' + html + '</div>', { noFocus: true });
+  S.onClose = luAfterClose;
+  if (y) { const b = $('#sheet .sheet'); if (b) b.scrollTop = y; }
+}
+function luStill(id) { return !!S.sheet && !!LU.cur && (id === undefined || LU.cur.id === id); }
+function luGapsHtml() {
+  return S.mode === 'coord'
+    ? '<p class="banner" role="alert"><b>Il foglio non è pronto per le foto dei posti.</b> Apri Estensioni › Apps Script, scegli la funzione <b>setup</b> nel menu in alto e premi Esegui. ' +
+      'Poi aggiorna questa pagina. <small>(Manca: ' + esc(LU.gaps.join(', ')) + ')</small></p>'
+    : '<p class="empty">Le foto dei posti non sono ancora pronte: avvisa il coordinatore.</p>';
+}
+
+/* dall'evento: trova il posto con lo stesso nome, oppure propone di crearlo */
+ACT.luEv = async el => { luFromText(el.dataset.text, el.dataset.ev); };
+async function luFromText(text, evId) {
+  text = String(text || '').trim();
+  LU.cur = { id: '', text: text, ev: evId || '', list: false };
+  luPaint('Foto del posto', '<p class="empty">Carico…</p>');
+  if (LU.places === null || LU.err) { LU.err = ''; await luLoad(); }
+  if (!luStill()) return;
+  if (LU.err) { luPaint('Foto del posto', '<p class="note bad" role="alert">' + esc(LU.err) + '</p>'); return; }
+  if (LU.off) { luPaint('Foto del posto', '<p class="empty">Questa funzione non è ancora attiva: serve aggiornare l\'app (Code.gs).</p>'); return; }
+  if (LU.gaps.length) { luPaint('Foto del posto', luGapsHtml()); return; }
+  const p = luFor(text);
+  if (p) { await luOpenPlace(p.id, { text: text, ev: evId || '' }); return; }
+  luRenderNew(text);
+}
+function luRenderNew(text) {
+  const near = luNear(text);
+  let h = '<p>Per <b>' + esc(text) + '</b> non c\'è ancora la scheda con le foto e gli appunti.</p>';
+  if (near.length) {
+    h += '<p class="note muted">Forse è un posto dove siete già stati, scritto in un altro modo:</p>' +
+      near.map(q => '<div class="lunr"><span><b>' + esc(q.nome) + '</b>' + (luCounts(q) ? '<small>' + esc(luCounts(q)) + '</small>' : '') + '</span>' +
+        '<button type="button" class="btn sm" data-act="luLinkText" data-id="' + esc(q.id) + '" data-text="' + esc(text) + '">È questo</button></div>').join('') +
+      '<p class="hint">Se invece è un posto nuovo, creane la scheda qui sotto.</p>';
+  } else {
+    h += '<p class="hint">Crea la scheda: poi tutti possono aggiungere foto e appunti, e li ritrovi ogni volta che un evento ha questo luogo.</p>';
+  }
+  h += '<div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Chiudi</button>' +
+    '<button type="button" class="btn pri" data-act="luCreate" data-text="' + esc(text) + '">Crea la scheda di questo posto</button></div>';
+  luPaint('Foto del posto', h);
+}
+ACT.luCreate = async el => {
+  const ctx = LU.cur ? { text: LU.cur.text, ev: LU.cur.ev } : { text: '', ev: '' };
+  const r = await mutate(async () => {
+    const d = await call('api_luSave', CRED(), { nome: el.dataset.text });
+    if (!LU.places) LU.places = [];
+    upsert(LU.places, d.luogo);
+    await luOpenPlace(d.luogo.id, ctx);
+  });
+  return r;
+};
+ACT.luLinkText = async el => {
+  const ctx = LU.cur ? { text: LU.cur.text, ev: LU.cur.ev } : { text: '', ev: '' };
+  await mutate(async () => {
+    const d = await call('api_luAlias', CRED(), el.dataset.id, el.dataset.text);
+    upsert(LU.places, Object.assign({}, (LU.places.filter(p => p.id === d.luogo.id)[0] || {}), d.luogo));
+    await luOpenPlace(d.luogo.id, ctx);
+  });
+};
+
+/* ---------- elenco di tutti i posti ---------- */
+ACT.luList = async () => {
+  LU.cur = { id: '', text: '', ev: '', list: true };
+  luPaint('Luoghi e foto', '<p class="empty">Carico…</p>');
+  await luLoad(true);
+  if (!luStill()) return;
+  luRenderList();
+};
+function luRenderList() {
+  LU.cur = { id: '', text: '', ev: '', list: true };
+  if (LU.off) { luPaint('Luoghi e foto', '<p class="empty">Questa funzione non è ancora attiva: serve aggiornare l\'app (Code.gs).</p>'); return; }
+  if (LU.err) { luPaint('Luoghi e foto', '<p class="note bad" role="alert">' + esc(LU.err) + '</p><div class="sheetfoot"><button type="button" class="btn pri" data-act="luList">Riprova</button></div>'); return; }
+  if (LU.gaps.length) { luPaint('Luoghi e foto', luGapsHtml()); return; }
+  let h = '<p class="hint" style="margin-top:0">I posti dove abbiamo lavorato: foto, richieste del cliente e tipo di spettacolo. Tutti possono aggiungerne.</p>' +
+    '<div class="toolbar"><button type="button" class="btn pri" data-act="luNewPlace">' + ico('plus') + ' Nuovo posto</button></div>';
+  if (LU.places.length > 6) {
+    h += '<input type="search" id="luq" class="srch" data-inp="luQ" value="' + esc(LU.q) + '" placeholder="Cerca un posto…" aria-label="Cerca un posto" autocomplete="off" autocapitalize="off">';
+  }
+  h += '<div id="lulist">' + luListHtml() + '</div>';
+  luPaint('Luoghi e foto', h);
+}
+function luListHtml() {
+  const q = luKey(LU.q);
+  let l = (LU.places || []).slice();
+  if (q) l = l.filter(p => luKey([p.nome, p.alias, p.indirizzo].join(' ')).indexOf(q) >= 0);
+  l.sort(luByName);
+  if (!l.length) return '<p class="empty">' + (q ? 'Nessun posto corrisponde alla ricerca.' : 'Non c\'è ancora nessun posto. Tocca «Nuovo posto» per aggiungere il primo.') + '</p>';
+  return l.map(p => '<button type="button" class="lurow" data-act="luPlace" data-id="' + esc(p.id) + '"><span class="lun"><b>' + esc(p.nome) + '</b>' +
+    (p.indirizzo ? '<small>' + esc(p.indirizzo) + '</small>' : '') + '</span><span class="luc">' + (luCounts(p) ? esc(luCounts(p)) : 'niente ancora') + '</span></button>').join('');
+}
+INP.luQ = el => { LU.q = el.value; const b = $('#lulist'); if (b) b.innerHTML = luListHtml(); };
+ACT.luPlace = el => { luOpenPlace(el.dataset.id, { text: '', ev: '', list: true }); };
+ACT.luBackList = () => { luRenderList(); };
+
+ACT.luNewPlace = () => {
+  luPaint('Nuovo posto',
+    '<form data-submit="luPlaceNew" novalidate>' +
+    '<label class="fld"><span>Nome del posto</span><input type="text" name="nome" maxlength="120" autocomplete="off" placeholder="Per esempio: Teatro Nuovo, Verona"></label>' +
+    '<label class="fld"><span>Indirizzo (facoltativo)</span><input type="text" name="indirizzo" maxlength="200" autocomplete="off"></label>' +
+    '<label class="fld"><span>Note sul posto (facoltative)</span><textarea name="note" maxlength="2000" placeholder="Per esempio: si carica dal retro, ascensore piccolo"></textarea></label>' +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="luBackList">Annulla</button>' +
+    '<button type="submit" class="btn pri">Crea</button></div></form>');
+  const i = $('#sheet [name=nome]');
+  if (i) i.focus();
+};
+SUB.luPlaceNew = async form => {
+  const f = new FormData(form), g = k => String(f.get(k) == null ? '' : f.get(k)).trim();
+  const err = $('.ferr', form);
+  if (luKey(g('nome')).length < 2) { err.textContent = 'Scrivi il nome del posto.'; $('[name=nome]', form).focus(); return; }
+  err.textContent = '';
+  const r = await mutate(async () => {
+    const d = await call('api_luSave', CRED(), { nome: g('nome'), indirizzo: g('indirizzo'), note: g('note') });
+    if (!LU.places) LU.places = [];
+    upsert(LU.places, d.luogo);
+    await luOpenPlace(d.luogo.id, { text: '', ev: '', list: true });
+    if (!d.nuovo) toast('C\'era già un posto con questo nome: ho aperto quello.', 'ok');
+  }, true);
+  if (!r.ok) err.textContent = r.err;
+};
+
+/* ---------- la scheda di un posto ---------- */
+async function luOpenPlace(id, ctx) {
+  ctx = ctx || {};
+  LU.cur = { id: id, text: ctx.text || '', ev: ctx.ev || '', list: !!ctx.list };
+  LU.viewId = '';
+  const known = (LU.places || []).filter(p => p.id === id)[0];
+  luPaint(known ? known.nome : 'Posto', '<p class="empty">Carico…</p>');
+  try { luStore(await call('api_luOpen', CRED(), id)); }
+  catch (e) {
+    if (luStill(id)) luPaint('Posto', '<p class="note bad" role="alert">' + esc(e.message) + '</p><div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Chiudi</button></div>');
+    return;
+  }
+  if (luStill(id)) luRenderPlace();
+}
+function luAddHtml() {
+  let h = '<section class="luadd"><p class="luq">Aggiungi foto</p><div class="cats" role="group" aria-label="Che foto sono">' +
+    LU_TIPI.map(t => '<button type="button" class="cat" data-act="luTipo" data-t="' + t[0] + '" aria-pressed="' + (LU.tipo === t[0]) + '">' + esc(t[1]) + '</button>').join('') + '</div>' +
+    '<p class="hint">' + esc(luTipo(LU.tipo)[2]) + '</p>' +
+    '<label class="fld" style="margin-top:8px"><span>Didascalia (facoltativa)</span><input type="text" id="lucap" maxlength="120" value="' + esc(LU.cap) + '" data-inp="luCap" autocomplete="off" ' +
+    'placeholder="Per esempio: quadro elettrico a sinistra del palco"></label>' +
+    '<div class="row" style="margin-top:10px"><button type="button" class="btn pri" data-act="luShoot"' + (LU.busy ? ' disabled' : '') + '>' + ico('cam') + ' Scatta una foto</button>' +
+    '<button type="button" class="btn" data-act="luGallery"' + (LU.busy ? ' disabled' : '') + '>' + ico('img') + ' Scegli dalla galleria</button></div>' +
+    '<input type="file" id="lufile1" accept="image/*" capture="environment" hidden data-chg="luPick" tabindex="-1">' +
+    '<input type="file" id="lufile2" accept="image/*" multiple hidden data-chg="luPick" tabindex="-1">' +
+    '<p class="luprog" id="luprog" role="status">' + esc(LU.prog) + '</p>';
+  if (S.mode === 'coord' && LU.drive === false) {
+    h += '<p class="note warn">Google Drive non è collegato: le foto restano solo nell\'app (al massimo ' + LU.max + '). Per collegarlo vedi la guida «Le foto dei luoghi».</p>';
+  }
+  return h + '</section>';
+}
+function luThumbHtml(f) {
+  const t = luTipo(f.tipo);
+  return '<button type="button" class="lut" data-act="luFoto" data-id="' + esc(f.id) + '" aria-label="' + esc(t[1] + (f.didascalia ? ': ' + f.didascalia : '')) + '">' +
+    (f.mini ? '<img alt="" src="data:image/jpeg;base64,' + f.mini + '">' : '') +
+    '<span class="lutag">' + esc(t[1]) + '</span>' + (f.didascalia ? '<span class="lucap">' + esc(f.didascalia) + '</span>' : '') + '</button>';
+}
+function luVisitHtml(v) {
+  const ev = luEvName(v.event_id);
+  let h = '<article class="luv"><div class="luvh"><b>' + esc(fmtDMY(v.data)) + '</b><span class="muted">' + esc(v.chi || '') + (ev ? ' · per «' + esc(ev) + '»' : '') + '</span></div>';
+  if (v.tipoSpettacolo) h += '<p><span class="luk">Tipo di spettacolo: </span>' + esc(v.tipoSpettacolo) + '</p>';
+  if (v.richieste) h += '<p><span class="luk">Richieste del cliente: </span>' + luMulti(v.richieste) + '</p>';
+  if (v.note) h += '<p><span class="luk">Note: </span>' + luMulti(v.note) + '</p>';
+  if (v.mio) {
+    h += '<div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-act="luVisitEdit" data-id="' + esc(v.id) + '">' + ico('edit') + ' Cambia</button>' +
+      '<button type="button" class="btn sm danger" data-act="luVisitDel" data-id="' + esc(v.id) + '" data-confirm="Sicuro? Tocca di nuovo">Togli</button></div>';
+  }
+  return h + '</article>';
+}
+function luRenderPlace() {
+  const d = LU.cur && LU.full[LU.cur.id];
+  if (!d) return;
+  const L = d.luogo;
+  let h = '';
+  if (LU.cur.list) h += '<div class="lunav"><button type="button" class="btn sm" data-act="luBackList">‹ Tutti i posti</button></div>';
+  if (L.indirizzo) h += '<p class="luaddr">' + ico('pin') + '<span>' + esc(L.indirizzo) + '</span></p>';
+  if (L.note) h += '<p class="note">' + luMulti(L.note) + '</p>';
+  h += luAddHtml();
+  h += '<h4>Foto (' + d.foto.length + ')</h4>';
+  h += d.foto.length ? '<div class="lug">' + d.foto.map(luThumbHtml).join('') + '</div>'
+    : '<p class="muted">Ancora nessuna foto di questo posto.</p>';
+  h += '<h4>Appunti dei sopralluoghi</h4><p class="hint" style="margin-top:0">Richieste del cliente, tipo di spettacolo (anche se non è ancora deciso), cose da ricordare.</p>' +
+    '<div class="row" style="margin-top:8px"><button type="button" class="btn sm pri" data-act="luVisitNew">' + ico('plus') + ' Nuovo appunto</button></div>';
+  h += d.visite.length ? d.visite.map(luVisitHtml).join('') : '<p class="muted" style="margin-top:8px">Ancora nessun appunto.</p>';
+  if (S.mode === 'coord') {
+    const others = (LU.places || []).filter(p => p.id !== L.id).sort(luByName);
+    h += '<h4>Gestione del posto</h4>' + (L.alias ? '<p class="hint" style="margin-top:0">Altri modi in cui è stato scritto negli eventi: ' + esc(L.alias.split(',').join(', ')) + '</p>' : '') +
+      '<div class="row"><button type="button" class="btn sm" data-act="luEditPlace">' + ico('edit') + ' Nome, indirizzo e note</button>' +
+      '<button type="button" class="btn sm danger" data-act="luDelPlace" data-confirm="Tolgo il posto con tutte le sue foto? Tocca di nuovo">' + ico('trash') + ' Togli il posto</button></div>';
+    if (others.length) {
+      h += '<div class="lumerge"><label class="fld"><span>È lo stesso posto di un altro? Unisci: l\'altro sparisce e le sue foto e i suoi appunti passano qui</span>' +
+        '<select id="lumerge"><option value="">Scegli il posto da unire a questo…</option>' + others.map(p => '<option value="' + esc(p.id) + '">' + esc(p.nome) + (luCounts(p) ? ' (' + esc(luCounts(p)) + ')' : '') + '</option>').join('') + '</select></label>' +
+        '<div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-act="luMerge" data-confirm="Unisco i due posti? Tocca di nuovo">Unisci</button></div></div>';
+    }
+    h += '<p class="hint">Le copie belle delle foto restano su Google Drive anche se togli il posto o una foto dall\'app.</p>';
+  }
+  luPaint(L.nome, h, true);
+}
+ACT.luTipo = el => { LU.tipo = el.dataset.t; luRenderPlace(); };
+INP.luCap = el => { LU.cap = el.value; };
+
+/* ---------- gestione del posto (solo il coordinatore) ---------- */
+ACT.luEditPlace = () => {
+  const d = LU.cur && LU.full[LU.cur.id]; if (!d) return;
+  luPaint('Cambia il posto',
+    '<form data-submit="luPlaceEdit" novalidate>' +
+    '<label class="fld"><span>Nome del posto</span><input type="text" name="nome" maxlength="120" value="' + esc(d.luogo.nome) + '" autocomplete="off"></label>' +
+    '<label class="fld"><span>Indirizzo</span><input type="text" name="indirizzo" maxlength="200" value="' + esc(d.luogo.indirizzo) + '" autocomplete="off"></label>' +
+    '<label class="fld"><span>Note sul posto</span><textarea name="note" maxlength="2000">' + esc(d.luogo.note) + '</textarea></label>' +
+    '<p class="hint">Se cambi il nome, quello vecchio resta valido: gli eventi che lo usano trovano ancora questo posto.</p>' +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="luBackPlace">Annulla</button>' +
+    '<button type="submit" class="btn pri">Salva</button></div></form>');
+};
+ACT.luBackPlace = () => { luRenderPlace(); };
+SUB.luPlaceEdit = async form => {
+  const d = LU.cur && LU.full[LU.cur.id]; if (!d) return;
+  const f = new FormData(form), g = k => String(f.get(k) == null ? '' : f.get(k)).trim();
+  const err = $('.ferr', form);
+  if (luKey(g('nome')).length < 2) { err.textContent = 'Scrivi il nome del posto.'; return; }
+  err.textContent = '';
+  const r = await mutate(async () => {
+    const res = await call('api_luSave', CRED(), { id: d.luogo.id, nome: g('nome'), indirizzo: g('indirizzo'), note: g('note') });
+    d.luogo = Object.assign({}, d.luogo, res.luogo, { nFoto: d.foto.length, nVisite: d.visite.length });
+    luSync(d);
+    luRenderPlace();
+    toast('Salvato.', 'ok');
+  }, true);
+  if (!r.ok) err.textContent = r.err;
+};
+ACT.luMerge = async () => {
+  const d = LU.cur && LU.full[LU.cur.id]; if (!d) return;
+  const from = ($('#lumerge') || {}).value;
+  if (!from) { toast('Scegli prima il posto da unire a questo.', 'err'); return; }
+  await mutate(async () => {
+    const r = await call('api_luMerge', CRED(), from, d.luogo.id);
+    LU.places = (LU.places || []).filter(p => p.id !== from);
+    await luLoad(true);
+    await luOpenPlace(d.luogo.id, { text: LU.cur.text, ev: LU.cur.ev, list: LU.cur.list });
+    toast('Uniti: ' + plural(r.foto, 'foto', 'foto') + ' e ' + plural(r.appunti, 'appunto', 'appunti') + ' passano qui.', 'ok');
+  });
+};
+ACT.luDelPlace = async () => {
+  const d = LU.cur && LU.full[LU.cur.id]; if (!d) return;
+  await mutate(async () => {
+    await call('api_luDel', CRED(), d.luogo.id);
+    LU.places = (LU.places || []).filter(p => p.id !== d.luogo.id);
+    delete LU.full[d.luogo.id];
+    toast('Posto tolto.', 'ok');
+    if (LU.cur.list) luRenderList(); else closeSheet();
+  });
+};
+
+/* ---------- appunti del sopralluogo ---------- */
+function luVisitFormHtml(v) {
+  v = v || {};
+  const d = LU.full[LU.cur.id];
+  const tipi = uniq(['Concerto', 'Matrimonio', 'Festa', 'Convegno', 'Spettacolo teatrale', 'Evento aziendale'].concat((d.visite || []).map(x => x.tipoSpettacolo).filter(Boolean)));
+  return '<form data-submit="luVisit" novalidate><input type="hidden" name="id" value="' + esc(v.id || '') + '">' +
+    '<label class="fld"><span>Data del sopralluogo</span><input type="date" name="data" value="' + esc(v.data || luToday()) + '"></label>' +
+    '<label class="fld"><span>Tipo di spettacolo (se non è ancora deciso lascia vuoto)</span><input type="text" name="tipoSpettacolo" maxlength="120" list="lutipi" value="' + esc(v.tipoSpettacolo || '') + '" autocomplete="off">' +
+    '<datalist id="lutipi">' + tipi.map(t => '<option value="' + esc(t) + '">').join('') + '</datalist></label>' +
+    '<label class="fld"><span>Richieste del cliente</span><textarea name="richieste" maxlength="2000" placeholder="Per esempio: palco più alto, tre microfoni, luci calde">' + esc(v.richieste || '') + '</textarea></label>' +
+    '<label class="fld"><span>Altre note</span><textarea name="note" maxlength="2000" placeholder="Per esempio: scale strette, il custode apre alle 8">' + esc(v.note || '') + '</textarea></label>' +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="luBackPlace">Annulla</button>' +
+    '<button type="submit" class="btn pri">Salva l\'appunto</button></div></form>';
+}
+ACT.luVisitNew = () => { if (LU.cur && LU.full[LU.cur.id]) luPaint('Nuovo appunto', luVisitFormHtml(null)); };
+ACT.luVisitEdit = el => {
+  const d = LU.cur && LU.full[LU.cur.id]; if (!d) return;
+  const v = d.visite.filter(x => x.id === el.dataset.id)[0];
+  if (v) luPaint('Cambia l\'appunto', luVisitFormHtml(v));
+};
+SUB.luVisit = async form => {
+  const d = LU.cur && LU.full[LU.cur.id]; if (!d) return;
+  const f = new FormData(form), g = k => String(f.get(k) == null ? '' : f.get(k)).trim();
+  const err = $('.ferr', form);
+  if (!g('tipoSpettacolo') && !g('richieste') && !g('note')) { err.textContent = 'Scrivi almeno una cosa: il tipo di spettacolo, le richieste del cliente o una nota.'; return; }
+  err.textContent = '';
+  const o = { id: g('id'), luogo_id: d.luogo.id, event_id: LU.cur.ev || '', data: g('data'), tipoSpettacolo: g('tipoSpettacolo'), richieste: g('richieste'), note: g('note') };
+  const r = await mutate(async () => {
+    const res = await call('api_luVisit', CRED(), o);
+    const i = d.visite.findIndex(x => x.id === res.visita.id);
+    if (i >= 0) d.visite[i] = res.visita; else d.visite.push(res.visita);
+    d.visite.sort((a, b) => String(b.data).localeCompare(String(a.data)) || String(b.creato).localeCompare(String(a.creato)));
+    luSync(d);
+    luRenderPlace();
+    toast('Appunto salvato.', 'ok');
+  }, true);
+  if (!r.ok) err.textContent = r.err;
+};
+ACT.luVisitDel = async el => {
+  const d = LU.cur && LU.full[LU.cur.id]; if (!d) return;
+  await mutate(async () => {
+    await call('api_luVisitDel', CRED(), el.dataset.id);
+    d.visite = d.visite.filter(x => x.id !== el.dataset.id);
+    luSync(d);
+    luRenderPlace();
+    toast('Appunto tolto.', 'ok');
+  });
+};
+
+/* ---------- guardare una foto ---------- */
+function luPhotoIdx() {
+  const d = LU.cur && LU.full[LU.cur.id];
+  return d ? d.foto.findIndex(f => f.id === LU.viewId) : -1;
+}
+ACT.luFoto = el => { LU.viewId = el.dataset.id; LU.zoom = false; luRenderPhoto(); luLoadBig(LU.viewId); };
+ACT.luBack = () => { LU.viewId = ''; luRenderPlace(); };
+function luStep(n) {
+  const d = LU.cur && LU.full[LU.cur.id], i = luPhotoIdx();
+  if (!d || i < 0) return;
+  const j = i + n;
+  if (j < 0 || j >= d.foto.length) return;
+  LU.viewId = d.foto[j].id; LU.zoom = false;
+  luRenderPhoto(); luLoadBig(LU.viewId);
+}
+ACT.luPrev = () => luStep(-1);
+ACT.luNext = () => luStep(1);
+ACT.luZoom = () => { LU.zoom = !LU.zoom; const v = $('#luview'); if (v) v.classList.toggle('zoom', LU.zoom); const b = $('[data-act=luZoom]'); if (b) b.textContent = LU.zoom ? 'Rimpicciolisci' : 'Ingrandisci'; };
+function luRenderPhoto() {
+  const d = LU.cur && LU.full[LU.cur.id], i = luPhotoIdx();
+  if (!d || i < 0) return;
+  const f = d.foto[i], t = luTipo(f.tipo), big = LU.big[f.id];
+  const only = f.pezzi < 1;
+  let h = '<div class="lunav"><button type="button" class="btn sm" data-act="luBack">‹ Torna al posto</button><span class="muted">' + (i + 1) + ' di ' + d.foto.length + '</span></div>' +
+    '<div class="luview' + (LU.zoom ? ' zoom' : '') + '" id="luview"><img class="lupic" id="lupic" alt="' + esc(t[1] + (f.didascalia ? ': ' + f.didascalia : '')) + '" src="data:image/jpeg;base64,' + (big || f.mini) + '"></div>' +
+    '<p class="hint" id="luload"' + (big || only ? ' hidden' : '') + '>Carico la foto più grande…</p>' +
+    '<div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-act="luPrev"' + (i === 0 ? ' disabled' : '') + '>‹ Prima</button>' +
+    '<button type="button" class="btn sm" data-act="luZoom">' + (LU.zoom ? 'Rimpicciolisci' : 'Ingrandisci') + '</button>' +
+    '<button type="button" class="btn sm" data-act="luNext"' + (i === d.foto.length - 1 ? ' disabled' : '') + '>Dopo ›</button></div>';
+  h += '<div class="lufo"><p><span class="pill blue">' + esc(t[1]) + '</span>' + (f.didascalia ? ' <b>' + esc(f.didascalia) + '</b>' : '') + '</p>' +
+    '<p class="muted">' + esc(f.chi || '') + (f.quando ? ' · ' + esc(fmtWhen(f.quando)) : '') + (f.event_id && luEvName(f.event_id) ? ' · per «' + esc(luEvName(f.event_id)) + '»' : '') + '</p>';
+  if (only) {
+    h += '<p class="note muted" id="luonly">Nell\'app è rimasta solo l\'anteprima piccola: la foto grande è su Google Drive' + (S.mode === 'coord' ? '.' : ' (la può aprire il coordinatore).') + '</p>';
+  }
+  if (S.mode === 'coord') {
+    if (f.drive_url) h += '<p><a class="btn sm" href="' + esc(safeUrl(f.drive_url)) + '" target="_blank" rel="noopener">' + ico('link') + ' Apri la copia bella su Drive</a></p>';
+    else if (f.drive === 'no') h += '<p class="note warn">La copia su Google Drive non è riuscita: la foto è solo nell\'app.</p>';
+    else if (f.drive !== 'ok') h += '<p class="note muted">Questa foto non è su Google Drive.</p>';
+  }
+  h += '</div>';
+  if (f.mio) {
+    h += '<section class="luadd"><p class="luq">Cambia la foto</p><div class="cats" role="group" aria-label="Che foto è">' +
+      LU_TIPI.map(x => '<button type="button" class="cat" data-act="luFotoTipo" data-t="' + x[0] + '" aria-pressed="' + (f.tipo === x[0]) + '">' + esc(x[1]) + '</button>').join('') + '</div>' +
+      '<form data-submit="luFotoCap" novalidate><label class="fld"><span>Didascalia</span><input type="text" name="didascalia" maxlength="120" value="' + esc(f.didascalia) + '" autocomplete="off"></label>' +
+      '<p class="ferr" role="alert"></p><div class="row" style="margin-top:8px"><button type="submit" class="btn sm pri">Salva la didascalia</button>' +
+      '<button type="button" class="btn sm danger" data-act="luFotoDel" data-confirm="Tolgo la foto dall\'app? Tocca di nuovo">' + ico('trash') + ' Togli la foto</button></div></form></section>';
+  }
+  luPaint(t[1], h);
+}
+/* La copia ridotta si scarica solo quando serve, e se ne tengono in memoria poche */
+async function luLoadBig(id) {
+  const d = LU.cur && LU.full[LU.cur.id];
+  const f = d && d.foto.filter(x => x.id === id)[0];
+  if (!f || LU.big[id] || f.pezzi < 1) return;
+  let r;
+  try { r = await call('api_luFotoGet', CRED(), id); }
+  catch (e) { if (LU.viewId === id) { const n = $('#luload'); if (n) n.textContent = e.message; } return; }
+  if (r.soloDrive || !r.b64) { f.pezzi = 0; if (LU.viewId === id && luStill()) luRenderPhoto(); return; }
+  LU.big[id] = r.b64; LU.bigOrder.push(id);
+  while (LU.bigOrder.length > 10) delete LU.big[LU.bigOrder.shift()];
+  if (LU.viewId === id && luStill()) {
+    const im = $('#lupic'); if (im) im.src = 'data:image/jpeg;base64,' + r.b64;
+    const n = $('#luload'); if (n) n.hidden = true;
+  }
+}
+ACT.luFotoTipo = async el => {
+  const d = LU.cur && LU.full[LU.cur.id], i = luPhotoIdx(); if (!d || i < 0) return;
+  const f = d.foto[i];
+  if (f.tipo === el.dataset.t) return;
+  await mutate(async () => {
+    const r = await call('api_luFotoMeta', CRED(), f.id, { tipo: el.dataset.t });
+    d.foto[i] = Object.assign({}, f, r.foto, { mini: f.mini });
+    luRenderPhoto();
+  });
+};
+SUB.luFotoCap = async form => {
+  const d = LU.cur && LU.full[LU.cur.id], i = luPhotoIdx(); if (!d || i < 0) return;
+  const f = d.foto[i], err = $('.ferr', form);
+  const r = await mutate(async () => {
+    const res = await call('api_luFotoMeta', CRED(), f.id, { didascalia: String(new FormData(form).get('didascalia') || '') });
+    d.foto[i] = Object.assign({}, f, res.foto, { mini: f.mini });
+    luRenderPhoto();
+    toast('Salvato.', 'ok');
+  }, true);
+  if (!r.ok && err) err.textContent = r.err;
+};
+ACT.luFotoDel = async () => {
+  const d = LU.cur && LU.full[LU.cur.id], i = luPhotoIdx(); if (!d || i < 0) return;
+  const f = d.foto[i];
+  await mutate(async () => {
+    await call('api_luFotoDel', CRED(), f.id);
+    d.foto.splice(i, 1);
+    delete LU.big[f.id];
+    luSync(d);
+    LU.viewId = '';
+    luRenderPlace();
+    toast('Foto tolta.', 'ok');
+  });
+};
+
+/* ---------- aggiungere foto: scelta, riduzione nel telefono, invio ---------- */
+ACT.luShoot = () => { const i = $('#lufile1'); if (i) i.click(); };
+ACT.luGallery = () => { const i = $('#lufile2'); if (i) i.click(); };
+CHG.luPick = el => {
+  const files = Array.from(el.files || []);
+  el.value = '';
+  if (files.length) luAddFiles(files);
+};
+function luProg(text) {
+  LU.prog = text || '';
+  const n = $('#luprog');
+  if (n) n.textContent = LU.prog;
+}
+function luImgLoad(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const im = new Image();
+    im.onload = () => { URL.revokeObjectURL(url); resolve(im); };
+    im.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Non riesco a leggere questa foto.')); };
+    im.src = url;
+  });
+}
+/* Legge la foto con il verso giusto (le foto del telefono sono spesso girate nei dati EXIF) */
+async function luDecode(file) {
+  if (typeof createImageBitmap === 'function') {
+    try { const b = await createImageBitmap(file, { imageOrientation: 'from-image' }); return { src: b, w: b.width, h: b.height }; }
+    catch { /* provo l'altro modo */ }
+  }
+  const im = await luImgLoad(file);
+  return { src: im, w: im.naturalWidth, h: im.naturalHeight };
+}
+function luCut(dec, maxSide, q) {
+  const k = Math.min(1, maxSide / Math.max(dec.w, dec.h));
+  const w = Math.max(1, Math.round(dec.w * k)), h = Math.max(1, Math.round(dec.h * k));
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const x = c.getContext('2d');
+  x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
+  x.drawImage(dec.src, 0, 0, w, h);
+  const url = c.toDataURL('image/jpeg', q);
+  return { b64: url.slice(url.indexOf(',') + 1), w: w, h: h };
+}
+/* La copia più bella che sta nel limite di caratteri: prima si abbassa un po' la qualità, poi le misure */
+function luFit(dec, maxSide, q, limit) {
+  let side = maxSide, qq = q, r = luCut(dec, side, qq);
+  for (let n = 0; n < 14 && r.b64.length > limit; n++) {
+    if (qq > 0.5) qq = Math.max(0.5, qq - 0.08); else side = Math.round(side * 0.85);
+    r = luCut(dec, side, qq);
+  }
+  if (r.b64.length > limit) throw new Error('Questa foto è troppo pesante, non riesco a ridurla.');
+  return r;
+}
+async function luPrep(file, tipo) {
+  const dec = await luDecode(file);
+  if (!dec.w || !dec.h) throw new Error('Non riesco a leggere questa foto.');
+  const big = luFit(dec, 2400, 0.86, 7500000);                         // per Drive
+  const small = luFit(dec, tipo === 'piantina' ? 1400 : 1100, 0.78, 330000);   // per l'app (le piantine hanno scritte piccole: un po' più grande)
+  const mini = luFit(dec, 170, 0.6, 24000);                            // l'anteprima nell'elenco
+  if (dec.src && typeof dec.src.close === 'function') { try { dec.src.close(); } catch { /* ok */ } }
+  return { big: big.b64, small: small.b64, mini: mini.b64, w: small.w, h: small.h };
+}
+async function luAddFiles(files) {
+  const cur = LU.cur, d = cur && LU.full[cur.id];
+  if (!d) return;
+  if (LU.busy) { toast('Sto ancora caricando le foto di prima…'); return; }
+  const list = files.filter(f => /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic|heif)$/i.test(f.name));
+  if (!list.length) { toast('Scegli una foto (JPEG, PNG…).', 'err'); return; }
+  LU.busy = true;
+  const tipo = LU.tipo, cap = LU.cap.trim();
+  let done = 0;
+  const redraw = () => { if (luStill(cur.id) && !LU.viewId && !$('form[data-submit]', $('#sheet'))) luRenderPlace(); };
+  redraw();
+  for (let i = 0; i < list.length; i++) {
+    const nome = list.length > 1 ? 'Foto ' + (i + 1) + ' di ' + list.length : 'La foto';
+    let pr, foto;
+    luProg(nome + ': la preparo…');
+    try { pr = await luPrep(list[i], tipo); }
+    catch (e) { toast(cleanErr(e), 'err'); break; }
+    luProg(nome + ': la salvo nell\'app…');
+    try {
+      const r = await call('api_luFotoPut', CRED(), { luogo_id: d.luogo.id, event_id: cur.ev || '', tipo: tipo, didascalia: cap, w: pr.w, h: pr.h }, pr.mini, pr.small);
+      foto = r.foto;
+      d.foto.unshift(foto);
+      LU.nApp++;
+      luSync(d);
+    } catch (e) { toast(e.message, 'err'); break; }
+    if (LU.drive !== false) {
+      luProg(nome + ': la copio su Google Drive…');
+      try {
+        const r = await call('api_luFotoDrive', CRED(), foto.id, pr.big);
+        const k = d.foto.findIndex(x => x.id === foto.id);
+        if (k >= 0) d.foto[k] = Object.assign({}, d.foto[k], r.foto, { mini: d.foto[k].mini });
+        if (r.errore) { LU.drive = false; toast('La foto è nell\'app, ma su Google Drive non è andata: ' + r.errore, 'err'); }
+      } catch (e) { toast('La foto è nell\'app, ma la copia su Google Drive non è partita: ' + e.message, 'err'); }
+    }
+    done++;
+    redraw();
+  }
+  LU.busy = false;
+  luProg('');
+  if (done) LU.cap = '';
+  redraw();
+  if (done) toast(done === 1 ? 'Foto salvata.' : done + ' foto salvate.', 'ok');
+}
 /* =====================================================================
    IL RESPONSABILE TECNICO (4.0, tappa 3)
    Tre cose, tutte con la regola del server (resp.gs): qui si nasconde quello che non si può fare, il server lo rifiuta comunque.
@@ -9202,7 +10516,7 @@ function respViewEventi() {
   const mine = S.ev.filter(e => e.mio);
   const up = mine.filter(isUpcoming).sort(cmpEv);
   const past = mine.filter(e => !isUpcoming(e)).sort((a, b) => cmpEv(b, a));
-  let h = '<div class="toolbar">' + (respFixed() ? '<button type="button" class="btn pri" data-act="respNew">' + ico('plus') + ' Nuovo evento</button>' : '<span></span>') +
+  let h = '<div class="toolbar">' + (respFixed() ? '<button type="button" class="btn pri" data-act="respNew">' + ico('plus') + ' Nuovo evento</button>' : '<span></span>') + luEntryHtml() +
     (past.length ? '<label class="chk"><input type="checkbox" data-chg="respPast"' + (RS.showPast ? ' checked' : '') + '> Mostra anche gli ultimi giorni</label>' : '') + '</div>';
   h += pcBoxHtml();
   if (!up.length && !(RS.showPast && past.length)) {
@@ -9240,6 +10554,7 @@ function respEvPanel(e, cov) {
   if (e.noteTecnici) facts.push('<div><span class="k">Note per i tecnici: </span>' + esc(e.noteTecnici) + '</div>');
   if (e.noteSopralluogo) facts.push('<div><span class="k">Sopralluogo: </span>' + esc(e.noteSopralluogo) + '</div>');
   if (facts.length) h += '<div class="facts">' + facts.join('') + '</div>';
+  if (e.stato !== 'annullato') h += luBlockHtml(e.luogo, e.id);
   const when = fmtStamp(e.statoAggiornato);
   h += '<div class="stline"><span class="pill ' + (STAGE_PILL[e.stato] || 'muted') + '">' + esc(STAGE_LABEL[e.stato] || e.stato) + '</span>' +
     (when ? '<span class="muted">dal ' + esc(when) + '</span>' : '') + (e.statoNota ? '<span class="stn">«' + esc(e.statoNota) + '»</span>' : '') + '</div>';
@@ -9296,7 +10611,8 @@ function respEvFormHtml(e) {
     h += '<label class="fld"><span>Cliente o nome dell\'evento</span><input type="text" name="cliente" maxlength="120" autocomplete="off"></label>' +
       '<label class="fld"><span>Data</span><input type="date" name="data" value="' + esc(S.oggi) + '" min="' + esc(S.oggi) + '"></label>';
   }
-  h += '<label class="fld"><span>Luogo</span><input type="text" name="luogo" maxlength="160" value="' + esc(v.luogo || '') + '" autocomplete="off"></label>';
+  h += '<label class="fld"><span>Luogo</span><input type="text" name="luogo" maxlength="160" value="' + esc(v.luogo || '') + '" autocomplete="off" data-inp="luType"></label>' +
+    '<div id="luhint" class="luhint">' + luHintHtml(v.luogo) + '</div>';
   if (isNew) {
     h += '<fieldset class="fld"><legend>Quanti tecnici servono</legend><div class="steps">' + ROLES.map(r => stepper(r, 0)).join('') + '</div>' +
       '<p class="hint">Chi fa parte della squadra lo decide il coordinatore.</p></fieldset>';
@@ -9386,7 +10702,9 @@ function respChangesHtml(e) {
   const l = (S.modResp || []).filter(x => x.event_id === e.id).reverse();
   if (!l.length) return '';
   const shown = l.slice(0, 8);
-  return '<details class="free respchg"><summary>Cosa hanno cambiato i responsabili (' + l.length + ')</summary><ul>' +
+  const fromWh = l.some(x => /^Magazzino /.test(String(x.nota))), fromResp = l.some(x => !/^Magazzino /.test(String(x.nota)));
+  const who = fromWh && fromResp ? 'hanno cambiato i responsabili e il magazzino' : fromWh ? 'ha cambiato il magazzino' : 'hanno cambiato i responsabili';
+  return '<details class="free respchg"><summary>Cosa ' + who + ' (' + l.length + ')</summary><ul>' +
     shown.map(x => '<li><span class="muted">' + esc(fmtStamp(x.quando)) + '</span> ' + esc(x.nota) + '</li>').join('') + '</ul>' +
     (l.length > shown.length ? '<p class="hint">Le altre ' + (l.length - shown.length) + ' modifiche sono nel foglio «Storico».</p>' : '') + '</details>';
 }
@@ -9489,9 +10807,709 @@ ACT.pcUndo = el => {
     toast('Pianta rimessa com\'era all\'ultima versione approvata.', 'ok');
   });
 };
+/* =====================================================================
+   PAGINA DEL MAGAZZINO (4.6): il computer in magazzino, aperto con il link riservato (?m=...), senza codice.
+   Serve a preparare i furgoni: eventi dei prossimi giorni, squadre e orari, liste di carico e scarico, materiale, piante e foto dei posti.
+   Usa gli stessi calcoli e le stesse finestre del coordinatore (S.mode === 'wh' si comporta da coordinatore quasi dappertutto), ma i dati arrivano
+   senza prezzi, contatti dei clienti, compensi e spese (api_whInit), e al server si risponde con {m: link} (CRED()).
+   Il magazzino NON cambia: stato e squadra degli eventi, entrate/uscite/riparazioni/inventario, e non chiude lo scarico (cambia le giacenze).
+   Il coordinatore crea, cambia e spegne il link dalla scheda Tecnici (whLinkBoxHtml).
+   ===================================================================== */
+Object.assign(S, { whRange: store.get('whRange') || '7', piante: [], whLink: null, whAt: '' });
+const WH_RANGES = [['oggi', 'Oggi'], ['7', '7 giorni'], ['14', '14 giorni'], ['tutti', 'Tutti']];
+const WH_REFRESH_MS = 90000;
+
+/* ---------- caricamento ---------- */
+/* Il link è stato cambiato o spento mentre la pagina era aperta: sullo schermo non resta niente e non si salva più nulla */
+function whIsBad(e) { return !!e && /link del magazzino/i.test(e.message || ''); }
+function whGone(msg) {
+  S.ready = false; S.view = () => whBadView(msg);
+  if (S.sheet) closeSheet();
+  paint();
+}
+async function whLoad() {
+  let d;
+  try { d = await offCall('w', 'api_whInit', S.token); }
+  catch (e) { if (whIsBad(e)) { offDrop('w'); whGone(e.message); } throw e; }
+  whApply(d);
+}
+function whApply(d) {
+  S.url = d.url || ''; S.oggi = d.oggi; S.cfg = d.config;
+  S.tec = d.tecnici || []; S.ev = d.eventi || []; S.disp = []; S.asg = d.assegnazioni || [];
+  S.mat = d.materiali || []; S.car = d.carico || []; S.mancano = d.mancano || [];
+  S.fur = d.furgoni || []; S.fe = d.furgoniEvento || []; S.rip = []; S.spe = []; S.mov = []; S.movAll = false;
+  S.comp = d.composizione || []; S.cvar = d.variazioni || [];
+  S.modResp = d.modificheResp || []; S.piante = d.piante || [];
+  S.whAt = hhmm(new Date().getHours() * 60 + new Date().getMinutes());
+  S.ready = true; S.view = whView;
+  derive(); paint();
+}
+async function whBoot() {
+  document.body.classList.add('whmode');
+  S.view = whView;
+  paint(loadingView());
+  try { await whLoad(); }
+  catch (e) { if (!whIsBad(e)) paint(errorView(e.message, 'whRetry')); }
+}
+function whBadView(msg) {
+  return '<main class="login"><h1>Gestionale service</h1><p role="alert">' + esc(msg) + '</p></main>';
+}
+ACT.whRetry = () => whBoot();
+ACT.whRefresh = async () => {
+  if (S.offline) { ACT.offRetry(); return; }          // il server non risponde: si riprova da lì
+  try { await whLoad(); toast('Dati aggiornati.', 'ok'); } catch (e) { if (!whIsBad(e)) toast(e.message, 'err'); }
+};
+/* Il computer resta acceso tutto il giorno: si aggiorna da solo, ma mai mentre qualcuno sta scrivendo o ha una finestra aperta */
+function whIdle() {
+  if (S.mode !== 'wh' || !S.ready || document.visibilityState !== 'visible' || S.sheet || S.locked || S.openLine) return false;
+  if (typeof LQ !== 'undefined' && (LQ.running || LQ.items.length)) return false;
+  const a = document.activeElement;
+  return !(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));
+}
+setInterval(() => { if (whIdle()) whLoad().catch(() => { /* resta la vista di prima */ }); }, WH_REFRESH_MS);
+document.addEventListener('visibilitychange', () => { if (whIdle()) whLoad().catch(() => { /* idem */ }); });
+
+/* ---------- schermata ---------- */
+function whView() {
+  const tabs = [['eventi', 'Eventi'], ['mag', 'Magazzino']];
+  if (!tabs.some(t => t[0] === S.tab)) S.tab = 'eventi';
+  const gaps = S.mancano.length
+    ? '<p class="banner" role="alert"><b>Il foglio non è aggiornato.</b> Avvisa il coordinatore: deve lanciare la funzione <b>setup</b> in Apps Script. <small>(Mancano: ' + esc(S.mancano.join(', ')) + ')</small></p>'
+    : '';
+  return '<header class="mast"><div class="wrap mastin"><div class="brand">' + esc(S.cfg.nome_azienda || 'Gestionale service') +
+    '<small>Magazzino' + (S.whAt ? ' · aggiornato alle ' + esc(S.whAt) : '') + '</small></div><div class="mastact">' +
+    '<button class="ib" data-act="whRefresh" aria-label="Aggiorna i dati">' + ico('refresh') + '</button></div></div></header>' +
+    '<div class="stick"><nav class="tabs" role="tablist" aria-label="Sezioni"><div class="wrap tabsin">' +
+    tabs.map(t => '<button role="tab" class="tab" aria-selected="' + (S.tab === t[0]) + '" data-act="tab" data-tab="' + t[0] + '">' + t[1] + '</button>').join('') +
+    '</div></nav><div class="hazard"></div></div>' +
+    '<main class="wrap main" role="tabpanel">' + gaps + (S.tab === 'mag' ? viewMag() : whEventi()) + '</main>';
+}
+
+/* ---------- gli eventi dei prossimi giorni ---------- */
+function whRangeEnd() {
+  const r = S.whRange;
+  return r === 'oggi' ? S.oggi : r === '14' ? addDays(S.oggi, 13) : r === 'tutti' ? '9999-12-31' : addDays(S.oggi, 6);
+}
+ACT.whRange = el => { S.whRange = el.dataset.r; store.set('whRange', S.whRange); paint(); };
+function whEventi() {
+  const up = S.ev.filter(isUpcoming).sort(cmpEv);
+  const shown = up.filter(e => e.data <= whRangeEnd());
+  const later = up.length - shown.length;
+  const past = S.ev.filter(e => !isUpcoming(e)).sort((a, b) => cmpEv(b, a));
+  let h = '<div class="toolbar whbar"><div class="cats" role="group" aria-label="Quanti giorni">' + WH_RANGES.map(r =>
+    '<button type="button" class="cat" data-act="whRange" data-r="' + r[0] + '" aria-pressed="' + (S.whRange === r[0]) + '">' + r[1] + '</button>').join('') + '</div>' +
+    luEntryHtml() +
+    '<label class="chk"><input type="checkbox" data-chg="showPast"' + (S.showPast ? ' checked' : '') + '> Mostra passati e annullati</label></div>';
+  h += whTodoHtml();
+  if (!shown.length) {
+    h += '<p class="empty">Nessun evento ' + (S.whRange === 'tutti' ? 'in programma' : S.whRange === 'oggi' ? 'oggi' : 'nei prossimi giorni') + '.' +
+      (later ? ' Più avanti ce ne sono ' + later + ': tocca «Tutti».' : '') + '</p>';
+  } else h += groupByDay(shown);
+  if (later && shown.length) h += '<p class="note muted">Più avanti ci sono altri ' + plural(later, 'evento', 'eventi') + ': tocca «Tutti» per vederli.</p>';
+  if (S.showPast && past.length) h += '<h2 class="monthsep" style="margin-top:28px">Passati e annullati</h2>' + groupByDay(past);
+  return h;
+}
+/* Cosa c'è da fare in magazzino: scarichi dei furgoni già rientrati, carichi chiusi con dei pezzi che mancano */
+function whTodoHtml() {
+  const out = [];
+  S.ev.filter(dueUnload).sort(cmpEv).forEach(e => out.push({ text: 'Da scaricare: ' + e.cliente + ' (' + fmtShort(e.data) + ')', ev: e.id, kind: 'scarico' }));
+  S.ev.filter(e => e.caricoQuando && !e.scaricoQuando && e.stato !== 'annullato' && String(e.data) >= S.oggi).sort(cmpEv).forEach(e => {
+    const lm = loadMissing(eventLines(e.id));
+    if (!lm.pieces) return;
+    out.push({ text: 'Carico chiuso con pezzi mancanti: ' + e.cliente + ' (' + fmtShort(e.data) + '), ' + (lm.pieces === 1 ? 'manca 1 pezzo' : 'mancano ' + lm.pieces + ' pezzi'), ev: e.id, kind: 'carico' });
+  });
+  if (!out.length) return '';
+  return '<section class="box todo" aria-label="Da sistemare"><h3>Da sistemare</h3><ul>' + out.map(i =>
+    '<li><span>' + esc(i.text) + '</span><button type="button" class="btn sm" data-act="listOpen" data-ev="' + esc(i.ev) + '" data-kind="' + i.kind + '">Apri</button></li>').join('') + '</ul></section>';
+}
+
+/* ---------- la scheda di un evento, come la vede il magazzino ---------- */
+function whPanel(e, cov) {
+  const cancelled = e.stato === 'annullato';
+  const facts = [];
+  if (e.luogo) facts.push('<div><span class="k">Luogo: </span>' + esc(e.luogo) + '</div>');
+  if (e.noteTecnici) facts.push('<div><span class="k">Note per i tecnici: </span>' + esc(e.noteTecnici) + '</div>');
+  if (e.noteSopralluogo) facts.push('<div><span class="k">Sopralluogo: </span>' + esc(e.noteSopralluogo) + '</div>');
+  const when = fmtStamp(e.statoAggiornato);
+  let left = '<h4>Orari</h4>' + (timesHtml(e) || '<p class="muted">Gli orari non sono ancora stati scritti.</p>');
+  if (!cancelled) {
+    left += '<div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-act="whTimes" data-id="' + esc(e.id) + '">' + ico('edit') + ' Correggi gli orari</button></div>';
+  }
+  if (facts.length) left += '<div class="facts">' + facts.join('') + '</div>';
+  left += '<div class="stline"><span class="pill ' + (STAGE_PILL[e.stato] || 'muted') + '">' + esc(STAGE_LABEL[e.stato] || e.stato) + '</span>' +
+    (when ? '<span class="muted">dal ' + esc(when) + '</span>' : '') + (e.statoNota ? '<span class="stn">«' + esc(e.statoNota) + '»</span>' : '') + '</div>';
+  if (!cancelled) left += luBlockHtml(e.luogo, e.id);
+  left += '<h4>Squadra</h4>' + whSquadraHtml(e, cancelled);
+  left += whPlanHtml(e);
+  return '<div class="panel whpanel"><div class="whcols"><div class="whc">' + left + '</div><div class="whc">' + matSectionHtml(e) + vanSectionHtml(e) + '</div></div></div>';
+}
+function whSquadraHtml(e, cancelled) {
+  const list = S.asgByEv[e.id] || [];
+  if (!list.length) return '<p class="muted">Non c\'è ancora nessuno in squadra.</p>';
+  let h = '<ul class="asgs">' + list.map(a => {
+    const t = S.tecById[a.technician_id];
+    const roles = uniq(rolesOf(a.ruoli)), refused = a.stato === 'rifiutato', dir = directOf(a) && !refused;
+    const tel = t && t.telefono ? '<a class="btn sm" href="tel:' + esc(String(t.telefono).replace(/[^\d+]/g, '')) + '">' + esc(fmtPhone(t.telefono)) + '</a>' : '';
+    return '<li class="asg ' + esc(a.stato.replace(/\s/g, '-')) + '"><div class="asgtop"><b>' + esc(a.tecnico) + '</b>' +
+      roles.map(r => '<span class="chip r-' + r + (refused ? ' off' : '') + '">' + r + '</span>').join('') +
+      '<span class="pill ' + (ASG_PILL[a.stato] || 'muted') + '">' + esc(a.stato) + '</span>' +
+      (dir ? '<span class="pill blue">direttamente in location</span>' : '') + '</div>' + (tel ? '<div class="asgact">' + tel + '</div>' : '') + '</li>';
+  }).join('') + '</ul>';
+  const rec = avRecipients(e);
+  if (rec.length && !cancelled) {
+    h += '<div class="row" style="margin-top:6px"><button type="button" class="btn sm" data-act="avOpen" data-id="' + esc(e.id) + '">' +
+      ico('bell') + ' Avvisa la squadra (' + rec.length + ')</button></div>';
+  }
+  return h;
+}
+/* Le piante dell'evento: si guardano (l'editor si apre in sola lettura), si legge il materiale e lo si può portare nell'evento */
+function whPlanHtml(e) {
+  if (e.stato === 'annullato') return '';
+  const l = pjPlansFor(e.id);
+  if (!l.length) return '';
+  return '<div class="pjtech" role="group" aria-label="Piante dell\'evento"><h4 class="pjth">' + ico('plan') + (l.length > 1 ? 'Le piante dell\'evento' : 'La pianta dell\'evento') + '</h4>' +
+    l.map(p => '<div class="pjev"><span class="pjn">' + esc(p.nome) + '<small>' + esc(pjSavedText(p)) + '</small></span><span class="row">' +
+      '<button type="button" class="btn sm pri" data-act="pjOpen" data-id="' + esc(p.id) + '">' + ico('plan') + ' Guarda la pianta</button>' +
+      '<button type="button" class="btn sm" data-act="pjMat" data-id="' + esc(p.id) + '">' + ico('list') + ' Materiale</button>' +
+      (e.scaricoQuando ? '' : '<button type="button" class="btn sm" data-act="pjUse" data-id="' + esc(p.id) + '" data-ev="' + esc(e.id) + '">' + ico('box') + ' Usa il materiale</button>') +
+      '</span></div>').join('') + '</div>';
+}
+
+/* ---------- correggere gli orari ---------- */
+function whTimesFormHtml(e) {
+  const v = Object.assign({}, e, { orarioInizioEvento: e.orarioInizioEvento || e.ora });
+  return '<form data-submit="whTimes" data-id="' + esc(e.id) + '" novalidate><p class="lev"><b>' + esc(e.cliente) + '</b> · ' + esc(fmtShort(e.data)) + '</p>' +
+    timesFormHtml(v) +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot sticky"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="submit" class="btn pri">Salva gli orari</button></div></form>';
+}
+ACT.whTimes = el => {
+  const e = S.evById[el.dataset.id];
+  if (e) openSheet('Correggi gli orari', whTimesFormHtml(e), { noFocus: true });
+};
+SUB.whTimes = async form => {
+  const id = form.dataset.id, before = S.evById[id], err = $('.ferr', form);
+  if (!before) return;
+  const f = new FormData(form);
+  const patch = {};
+  TIME_FIELDS.forEach(x => { patch[x[0]] = String(f.get(x[0]) || '').trim(); });
+  patch.furgoneCarico = String(f.get('furgoneCarico') || '');
+  if (patch.furgoneCarico === 'gia') patch.orarioPartenza = '';       // furgone già carico: non c'è un'ora di partenza a parte
+  err.textContent = '';
+  const r = await mutate(async () => {
+    const res = await call('api_whEvSave', S.token, id, patch);
+    const prev = S.evById[id];
+    res.evento.nMateriali = prev ? prev.nMateriali : 0;
+    upsert(S.ev, res.evento);
+    derive();
+    closeSheet(); paint();
+    const av = res.avvisi || [];
+    toast([res.cambiati.length ? 'Orari salvati.' : 'Non è cambiato niente.'].concat(av).join(' '), av.length ? '' : 'ok');
+    // se è cambiato qualcosa che riguarda i tecnici già convocati propongo di avvisarli (WhatsApp)
+    const changes = diffEvent(before, res.evento);
+    if (changes.length && res.evento.stato !== 'annullato') offerNotify(id, 'dati', { changes: changes });
+  }, true);
+  if (!r.ok) err.textContent = r.err;
+};
+
+/* ---------- il coordinatore: il link del magazzino (scheda Tecnici) ---------- */
+function whLinkBoxHtml() {
+  const w = S.whLink;
+  if (!w) return '';
+  let h = '<section class="box whbox" aria-label="Il computer in magazzino"><h3>Il computer in magazzino</h3>' +
+    '<p class="hint" style="margin-top:0">Un link riservato, senza codice, da aprire sul computer del magazzino: fa vedere gli eventi dei prossimi giorni, le liste di carico e scarico, ' +
+    'gli orari, le piante e le foto dei posti, ma non i prezzi, i contatti dei clienti, le spese e i compensi. Da lì si spuntano carico e scarico, si correggono gli orari, ' +
+    'si cambia il materiale e si mandano gli avvisi WhatsApp. Lo scarico lo chiudi tu. Chi ha il link entra: non girarlo ai clienti. ' +
+    'Se lo perdi o lo dai a chi non deve averlo, cambialo: quello di prima smette subito di funzionare.</p>';
+  if (!w.attivo) {
+    return h + '<div class="row"><button type="button" class="btn pri" data-act="whLinkNew">' + ico('link') + ' Crea il link del magazzino</button></div></section>';
+  }
+  if (!w.url) {
+    h += '<p class="note warn">Il link c\'è, ma non riesco a comporre l\'indirizzo: apri l\'app dal link che finisce con /exec, oppure scrivi l\'indirizzo della pagina su GitHub nella riga url_pagina della scheda Config.</p>';
+  } else {
+    h += '<input class="copybox" type="text" readonly value="' + esc(w.url) + '" aria-label="Link del magazzino">';
+  }
+  return h + '<div class="row" style="margin-top:8px">' +
+    (w.url ? '<button type="button" class="btn sm pri" data-act="whLinkCopy">' + ico('copy') + ' Copia il link</button>' +
+      '<a class="btn sm" href="' + esc(w.url) + '" target="_blank" rel="noopener">' + ico('link') + ' Aprilo</a>' : '') +
+    '<button type="button" class="btn sm" data-act="whLinkNew" data-confirm="Il link di prima smette di funzionare. Tocca di nuovo">Cambia il link</button>' +
+    '<button type="button" class="btn sm danger" data-act="whLinkOff" data-confirm="Nessuno entra più dal magazzino. Tocca di nuovo">Spegni il link</button></div></section>';
+}
+ACT.whLinkNew = el => {
+  const had = !!(S.whLink && S.whLink.attivo);
+  mutate(async () => {
+    S.whLink = await call('api_whLinkNew', S.pin);
+    paint();
+    toast(had ? 'Link cambiato: quello di prima non funziona più.' : 'Link creato. Copialo e aprilo sul computer del magazzino.', 'ok');
+  });
+};
+ACT.whLinkOff = () => {
+  mutate(async () => {
+    S.whLink = await call('api_whLinkOff', S.pin);
+    paint();
+    toast('Link spento: dal magazzino non si entra più.', 'ok');
+  });
+};
+ACT.whLinkCopy = async () => {
+  const u = S.whLink && S.whLink.url;
+  if (!u) return;
+  if (await copyText(u)) toast('Link copiato. Aprilo sul computer del magazzino e salvalo tra i preferiti.', 'ok');
+  else showCopyBox('Link del magazzino', u);
+};
+/* =====================================================================
+   ARCHIVIO, SCHEDA STORICA E COPIE DI SICUREZZA (4.6): solo coordinatore (codice).
+   «Archivio e copie» (scheda Eventi): la copia di sicurezza del Foglio su Google Drive, il file da scaricare sul computer, gli eventi vecchi
+   spostati in archivio (si cercano, si guardano, si rimettono tra gli eventi, o se ne rifà uno uguale per un'altra data).
+   «Scheda storica» (dentro ogni evento): tutto quello che l'evento ha lasciato nel foglio. Il server è in arch.gs.
+   In fondo: la copia di sicurezza che parte da sola quando si entra, l'avviso se manca, e «Se qualcosa non va».
+   ===================================================================== */
+Object.assign(ICO, {
+  arch: '<rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11h14V8M10 12h4"/>',
+  disk: '<path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/>',
+  hist: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
+});
+const AR = { info: null, err: '', off: false, list: [], total: 0, found: 0, q: '', cur: '', sc: null, busy: '', prog: '', seq: 0, searchT: 0, tried: false, pending: false };
+function arReset() {
+  clearTimeout(AR.searchT);
+  Object.assign(AR, { info: null, err: '', off: false, list: [], total: 0, found: 0, q: '', cur: '', sc: null, busy: '', prog: '', tried: false, pending: false });
+}
+
+function arEntryHtml() {
+  return S.mode === 'coord' ? '<button type="button" class="btn sm" data-act="arOpen">' + ico('arch') + ' Archivio e copie</button>' : '';
+}
+function arPaint(title, html, keep) {
+  const box = $('#sheet .sheet');
+  const y = keep && box ? box.scrollTop : 0;
+  openSheet(title, '<div class="ar">' + html + '</div>', { noFocus: true });
+  S.onClose = () => { AR.cur = ''; };           // chiusa la finestra, le risposte lente che arrivano dopo non devono riaprirla
+  if (y) { const b = $('#sheet .sheet'); if (b) b.scrollTop = y; }
+}
+function arStill(tag) { return !!S.sheet && AR.cur === tag; }
+function arNoServer(e) { return /Script function not found|non è stata trovata|not found|non esiste/i.test((e && e.message) || ''); }
+function arDay(s) { const p = parseYMD(s); return p ? GIORNI[wday(s)] + ' ' + p.d + ' ' + MESI[p.m - 1] + ' ' + p.y : String(s || 'senza data'); }
+function arProg() { const n = $('#arprog'); if (n) n.textContent = AR.prog; }
+function arGapsHtml(g) {
+  return '<p class="banner" role="alert"><b>Il foglio non è pronto per l\'archivio e le copie.</b> Apri Estensioni › Apps Script, scegli la funzione <b>setup</b> nel menu in alto e premi Esegui. ' +
+    'Poi aggiorna questa pagina. <small>(Manca: ' + esc((g || []).join(', ')) + ')</small></p>';
+}
+
+/* ---------- la finestra «Archivio e copie» ---------- */
+ACT.arOpen = async () => {
+  AR.cur = 'main'; AR.q = '';
+  if (!AR.busy) AR.prog = '';
+  arPaint('Archivio e copie', '<p class="empty">Carico…</p>');
+  await arLoad();
+  if (arStill('main')) arPaintMain();
+};
+async function arLoad() {
+  AR.err = ''; AR.off = false;
+  try {
+    AR.info = await call('api_archiveInfo', S.pin);
+    if (AR.info.pronto) {
+      const l = await call('api_archiveList', S.pin, AR.q);
+      AR.list = l.righe; AR.total = l.totale; AR.found = l.trovati;
+    } else { AR.list = []; AR.total = 0; AR.found = 0; }
+  } catch (e) { AR.info = null; AR.err = e.message; AR.off = arNoServer(e); }
+}
+function arPaintMain(keep) { arPaint('Archivio e copie', arMainHtml(), keep); }
+function arMainHtml() {
+  if (AR.off) return '<p class="empty">Questa funzione non è ancora attiva: serve aggiornare l\'app (Code.gs).</p>';
+  if (AR.err) return '<p class="note bad" role="alert">' + esc(AR.err) + '</p><div class="sheetfoot"><button type="button" class="btn pri" data-act="arOpen">Riprova</button></div>';
+  const I = AR.info;
+  if (!I.pronto) return arGapsHtml(I.mancano);
+  return arBackupHtml(I.backup) + arArchiveHtml(I) +
+    '<div class="sheetfoot"><button type="button" class="btn" data-act="arHelp">Se qualcosa non va</button><button type="button" class="btn pri" data-act="closeSheet">Chiudi</button></div>';
+}
+function arBackupHtml(b) {
+  const busy = !!AR.busy;
+  let h = '<h3 class="catsep" style="margin-top:0">Copie di sicurezza</h3>' +
+    '<p class="hint" style="margin-top:0">Una copia di tutto il Foglio su Google Drive, nella cartella «' + esc(b.cartella) + '». ' +
+    (b.giorni > 0 ? 'Parte da sola quando apri l\'app e l\'ultima ha più di ' + plural(b.giorni, 'giorno', 'giorni') + '; ' : 'Non parte da sola (backup_giorni è 0 nella scheda Config); ') +
+    'se ne tengono ' + b.tenere + '.</p>';
+  if (!b.drive) {
+    h += '<p class="banner" role="alert"><b>Google Drive non è collegato.</b> Per le copie serve il permesso di Drive: apri Estensioni › Apps Script, scegli la funzione <b>setup</b>, premi Esegui e accetta anche il permesso di Drive. ' +
+      'Poi pubblica una nuova versione (Esegui il deployment › Gestisci i deployment › Modifica › Nuova versione). Intanto puoi scaricare la copia sul computer.</p>';
+  } else if (b.ultima) {
+    h += '<p class="note ok">Ultima copia: <b>' + esc(fmtWhen(b.ultima.quando)) + '</b>' + (b.ultima.motivo ? ' (' + esc(b.ultima.motivo) + ')' : '') +
+      (b.ultima.url ? ' · <a href="' + esc(b.ultima.url) + '" target="_blank" rel="noopener">Apri su Drive</a>' : '') + '</p>';
+  } else {
+    h += '<p class="note warn">Non c\'è ancora nessuna copia di sicurezza.</p>';
+  }
+  if (b.errore) h += '<p class="note warn" role="alert">L\'ultimo tentativo non è riuscito: ' + esc(b.errore) + '</p>';
+  if (b.recenti && b.recenti.length > 1) {
+    h += '<details class="free"><summary>Copie recenti (' + b.recenti.length + ')</summary><ul class="ml">' + b.recenti.map(r =>
+      '<li><span class="ln">' + esc(fmtWhen(r.quando)) + '<small>' + esc(r.motivo || '') + '</small></span>' +
+      (r.url ? '<a class="btn sm" href="' + esc(r.url) + '" target="_blank" rel="noopener">Apri</a>' : '') + '</li>').join('') + '</ul></details>';
+  }
+  h += '<div class="row arbtns"><button type="button" class="btn sm pri" data-act="arBackup"' + (busy ? ' disabled' : '') + '>' + ico('disk') + ' Fai una copia adesso</button>' +
+    '<button type="button" class="btn sm" data-act="arDownload"' + (busy ? ' disabled' : '') + '>' + ico('down') + ' Scarica copia sul computer</button></div>' +
+    '<p class="hint" id="arprog" role="status" aria-live="polite">' + esc(AR.prog) + '</p>' +
+    '<p class="hint" style="margin-top:0">Il file scaricato è un paracadute fuori da Google: contiene i dati (eventi, squadre, magazzino, piante…) ma non le foto, e non si apre con Excel. ' +
+    'Per guardare i dati usa le copie su Drive, che si aprono come un normale Foglio Google.</p>';
+  return h;
+}
+function arArchiveHtml(I) {
+  let h = '<h3 class="catsep">Archivio degli eventi</h3>' +
+    '<p class="hint" style="margin-top:0">Gli eventi finiti da tempo si possono spostare qui: escono dall\'elenco (l\'app resta leggera e veloce) ma la loro scheda resta, con squadra, materiale, furgoni, spese e registro. ' +
+    'Li cerchi, li guardi, li rimetti tra gli eventi o ne rifai uno uguale per un\'altra data.</p>';
+  if (I.daArchiviare > 0) {
+    h += '<div class="banner ok"><b>' + plural(I.daArchiviare, 'evento si può archiviare', 'eventi si possono archiviare') + '</b>' +
+      '<span class="hint" style="display:block;margin-top:2px">Conclusi o annullati da più di ' + plural(I.giorni, 'giorno', 'giorni') + ', con lo scarico chiuso e senza spese da rimborsare' +
+      (I.esempi.length ? ' (per esempio: ' + I.esempi.map(x => '«' + esc(x.cliente) + '» ' + esc(fmtDMY(x.data))).join(', ') + ')' : '') + '. ' +
+      'Prima faccio una copia su Drive, se oggi non c\'è.</span>' +
+      '<div class="row" style="margin-top:8px"><button type="button" class="btn sm pri" data-act="arRun" data-confirm="Archivio ' + I.daArchiviare + '? Tocca di nuovo"' + (AR.busy ? ' disabled' : '') + '>' +
+      ico('arch') + ' Archivia ' + plural(I.daArchiviare, 'evento vecchio', 'eventi vecchi') + '</button></div></div>';
+  } else {
+    h += '<p class="note muted">Adesso non c\'è niente da archiviare: servono eventi conclusi o annullati da più di ' + plural(I.giorni, 'giorno', 'giorni') + ', con lo scarico chiuso e senza spese da rimborsare.</p>';
+  }
+  if (AR.total > 5) {
+    h += '<input type="search" id="arq" class="srch" data-inp="arQ" value="' + esc(AR.q) + '" placeholder="Cerca nell\'archivio: nome, luogo, tecnico, data…" aria-label="Cerca nell\'archivio" autocomplete="off" autocapitalize="off">';
+  }
+  h += '<div id="arlist">' + arListHtml() + '</div>';
+  return h;
+}
+function arListHtml() {
+  if (!AR.total) return '<p class="empty">L\'archivio è vuoto.</p>';
+  if (!AR.list.length) return '<p class="empty">Nessun evento corrisponde alla ricerca.</p>';
+  return '<p class="hint" style="margin-top:10px">' + (AR.q ? plural(AR.found, 'evento trovato', 'eventi trovati') + ' su ' + AR.total : plural(AR.total, 'evento archiviato', 'eventi archiviati')) +
+    (AR.found > AR.list.length ? ' (i primi ' + AR.list.length + ')' : '') + '</p>' + AR.list.map(r =>
+    '<button type="button" class="lurow" data-act="arOne" data-id="' + esc(r.id) + '"><span class="lun"><b>' + esc(r.cliente || 'Senza nome') + '</b>' +
+    '<small>' + esc([fmtShort(r.data) + ' ' + String(r.data || '').slice(0, 4), r.luogo, r.tecnici].filter(Boolean).join(' · ')) + '</small></span>' +
+    '<span class="luc">' + (r.stato === 'annullato' ? 'annullato' : r.voci ? plural(r.voci, 'voce', 'voci') : '') + '</span></button>').join('');
+}
+INP.arQ = el => {
+  AR.q = el.value;
+  clearTimeout(AR.searchT);
+  const my = ++AR.seq;
+  AR.searchT = setTimeout(async () => {
+    try {
+      const l = await call('api_archiveList', S.pin, AR.q);
+      if (my !== AR.seq || !arStill('main')) return;
+      AR.list = l.righe; AR.total = l.totale; AR.found = l.trovati;
+      const b = $('#arlist');
+      if (b) b.innerHTML = arListHtml();
+    } catch (e) { toast(e.message, 'err'); }
+  }, 300);
+};
+
+/* ---------- copia adesso, copia da scaricare, archivia ---------- */
+ACT.arBackup = async () => {
+  if (AR.busy) return;
+  AR.busy = 'backup'; AR.prog = 'Faccio la copia su Drive: può volerci un minuto…';
+  if (arStill('main')) arPaintMain(true);
+  let done = null;
+  const r = await mutate(async () => {
+    const d = await call('api_backupNow', S.pin);
+    done = d;
+    if (AR.info) AR.info.backup = d.info;
+    S.copie = { pronto: true, giorni: d.info.giorni, dovuta: d.info.dovuta, ultima: d.info.ultima ? d.info.ultima.quando : '', errore: d.info.errore };
+    if (d.copia && d.copia.esito === 'ok') toast('Copia fatta su Drive.', 'ok');
+    else toast('La copia non è riuscita: ' + ((d.copia && d.copia.nota) || 'Drive non risponde') + '.', 'err');
+  }, true);
+  AR.busy = ''; AR.prog = r.ok ? '' : r.err;
+  if (arStill('main')) arPaintMain(true);
+  if (S.mode === 'coord' && S.ready) paint();           // l'avviso in cima agli Eventi (la finestra sopra non si tocca)
+  return done;
+};
+ACT.arDownload = async () => {
+  if (AR.busy) return;
+  AR.busy = 'download'; AR.prog = 'Preparo la copia…';
+  if (arStill('main')) arPaintMain(true);
+  try {
+    const info = await call('api_exportInfo', S.pin);
+    const out = { app: info.app, versione: info.versione, creato: info.quando, azienda: info.azienda,
+      nota: 'Copia dei dati del Foglio (senza foto e sfondi, senza codici e link segreti). Un foglio per chiave: colonne + righe.', fogli: {} };
+    let n = 0;
+    for (const f of info.fogli) {
+      let from = 2, header = null, rows = [];
+      n++;
+      do {
+        AR.prog = 'Scarico «' + f.nome + '» (' + n + ' di ' + info.fogli.length + ')…'; arProg();
+        const r = await call('api_exportSheet', S.pin, f.nome, from);
+        header = r.header; rows = rows.concat(r.righe); from = r.next;
+      } while (from);
+      out.fogli[f.nome] = { colonne: header, righe: rows };
+    }
+    const name = 'gestionale-copia-' + String(info.quando || '').slice(0, 10) + '.json';
+    const blob = new Blob([JSON.stringify(out)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name; a.style.display = 'none';
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 4000);
+    AR.prog = 'Scaricato: ' + name + ' (' + Math.round(blob.size / 1024) + ' KB).';
+    toast('Copia scaricata.', 'ok');
+  } catch (e) { AR.prog = e.message; toast(e.message, 'err'); }
+  AR.busy = '';
+  if (arStill('main')) arPaintMain(true);
+};
+ACT.arRun = async () => {
+  if (AR.busy) return;
+  AR.busy = 'run'; AR.prog = 'Archivio gli eventi…';
+  if (arStill('main')) arPaintMain(true);
+  let tot = 0, skipped = [], failed = '';
+  const gone = {};
+  try {
+    for (let guard = 0; guard < 60; guard++) {
+      const r = await call('api_archiveRun', S.pin);
+      tot += r.archiviati.length; skipped = skipped.concat(r.saltati);
+      r.archiviati.forEach(x => { gone[x.id] = true; });
+      AR.prog = 'Archiviati ' + tot + '…'; arProg();
+      if (!r.restano || !r.archiviati.length) break;
+    }
+  } catch (e) { failed = e.message; }
+  if (gone[S.openEv]) S.openEv = null;
+  await coordLoad().catch(() => { /* resta l'elenco di prima */ });       // gli eventi archiviati escono dall'elenco
+  AR.busy = '';
+  AR.prog = failed ? failed : 'Archiviati ' + tot + (skipped.length ? ' · non archiviati: ' + skipped.map(x => '«' + x.cliente + '» (' + x.perche + ')').join('; ') : '') + '.';
+  toast(failed ? failed : tot ? plural(tot, 'evento archiviato', 'eventi archiviati') + '.' : 'Non ho archiviato niente.', failed ? 'err' : 'ok');
+  if (arStill('main')) { await arLoad(); if (arStill('main')) arPaintMain(true); }
+};
+
+/* ---------- la scheda storica ---------- */
+function arMoney(n) { return Number(n) ? fmtEur(n) : ''; }
+function arSchedaHtml() {
+  const X = AR.sc, d = X.d, sc = d.scheda, e = sc.evento;
+  let h = '<div class="arsc"><div class="arhead"><span class="pill ' + (STAGE_PILL[e.stato] || 'muted') + '">' + esc(STAGE_LABEL[e.stato] || e.stato) + '</span>' +
+    '<b>' + esc(arDay(e.data)) + '</b>' + (e.luogo ? '<span>' + esc(e.luogo) + '</span>' : '') + '</div>';
+  if (X.mode === 'arch') {
+    const a = d.archivio;
+    h += '<p class="hint" style="margin-top:6px">In archivio dal ' + esc(fmtStamp(a.archiviato) || a.archiviato) + (a.motivo ? ' (' + esc(a.motivo) + ')' : '') + '. Gli identificativi e i link personali dei tecnici sono al sicuro nel foglio: non compaiono qui.</p>';
+  }
+  h += timesHtml(e);
+  const facts = [];
+  if (e.noteTecnici) facts.push('<div><span class="k">Note per i tecnici: </span>' + esc(e.noteTecnici) + '</div>');
+  if (e.noteSopralluogo) facts.push('<div><span class="k">Sopralluogo: </span>' + esc(e.noteSopralluogo) + '</div>');
+  if (e.noteModifiche) facts.push('<div><span class="k">Modifiche: </span>' + esc(e.noteModifiche) + '</div>');
+  if (e.telefonoCliente) facts.push('<div><span class="k">Telefono cliente: </span>' + esc(fmtPhone(e.telefonoCliente)) + '</div>');
+  if (e.emailCliente) facts.push('<div><span class="k">Email cliente: </span>' + esc(e.emailCliente) + '</div>');
+  if (arMoney(e.preventivoImporto)) facts.push('<div><span class="k">Preventivo: </span>' + esc(arMoney(e.preventivoImporto)) + '</div>');
+  if (arMoney(e.clienteIncassato)) facts.push('<div><span class="k">Incassato dal cliente: </span>' + esc(arMoney(e.clienteIncassato)) + '</div>');
+  if (e.statoNota) facts.push('<div><span class="k">Nota di stato: </span>' + esc(e.statoNota) + '</div>');
+  if (facts.length) h += '<div class="facts">' + facts.join('') + '</div>';
+
+  h += '<h4>Squadra</h4>';
+  if (!sc.squadra.length) h += '<p class="muted">Nessuno era stato convocato.</p>';
+  else {
+    h += '<ul class="arrows">' + sc.squadra.map(a => {
+      const roles = uniq(rolesOf(a.ruoli));
+      const bits = [String(a.stato || '')];
+      if (arMoney(a.compenso)) bits.push('compenso ' + arMoney(a.compenso) + (isTrue(a.pagato) ? ' (pagato)' : ' (da pagare)'));
+      return '<li><span><b>' + esc(a.tecnico || '') + '</b> ' + roles.map(r => '<span class="chip r-' + r + '">' + r + '</span>').join('') + '</span>' +
+        '<small>' + esc(bits.filter(Boolean).join(' · ')) + '</small></li>';
+    }).join('') + '</ul>';
+  }
+
+  const mat = sc.materiale.filter(c => c.quantita >= 1);
+  h += '<h4>Materiale' + (mat.length ? ' (' + mat.length + ')' : '') + '</h4>';
+  if (!mat.length) h += '<p class="muted">Non c\'era un elenco del materiale.</p>';
+  else {
+    h += '<ul class="ml">' + mat.map(c => {
+      const bits = [];
+      if (c.caricato) bits.push('caricati ' + c.caricato);
+      if (c.scaricato) bits.push('rientrati ' + c.scaricato);
+      if (c.danneggiato) bits.push('danneggiati ' + c.danneggiato);
+      if (c.mancante) bits.push('mancanti ' + c.mancante);
+      if (c.subnoleggio) bits.push('a noleggio ' + c.subnoleggio);
+      if (c.note) bits.push(c.note);
+      return '<li><span class="lq">' + c.quantita + '</span><span class="ln">' + esc(c.materiale || '') + (bits.length ? '<small>' + esc(bits.join(' · ')) + '</small>' : '') + '</span></li>';
+    }).join('') + '</ul>';
+  }
+  if (sc.furgoni.length) {
+    h += '<h4>Furgoni</h4><ul class="arrows">' + sc.furgoni.map(f => '<li><span><b>' + esc(f.furgone || '') + '</b></span><small>' + (f.autista ? 'guida ' + esc(f.autista) : 'senza autista') + '</small></li>').join('') + '</ul>';
+  }
+  if (sc.spese.length) {
+    h += '<h4>Spese</h4><ul class="arrows">' + sc.spese.map(x => '<li><span><b>' + esc(x.categoria || '') + '</b>' + (x.descrizione ? ' · ' + esc(x.descrizione) : '') + '</span>' +
+      '<small>' + esc([fmtEur(x.importo), String(x.pagatoDa) === 'tecnico' ? 'pagata da ' + (x.tecnico || 'un tecnico') + (x.rimborsatoIl ? ', rimborsata' : ', da rimborsare') : 'pagata dall\'azienda'].join(' · ')) + '</small></li>').join('') + '</ul>';
+  }
+  if (d.piante && d.piante.length) {
+    h += '<h4>Piante</h4><ul class="arrows">' + d.piante.map(p => '<li><span><b>' + esc(p.nome) + '</b></span>' +
+      '<button type="button" class="btn sm" data-act="pjOpen" data-id="' + esc(p.id) + '">' + ico('plan') + ' Apri la pianta</button></li>').join('') + '</ul>';
+  }
+  if (sc.storico.length) {
+    h += '<details class="free"><summary>Registro dei cambiamenti (' + sc.storico.length + ')</summary><ul class="arrows">' + sc.storico.slice(-60).map(s => {
+      let t = String(s.nota || '');
+      if (s.tipo === 'stato') t = 'Stato: ' + (STAGE_LABEL[s.da] || s.da) + ' → ' + (STAGE_LABEL[s.a] || s.a) + (t ? ' · ' + t : '');
+      else if (s.tipo === 'creato') t = 'Creato come «' + (STAGE_LABEL[s.a] || s.a) + '»' + (t ? ' · ' + t : '');
+      return '<li><span>' + esc(t) + '</span><small>' + esc(fmtWhen(s.quando)) + '</small></li>';
+    }).join('') + '</ul></details>';
+  }
+  if (sc.variazioni) h += '<p class="hint">Nel registro dei case ci sono ' + plural(sc.variazioni, 'variazione', 'variazioni') + ' di questo evento.</p>';
+  return h + '</div>';
+}
+function arSchedaFootHtml() {
+  const X = AR.sc, id = esc(X.id);
+  if (X.mode === 'arch') {
+    return '<div class="sheetfoot arfoot"><button type="button" class="btn" data-act="arBack">← Archivio</button>' +
+      '<button type="button" class="btn" data-act="arRedo">' + ico('copy') + ' Rifai questo evento</button>' +
+      '<button type="button" class="btn pri" data-act="arRestore" data-id="' + id + '" data-confirm="Lo rimetto tra gli eventi? Tocca di nuovo">Rimetti tra gli eventi</button></div>';
+  }
+  if (X.d.archiviabile) {
+    return '<div class="sheetfoot arfoot"><button type="button" class="btn" data-act="closeSheet">Chiudi</button>' +
+      '<button type="button" class="btn pri" data-act="arArchiveOne" data-id="' + id + '" data-confirm="Lo archivio? Tocca di nuovo">' + ico('arch') + ' Archivia questo evento</button></div>';
+  }
+  return '<p class="hint">Non si può archiviare' + (X.d.perche ? ': ' + esc(X.d.perche) : '') + '.</p><div class="sheetfoot"><button type="button" class="btn pri" data-act="closeSheet">Chiudi</button></div>';
+}
+function arPaintScheda() {
+  arPaint('Scheda storica: ' + (AR.sc.d.scheda.evento.cliente || 'evento'), arSchedaHtml() + arSchedaFootHtml());
+}
+ACT.arOne = async el => {
+  const id = el.dataset.id;
+  AR.cur = 'sc:' + id;
+  arPaint('Scheda storica', '<p class="empty">Carico…</p>');
+  try {
+    const d = await call('api_archiveGet', S.pin, id);
+    if (!arStill('sc:' + id)) return;
+    AR.sc = { mode: 'arch', id: id, d: d };
+    arPaintScheda();
+  } catch (e) {
+    if (arStill('sc:' + id)) arPaint('Scheda storica', '<p class="note bad" role="alert">' + esc(e.message) + '</p><div class="sheetfoot"><button type="button" class="btn" data-act="arBack">← Archivio</button></div>');
+  }
+};
+ACT.evScheda = async el => {
+  const id = el.dataset.id;
+  AR.cur = 'ev:' + id;
+  arPaint('Scheda storica', '<p class="empty">Carico…</p>');
+  try {
+    const d = await call('api_evScheda', S.pin, id);
+    if (!arStill('ev:' + id)) return;
+    AR.sc = { mode: 'live', id: id, d: d };
+    arPaintScheda();
+  } catch (e) {
+    if (arStill('ev:' + id)) arPaint('Scheda storica', '<p class="note bad" role="alert">' + esc(e.message) + '</p><div class="sheetfoot"><button type="button" class="btn pri" data-act="closeSheet">Chiudi</button></div>');
+  }
+};
+ACT.arBack = async () => {
+  AR.cur = 'main';
+  arPaint('Archivio e copie', '<p class="empty">Carico…</p>');
+  await arLoad();
+  if (arStill('main')) arPaintMain();
+};
+ACT.arArchiveOne = el => mutate(async () => {
+  const r = await call('api_archiveRun', S.pin, [el.dataset.id]);
+  if (!r.archiviati.length) {
+    toast('Non l\'ho archiviato: ' + ((r.saltati[0] && r.saltati[0].perche) || 'riprova') + '.', 'err');
+    return;
+  }
+  if (S.openEv === el.dataset.id) S.openEv = null;
+  await coordLoad();
+  closeSheet();
+  toast('Evento archiviato: lo ritrovi in «Archivio e copie».', 'ok');
+});
+ACT.arRestore = el => mutate(async () => {
+  const d = await call('api_archiveRestore', S.pin, el.dataset.id);
+  await coordLoad();
+  goEvent(d.event_id);                       // chiude la finestra, apre la scheda Eventi sull'evento (anche se è passato)
+  toast('«' + d.cliente + '» è di nuovo tra gli eventi.', 'ok');
+});
+
+/* ---------- «Rifai questo evento»: come «Duplica evento», ma da un evento archiviato ---------- */
+function arNextDate(s) {
+  const p = parseYMD(s), t = parseYMD(S.oggi);
+  if (!p || !t) return '';
+  let y = t.y;
+  const pad = n => String(n).padStart(2, '0');
+  if (y + '-' + pad(p.m) + '-' + pad(p.d) < S.oggi) y++;
+  return y + '-' + pad(p.m) + '-' + pad(p.d);
+}
+ACT.arRedo = () => {
+  const X = AR.sc;
+  if (!X || X.mode !== 'arch') return;
+  const sc = X.d.scheda, e = sc.evento, plants = X.d.piante || [];
+  const n = sc.materiale.filter(c => c.quantita >= 1).length;
+  let h = '<p class="hint" style="margin-top:0">Crea un evento nuovo partendo da <b>' + esc(e.cliente) + '</b> (' + esc(fmtShort(e.data)) + ' ' + esc(String(e.data || '').slice(0, 4)) + '): stesso luogo, stessi orari, stesso numero di tecnici. ' +
+    'Parte come «richiesta», senza squadra, spese né carico: la squadra la scegli di nuovo. Quello in archivio non cambia.</p>' +
+    '<form data-submit="arRedo" data-id="' + esc(X.id) + '" novalidate>' +
+    '<label class="fld"><span>Data del nuovo evento</span><input type="date" name="data" value="' + esc(arNextDate(e.data)) + '"></label>' +
+    '<label class="fld"><span>Nome (facoltativo: se non lo scrivi resta uguale)</span><input type="text" name="cliente" maxlength="120" autocomplete="off" placeholder="' + esc(e.cliente) + '"></label>';
+  if (n) {
+    h += '<label class="chk"><input type="checkbox" name="materiale" checked> Copia l\'elenco del materiale (' + plural(n, 'voce', 'voci') + ')</label>' +
+      '<p class="hint" style="margin-top:0">Il noleggio da fuori non si copia: va rivalutato per la nuova data.</p>';
+  }
+  plants.forEach(p => { h += '<label class="chk"><input type="checkbox" name="pianta" value="' + esc(p.id) + '" checked> Copia la pianta «' + esc(p.nome) + '»</label>'; });
+  if (plants.length) h += '<p class="hint" style="margin-top:0">La pianta nuova resta collegata al nuovo evento; quella vecchia non cambia.</p>';
+  h += '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="arBackSc">Indietro</button>' +
+    '<button type="submit" class="btn pri">Crea il nuovo evento</button></div></form>';
+  arPaint('Rifai questo evento', h);
+};
+ACT.arBackSc = () => { if (AR.sc) { AR.cur = 'sc:' + AR.sc.id; arPaintScheda(); } };
+SUB.arRedo = async form => {
+  const f = new FormData(form), id = form.dataset.id, err = $('.ferr', form);
+  const data = String(f.get('data') || '').trim();
+  if (!parseYMD(data)) { err.textContent = 'Scegli la data del nuovo evento.'; return; }
+  err.textContent = '';
+  const o = { data: data, cliente: String(f.get('cliente') || '').trim(), materiale: f.get('materiale') !== null, piante: f.getAll('pianta').map(String) };
+  const r = await mutate(async () => {
+    const res = await call('api_archiveRedo', S.pin, id, o);
+    applyEventResult({ evento: res.evento, assegnazioni: [] });
+    setLines(res.evento.id, res.righe, res.liste);
+    (res.progetti || []).forEach(pjPut);
+    goEvent(res.evento.id);
+    const bits = [];
+    if (res.copiate) bits.push(plural(res.copiate, 'voce di materiale', 'voci di materiale'));
+    if ((res.progetti || []).length) bits.push(plural(res.progetti.length, 'pianta', 'piante'));
+    toast(['Evento creato per ' + fmtShort(res.evento.data) + (bits.length ? ' con ' + bits.join(' e ') : '') + '.'].concat(res.avvisi || []).join(' '), (res.avvisi || []).length ? '' : 'ok');
+  }, true);
+  if (!r.ok) err.textContent = r.err;
+};
+
+/* ---------- la copia di sicurezza che parte da sola, e l'avviso se manca ---------- */
+/* Dopo il primo caricamento: se il server dice che l'ultima copia è vecchia, la fa (una sola volta per apertura) senza far aspettare niente */
+function arLazy() {
+  const c = S.copie;
+  if (AR.tried || S.offline || S.mode !== 'coord' || !c || !c.pronto || !c.dovuta) return;
+  AR.tried = true; AR.pending = true;
+  call('api_backupIfDue', S.pin).then(r => {
+    AR.pending = false;
+    if (r && r.info) S.copie = { pronto: true, giorni: r.info.giorni, dovuta: r.info.dovuta, ultima: r.info.ultima ? r.info.ultima.quando : '', errore: r.info.errore, drive: r.info.drive };
+    if (r && r.fatta) toast('Copia di sicurezza fatta su Drive.', 'ok');
+    if (S.mode === 'coord' && S.ready) paint();
+  }).catch(() => { AR.pending = false; });
+}
+/* L'avviso in cima agli Eventi: solo se non c'è mai stata una copia o l'ultima non è riuscita (e non mentre se ne sta facendo una) */
+function arBannerHtml() {
+  const c = S.copie;
+  if (S.mode !== 'coord' || !c || !c.pronto || !(c.giorni > 0) || AR.pending) return '';
+  if (c.errore) {
+    return '<p class="banner" role="status"><b>L\'ultima copia di sicurezza non è riuscita.</b> ' + esc(c.errore) + ' <button type="button" class="btn sm" data-act="arOpen">' + ico('arch') + ' Apri «Archivio e copie»</button></p>';
+  }
+  if (!c.ultima && c.dovuta === false) return '';
+  if (!c.ultima) {
+    return '<p class="banner" role="status"><b>Non c\'è ancora nessuna copia di sicurezza.</b> Se Google Drive non è collegato non parte da sola. <button type="button" class="btn sm" data-act="arOpen">' + ico('arch') + ' Apri «Archivio e copie»</button></p>';
+  }
+  return '';
+}
+
+/* ---------- «Se qualcosa non va» ---------- */
+ACT.arHelp = () => {
+  AR.cur = 'help';
+  const q = (t, a) => '<details class="free"><summary>' + t + '</summary><p>' + a + '</p></details>';
+  arPaint('Se qualcosa non va',
+    '<p class="hint" style="margin-top:0">Le cose che possono succedere a un\'app fatta con un Foglio Google, e cosa fare.</p>' +
+    q('Ho cancellato o cambiato qualcosa per sbaglio',
+      'Apri il Foglio Google: File › Cronologia delle versioni › Visualizza cronologia delle versioni. Ci sono tutte le versioni dei giorni scorsi, con chi ha cambiato cosa. ' +
+      'Scegli quella giusta: «Ripristina questa versione» riporta <b>tutto</b> il Foglio a quel momento (quello scritto dopo si perde), quindi prima fai File › Crea una copia. ' +
+      'Oppure apri una delle copie su Drive (finestra «Archivio e copie») e copia solo quello che ti serve.') +
+    q('Il sito non si apre o dice che il servizio non è disponibile',
+      'Può essere un guasto di Google o il limite di richieste del giorno (succede se molte persone aprono i link insieme). Aspetta un po\' e riprova: di solito passa da solo, al massimo il giorno dopo. ' +
+      'Se avevi già aperto l\'app su questo telefono o computer, vedi gli ultimi dati salvati (solo da guardare, con un avviso in alto); gli orari e il luogo sono anche nei messaggi WhatsApp già mandati.') +
+    q('Il Foglio è rovinato o non c\'è più',
+      'Apri l\'ultima copia nella cartella di Drive «' + esc((AR.info && AR.info.backup && AR.info.backup.cartella) || 'Gestionale service - copie di sicurezza') + '» (si apre come un normale Foglio) e usa File › Crea una copia. ' +
+      'Nella copia c\'è già anche il codice dell\'app: Estensioni › Apps Script. Dovrai ripubblicarla (Esegui il deployment › Nuovo deployment) e cambiare l\'indirizzo /exec dove serve, per esempio nella pagina su GitHub.') +
+    q('Ho dimenticato il codice del coordinatore',
+      'È scritto nel Foglio, scheda Config, riga pin_coordinatore.') +
+    q('Un tecnico ha perso il suo link',
+      'Scheda Tecnici › il suo nome: ricopi il link personale e glielo rimandi.') +
+    q('L\'app è lenta o il Foglio è quasi pieno',
+      'Sposta in archivio gli eventi vecchi (finestra «Archivio e copie»): escono dall\'elenco ma si ritrovano e si rimettono quando servono. Le foto dei posti vecchie restano su Drive.') +
+    q('Mi serve di nuovo un evento archiviato',
+      '«Archivio e copie» › cerca il nome › apri la scheda › «Rimetti tra gli eventi» (torna com\'era, con squadra e materiale) oppure «Rifai questo evento» per una data nuova.') +
+    '<div class="sheetfoot"><button type="button" class="btn pri" data-act="arBack">← Archivio e copie</button></div>');
+};
 
 if (S.mode === 'tech') techBoot();
 else if (S.mode === 'confirm') confirmBoot();
+else if (S.mode === 'wh') whBoot();
 else coordBoot();
 </script>
 </body>
