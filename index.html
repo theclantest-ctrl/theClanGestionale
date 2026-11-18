@@ -548,6 +548,28 @@ details.mat[open]>summary::after{transform:rotate(-135deg);margin-bottom:-3px}
 .cbt{flex:1;min-width:0;font-weight:600;line-height:1.3}
 .cbox .row{margin-top:10px}
 .cbn1{line-height:1.35}
+.stkn small.cod{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.02em}
+.codrow{display:flex;gap:8px;align-items:center}.codrow input{flex:1 1 auto;min-width:0;text-transform:uppercase}.codrow .btn{flex:0 0 auto}
+.schsum{margin:8px 0;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.schsum .scht{margin:0 0 4px}.schsum dl{margin:0}.schsum dl>div{display:flex;gap:8px;padding:3px 0;border-top:1px solid var(--line)}
+.schsum dl>div:first-child{border-top:0}.schsum dt{flex:0 0 36%;color:var(--ink2);font-size:.86rem;overflow-wrap:break-word}.schsum dd{margin:0;flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.schsum p{margin:6px 0 0}.schno{margin:6px 0}
+.schsec{margin-top:8px}.schsec>.grid2{margin-top:4px}
+.schrows{display:flex;flex-direction:column;gap:6px;margin:6px 0}
+.schrow{display:grid;gap:6px;align-items:center}.schrow.io{grid-template-columns:minmax(0,1.3fr) minmax(0,1.2fr) minmax(0,1fr) 52px 44px}.schrow.da{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) 44px}
+.schrow input,.schrow select{min-width:0;width:100%}.schrow .btn.ic{padding:0;min-width:44px;justify-content:center}
+@media (max-width:520px){.schrow.io{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px}.schrow.io>input[name=io_n]{grid-column:1 / 3}.schrow.io>select[name=io_t]{grid-column:1 / 2}.schrow.io>.btn.ic{grid-row:1;grid-column:3}}
+.schg{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.selbar{position:sticky;bottom:8px;z-index:20;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:12px 0 0;padding:8px 10px;border:2px solid var(--ink);border-radius:10px;background:var(--card);box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.selbar .row{margin:0}
+.stkh.selh{display:flex;align-items:center;gap:10px}.stkh.selh>.stkn{flex:1 1 auto;min-width:0}
+.selbox{flex:0 0 auto;width:24px;height:24px;border:2px solid var(--ink);border-radius:6px;display:inline-flex;align-items:center;justify-content:center}
+.selbox svg{width:18px;height:18px}.stkh.selh[aria-pressed=true] .selbox{background:var(--ink);color:var(--bg)}
+.lnk.danger{color:var(--bad)}.delp{margin:10px 0 0}
+.bulkl{margin:6px 0;padding-left:18px}.bulkl li{margin:3px 0}
+.cbox>.hint{margin:0 0 8px}
+.cbs{margin:4px 0;line-height:1.35}
+.cbs b{font-weight:700}
 /* luoghi, sopralluoghi e foto (4.6) */
 .lubox{margin-top:12px;padding:10px 12px 12px;border:2px solid var(--line);border-left:7px solid var(--st-sopralluogo);border-radius:6px;background:var(--card)}
 .lubox:empty{display:none}
@@ -862,6 +884,16 @@ details.mat[open]>summary::after{transform:rotate(-135deg);margin-bottom:-3px}
 .pusum{font-size:15px;font-weight:700;min-height:1.3em}
 .pusum.ok{color:var(--ok)}
 .pusum.bad{color:var(--bad)}
+.pusum.warn{color:var(--warn)}
+/* righe del materiale non collegate al magazzino (4.6.1) */
+.lkbox{font-size:15px;line-height:1.4}
+.lkbox>b{display:inline;font-weight:700}
+.lkrow{gap:6px}
+.lkrow .btn{height:auto;min-height:40px;padding-top:6px;padding-bottom:6px;white-space:normal;text-align:left}
+.lkr .pkav{margin-left:0}
+.lkr .lkl{font-weight:700;color:var(--ink)}
+.lkr .pua select{display:block;width:100%}
+.lkr .pkm>small:empty{display:none}
 .pudept[hidden],.pmdept[hidden]{display:none}
 .pudept>.catsep,.pmdept>.catsep{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 10px}
 .pudn{font:400 14px/1.2 var(--sans);color:var(--ink2)}
@@ -975,6 +1007,15 @@ body.whmode .sheet{max-width:880px}
   .evt{font-size:23px}
   .offbar{padding:10px 12px}
 }
+/* 4.8 — altri service e «Cosa manca più spesso»: ogni riga di dettaglio va a capo */
+.svcl small,.gapl small{display:block;margin-top:2px;font:400 14px/1.3 var(--sans);color:var(--ink2)}
+.svcl li>.row.between,.gapl li>.row.between{align-items:flex-start;gap:8px}
+.gapl li>.row.between{flex-wrap:nowrap}
+.svcl li>.row.between>span:first-child{flex:1 1 230px;min-width:0}
+.gapl li>.row.between>span:first-child{flex:1 1 auto;min-width:0}
+.svcl li>.row.between>.row,.gapl li>.row.between>.pill{flex:0 0 auto}
+.svcl li.off b{text-decoration:line-through}
+.gapl .note.ok{margin-top:4px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -1694,6 +1735,195 @@ function deptsOfRoles(roles) {
   list.forEach(r => { const d = DEPT_ROLE[deptNorm(r)]; if (d && out.indexOf(d) < 0) out.push(d); });
   return out;
 }
+/* =====================================================================
+   SCHEDA TECNICA DI UN ARTICOLO (4.7): le parole e i conti comuni all'app e all'editor della pianta
+   Questo testo sta sia nell'app sia nell'editor (build_pianta.py lo copia davanti al collegamento, come dept.js): una sola definizione,
+   così una scheda si legge allo stesso modo dappertutto. Solo funzioni pure (niente pagina, niente rete); i nomi cominciano tutti per SCH_ o sch
+   perché nell'editor convivono con i suoi.
+   La scheda è un oggetto (nel foglio: testo JSON nella colonna `scheda` di Materiali; la pulisce schedaClean_ in scheda.gs):
+     mod (modello), serie (numeri di serie), anno, forn (fornitore), val (valore in euro)
+     W (potenza), pin (spina), thru (uscita passante), cord (cavo in dotazione, metri)          → nell'editor: i dati del catalogo
+     ain, aout, vin, vout, vt, dmx, dpin, dthru, univ, dmxOut                                    → nell'editor: ingressi e uscite (ioOf)
+     io: [{n: nome, t: tipo di presa, d: in | out | link, q: quante}]                            le prese una per una
+     cavo (che cavo è: i codici di SCH_CAVO, gli stessi dei tipi di cavo dell'editor), len (quanto è lungo, metri)   → nell'editor: le lunghezze dei cavi
+     kg (portata massima), verif (prossima verifica, AAAA-MM-GG), ip (grado IP), acc (accessori), avv (avvertenze)
+     dati: [{n: nome, v: valore}]                                                                altri dati liberi
+     man (link al manuale), ver (1 = controllata sul manuale), at (quando), da (chi l'ha scritta)
+   ===================================================================== */
+// spine e prese della corrente: gli stessi codici di CONN nell'editor
+const SCH_CONN = [['none', 'nessuna (non va in corrente)'], ['civ', 'civile / Schuko 16A'], ['cee16', 'CEE 16A 230V (blu)'], ['cee16r', 'CEE 16A 400V 5p (rossa)'],
+  ['cee32m', 'CEE 32A 230V (blu)'], ['cee32', 'CEE 32A 400V 5p (rossa)'], ['cee63', 'CEE 63A 400V 5p (rossa)'], ['cee125', 'CEE 125A 400V 5p (rossa)'],
+  ['pcon', 'powerCON'], ['true1', 'powerCON TRUE1'], ['iec', 'IEC / VDE (C13-C14)']];
+// tipi di presa per l'elenco «una per una»: [codice, nome, gruppo]. Gruppi: a = audio di linea o microfono, s = potenza per le casse, d = audio digitale,
+// n = rete e dati, x = DMX, v = video, p = corrente, o = altro
+const SCH_IO_T = [['xlr', 'XLR', 'a'], ['combo', 'Combo XLR/jack', 'a'], ['jack', 'Jack 6,3', 'a'], ['minijack', 'Mini-jack 3,5', 'a'], ['rca', 'RCA', 'a'],
+  ['speakon', 'Speakon', 's'], ['aes', 'AES/EBU', 'd'],
+  ['rj45', 'RJ45 / etherCON', 'n'], ['fibra', 'Fibra ottica', 'n'], ['usb', 'USB', 'n'], ['midi', 'MIDI', 'n'],
+  ['dmx3', 'DMX 3 poli', 'x'], ['dmx5', 'DMX 5 poli', 'x'],
+  ['hdmi', 'HDMI', 'v'], ['sdi', 'SDI (BNC)', 'v'], ['vga', 'VGA', 'v'], ['dvi', 'DVI', 'v'], ['dp', 'DisplayPort', 'v'],
+  ['civ', 'Presa civile / Schuko', 'p'], ['cee16', 'CEE 16A', 'p'], ['cee32', 'CEE 32A', 'p'], ['cee63', 'CEE 63A', 'p'], ['pcon', 'powerCON', 'p'],
+  ['true1', 'powerCON TRUE1', 'p'], ['iec', 'IEC', 'p'], ['altro', 'Altro', 'o']];
+const SCH_IO_D = [['in', 'entrata'], ['out', 'uscita'], ['link', 'passante']];
+// che cavo è: gli stessi codici dei tipi di cavo dell'editor (SPECS), più due che l'editor non ha ancora
+const SCH_CAVO = [['xlr', 'XLR microfonico'], ['multi', 'Multicore / frusta'], ['nl4', 'Speakon NL4 (casse passive)'], ['jack', 'Jack strumento'],
+  ['cee16', 'Prolunga CEE 16A 230V (blu)'], ['cee16r', 'Prolunga CEE 16A 400V (rossa 5p)'], ['cee32', 'Prolunga CEE 32A 400V (rossa 5p)'],
+  ['cee63', 'Prolunga CEE 63A 400V (rossa 5p)'], ['civ', 'Prolunga civile 16A'], ['ciab', 'Ciabatta con spina CEE'], ['ciabc', 'Ciabatta con spina civile'],
+  ['pcon', 'Cavo CEE 16A → powerCON (alimentazione)'], ['civpcon', 'Cavo civile → powerCON (alimentazione)'], ['ceeciv', 'Cavo CEE 16A → civile (alimentazione)'],
+  ['plink', 'Ponte powerCON (da apparecchio ad apparecchio)'], ['dmx3', 'DMX 3 poli'], ['dmx5', 'DMX 5 poli'], ['sdi', 'SDI / BNC'], ['hdmi', 'HDMI'],
+  ['fibra', 'Fibra ottica'], ['cat', 'Rete Cat5e/6 EtherCon'], ['steel', "Cavo d'acciaio / sicurezza"], ['altro', 'Un altro cavo']];
+const SCH_DPIN = [['xlr3', '3 poli'], ['xlr5', '5 poli'], ['xlr35', '3 e 5 poli']];
+// i campi che l'editor legge: quelli del catalogo (corrente) e quelli degli ingressi e delle uscite
+const SCH_CAT_F = ['W', 'pin', 'thru', 'cord'];
+const SCH_IO_F = ['ain', 'aout', 'vin', 'vout', 'vt', 'dmx', 'dpin', 'dthru', 'univ', 'dmxOut'];
+
+function schLabel(list, code) { for (let i = 0; i < list.length; i++) if (list[i][0] === code) return list[i][1]; return ''; }
+function schSet(v) { return v !== undefined && v !== null && v !== ''; }
+/* Una scheda senza dati (c'è solo chi l'ha toccata e quando) */
+function schEmpty(s) {
+  if (!s || typeof s !== 'object') return true;
+  return !Object.keys(s).some(k => k !== 'at' && k !== 'da' && k !== 'ver' && (Array.isArray(s[k]) ? s[k].length > 0 : schSet(s[k])));
+}
+/* Le prese in breve, sommate per tipo e verso: «24× XLR entrata · 14× XLR uscita» */
+function schIoText(rows) {
+  const tot = {}, order = [];
+  (Array.isArray(rows) ? rows : []).forEach(r => {
+    if (!r) return;
+    const k = String(r.t || 'altro') + '|' + String(r.d || 'in');
+    if (!(k in tot)) { tot[k] = 0; order.push(k); }
+    tot[k] += Math.max(1, parseInt(r.q, 10) || 1);
+  });
+  return order.map(k => { const p = k.split('|'); return tot[k] + '× ' + (schLabel(SCH_IO_T, p[0]) || 'Altro') + ' ' + (schLabel(SCH_IO_D, p[1]) || 'entrata'); }).join(' · ');
+}
+/* Una presa per riga, con il suo nome: «Main L/R — 2× XLR, uscita» */
+function schIoLines(rows) {
+  return (Array.isArray(rows) ? rows : []).filter(Boolean).map(r => {
+    const q = Math.max(1, parseInt(r.q, 10) || 1), t = schLabel(SCH_IO_T, r.t) || 'Altro', d = schLabel(SCH_IO_D, r.d) || 'entrata';
+    return (r.n ? r.n + ' — ' : '') + q + '× ' + t + ', ' + d;
+  });
+}
+/* I numeri che si possono contare dalle prese, quando nella scheda non sono scritti a mano: ingressi e uscite audio (le uscite Speakon di un finale
+   contano come uscite audio, come nel catalogo dell'editor; le prese passanti non contano), ingressi e uscite video con i loro connettori,
+   che prese DMX ha e se ha l'uscita. Universi e uscite DMX di uno splitter non si indovinano: si scrivono. */
+function schDerive(s) {
+  const out = {}, rows = (s && Array.isArray(s.io)) ? s.io.filter(Boolean) : [];
+  if (!rows.length) return out;
+  const grp = {};
+  SCH_IO_T.forEach(t => { grp[t[0]] = t[2]; });
+  let ain = 0, aout = 0, vin = 0, vout = 0, hasA = false, hasV = false, d3 = false, d5 = false, dout = false;
+  const vt = [];
+  rows.forEach(r => {
+    const g = grp[r.t] || 'o', q = Math.max(1, parseInt(r.q, 10) || 1);
+    if (g === 'a') { hasA = true; if (r.d === 'in') ain += q; else if (r.d === 'out') aout += q; }
+    else if (g === 's') { if (r.d === 'out') { hasA = true; aout += q; } }
+    else if (g === 'v') {
+      hasV = true;
+      if (r.d === 'in') vin += q; else if (r.d === 'out') vout += q;
+      const l = schLabel(SCH_IO_T, r.t);
+      if (vt.indexOf(l) < 0) vt.push(l);
+    } else if (g === 'x') { if (r.t === 'dmx3') d3 = true; else d5 = true; if (r.d !== 'in') dout = true; }
+  });
+  if (hasA) { out.ain = ain; out.aout = aout; }
+  if (hasV) { out.vin = vin; out.vout = vout; out.vt = vt.join(' + '); }
+  if (d3 || d5) { out.dpin = d3 && d5 ? 'xlr35' : d3 ? 'xlr3' : 'xlr5'; out.dthru = dout ? 1 : 0; }
+  out.src = schIoText(rows);
+  return out;
+}
+/* Quello che l'editor applica: {cat: i dati del catalogo, io: ingressi e uscite (scritti a mano, altrimenti contati dalle prese), ver} */
+function schEd(s) {
+  if (!s || typeof s !== 'object') return null;
+  const d = schDerive(s), cat = {}, io = {};
+  SCH_CAT_F.forEach(k => { if (schSet(s[k])) cat[k] = s[k]; });
+  SCH_IO_F.forEach(k => { const v = schSet(s[k]) ? s[k] : d[k]; if (v !== undefined) io[k] = v; });
+  if (d.src) io.src = d.src;
+  return { cat: cat, io: io, ver: s.ver ? 1 : 0 };
+}
+/* Dal nome di un articolo: che cavo sembra e quanto è lungo ({cavo, len}), oppure null. Serve a proporre i due campi «Cavo» della scheda:
+   «Prolunga CEE 16A 22 m» → prolunga CEE 16A, 22 m. Adattatori e sdoppi non sono cavi con una lunghezza. */
+function schCableGuess(name) {
+  const t = String(name == null ? '' : name).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (!t.trim() || /adattator|sdoppi|riduzion/.test(t) || /^\s*(case|cesta|cubo|valigia|flight)\b/.test(t)) return null;
+  const lm = t.match(/(\d+(?:[.,]\d+)?)\s*(?:m|mt|mts|metri|metro)\b(?!m)/g);
+  const len = lm ? parseFloat(lm[lm.length - 1].replace(',', '.')) : 0;
+  let cavo = '';
+  const cee = /\bcee?\b/.test(t), civ = /civil|schuko|shuko/.test(t), pc = /powercon|power con|pcon/.test(t);
+  if (/ciabatt|multipres/.test(t)) cavo = cee ? 'ciab' : 'ciabc';
+  else if (/pont[ei]\b|link/.test(t) && pc) cavo = 'plink';
+  else if (/aliment/.test(t) && pc) cavo = civ ? 'civpcon' : 'pcon';
+  else if (pc && cee) cavo = 'pcon';
+  else if (pc && civ) cavo = 'civpcon';
+  else if (/dmx/.test(t)) cavo = /\b5 ?p/.test(t) ? 'dmx5' : 'dmx3';
+  else if (/prolung|ruzzol|\bcavo\b/.test(t) && cee && /\b63 ?a?\b/.test(t)) cavo = 'cee63';
+  else if (/prolung|ruzzol|\bcavo\b/.test(t) && cee && /\b32 ?a?\b/.test(t)) cavo = 'cee32';
+  else if (/prolung|ruzzol|\bcavo\b/.test(t) && cee && /400|ross|\b5 ?p|penta/.test(t)) cavo = 'cee16r';
+  else if (/prolung|ruzzol|\bcavo\b/.test(t) && cee && civ) cavo = /ruzzol|pres[ae]\b/.test(t) ? 'ciab' : /prolung/.test(t) ? 'cee16' : 'ceeciv';
+  else if (/prolung|ruzzol|\bcavo\b/.test(t) && cee) cavo = 'cee16';
+  else if (/prolung|ruzzol/.test(t) && civ) cavo = 'civ';
+  else if (/multicore|frusta/.test(t)) cavo = 'multi';
+  else if (/speakon|nl ?4/.test(t)) cavo = 'nl4';
+  else if (/xlr|xrl|cannon|microfonic/.test(t)) cavo = 'xlr';
+  else if (/jack/.test(t)) cavo = 'jack';
+  else if (/\bsdi\b|\bbnc\b/.test(t)) cavo = 'sdi';
+  else if (/hdmi/.test(t)) cavo = 'hdmi';
+  else if (/fibra/.test(t)) cavo = 'fibra';
+  else if (/cat ?[56]|ethercon|ethernet|\brete\b/.test(t)) cavo = 'cat';
+  else if (/acciaio|sicurezza/.test(t)) cavo = 'steel';
+  if (!cavo || !(len > 0) || len > 1000) return null;
+  return { cavo: cavo, len: Math.round(len * 10) / 10 };
+}
+function schDate(d) { const p = String(d || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : String(d || ''); }
+function schNum(n) { return String(n).replace('.', ','); }
+/* 2890.5 -> "2.890,50 €" (come fmtEur dell'app: qui serve anche dove l'app non c'è) */
+function schEur(n) {
+  const v = Math.round((Number(n) || 0) * 100) / 100, p = Math.abs(v).toFixed(2).split('.');
+  return p[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + p[1] + ' €';
+}
+/* La prossima verifica: 'scaduta' se è passata, 'vicina' se manca un mese o meno, '' se è lontana o non c'è. today = AAAA-MM-GG */
+function schVerif(s, today) {
+  const v = s && typeof s === 'object' ? String(s.verif || '') : '';
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(v) || !/^\d{4}-\d{2}-\d{2}$/.test(String(today || ''))) return '';
+  if (v < today) return 'scaduta';
+  const t = new Date(today + 'T12:00:00'), w = new Date(v + 'T12:00:00');
+  return (w - t) / 86400000 <= 31 ? 'vicina' : '';
+}
+/* La scheda in righe da leggere: [{k, l: titolo, v: testo}] (solo quello che c'è). Serve alla scheda dell'articolo nel Magazzino e al riquadro dell'editor. */
+function schLines(s) {
+  const L = [];
+  if (!s || typeof s !== 'object') return L;
+  const d = schDerive(s), val = k => schSet(s[k]) ? s[k] : d[k], pl = (n, a, b) => n + ' ' + (n === 1 ? a : b);
+  if (s.mod) L.push({ k: 'mod', l: 'Modello', v: String(s.mod) });
+  const pw = [];
+  if (schSet(s.W)) pw.push(schNum(s.W) + ' W');
+  if (schSet(s.pin)) pw.push(s.pin === 'none' ? 'non va in corrente' : 'spina ' + schLabel(SCH_CONN, s.pin));
+  if (schSet(s.thru) && s.thru !== 'none') pw.push('uscita passante ' + schLabel(SCH_CONN, s.thru));
+  if (schSet(s.cord) && +s.cord > 0) pw.push('cavo in dotazione ' + schNum(s.cord) + ' m');
+  if (pw.length) L.push({ k: 'corrente', l: 'Corrente', v: pw.join(' · ') });
+  const sg = [];
+  if (schSet(val('ain')) || schSet(val('aout'))) sg.push(pl(+val('ain') || 0, 'ingresso audio', 'ingressi audio') + ', ' + pl(+val('aout') || 0, 'uscita audio', 'uscite audio'));
+  if (schSet(val('vin')) || schSet(val('vout'))) sg.push(pl(+val('vin') || 0, 'ingresso video', 'ingressi video') + ', ' + pl(+val('vout') || 0, 'uscita video', 'uscite video') + (val('vt') ? ' (' + val('vt') + ')' : ''));
+  if (schSet(s.dmx) && +s.dmx > 0) sg.push('DMX ' + pl(+s.dmx, 'canale', 'canali'));
+  if (schSet(val('dpin'))) sg.push('prese DMX ' + schLabel(SCH_DPIN, val('dpin')) + (schSet(val('dthru')) ? (+val('dthru') ? ', entrata e uscita' : ', solo entrata') : ''));
+  if (schSet(s.univ) && +s.univ > 0) sg.push(pl(+s.univ, 'universo DMX', 'universi DMX'));
+  if (schSet(s.dmxOut) && +s.dmxOut > 0) sg.push(pl(+s.dmxOut, 'uscita DMX', 'uscite DMX'));
+  if (sg.length) L.push({ k: 'segnali', l: 'Segnali', v: sg.join(' · ') });
+  const io = schIoLines(s.io);
+  if (io.length) L.push({ k: 'prese', l: 'Prese', v: io.join(' · ') });
+  if (s.cavo) L.push({ k: 'cavo', l: 'Cavo', v: (schLabel(SCH_CAVO, s.cavo) || 'Cavo') + (schSet(s.len) && +s.len > 0 ? ', ' + schNum(s.len) + ' m' : '') });
+  const sic = [];
+  if (schSet(s.kg) && +s.kg > 0) sic.push('portata massima ' + schNum(s.kg) + ' kg');
+  if (s.verif) sic.push('prossima verifica ' + schDate(s.verif));
+  if (s.ip) sic.push(String(s.ip));
+  if (sic.length) L.push({ k: 'sicurezza', l: 'Sicurezza', v: sic.join(' · ') });
+  if (s.acc) L.push({ k: 'acc', l: 'In dotazione', v: String(s.acc) });
+  if (s.avv) L.push({ k: 'avv', l: 'Avvertenze', v: String(s.avv) });
+  (Array.isArray(s.dati) ? s.dati : []).forEach(x => { if (x && x.n) L.push({ k: 'dato', l: String(x.n), v: String(x.v == null ? '' : x.v) }); });
+  const acq = [];
+  if (schSet(s.anno)) acq.push('anno ' + s.anno);
+  if (s.forn) acq.push('fornitore ' + s.forn);
+  if (schSet(s.val) && +s.val > 0) acq.push('valore ' + schEur(s.val));
+  if (acq.length) L.push({ k: 'acquisto', l: 'Acquisto', v: acq.join(' · ') });
+  if (s.serie) L.push({ k: 'serie', l: 'Numeri di serie', v: String(s.serie) });
+  return L;
+}
 
 /* =====================================================================
    LOGISTICA - parti comuni a coordinatore e tecnico:
@@ -2077,6 +2307,9 @@ function lineSmall(l, noVar) {
   if (sub) bits.push(sub >= toI(l.quantita) ? 'tutto a noleggio' : sub + ' a noleggio');
   const cs = caseSub(l);
   if (cs) bits.push(esc(cs));
+  // 4.8 — quanti pezzi arrivano dalla pianta dell'evento (gli altri li hai messi tu, e la pianta non li tocca)
+  const pz = Math.min(toI(l.quantita), toI(l.pianta));
+  if (pz) bits.push(pz >= toI(l.quantita) ? 'dalla pianta' : pz + ' dalla pianta');
   const vt = noVar ? '' : variaTxt(l);      // nello scarico le variazioni sono già nel riquadro «Rimetti a posto»
   if (vt) bits.push('<span class="cvt">' + esc(vt) + '</span>');
   const pt = presoText(l, noVar ? 'scarico' : 'carico');      // pezzi presi da dentro le ceste (4.6): nel carico si prendono, nello scarico si rimettono
@@ -2962,7 +3195,7 @@ function derive() {
   });
   // quanti pezzi di ogni articolo servono a ogni evento (righe di materiale + quello che c'è dentro i contenitori presi + variazioni dei case non
   // ancora rimesse a posto). via = quanti di questi pezzi arrivano dentro un contenitore (per dirlo a chi guarda i conti)
-  S.useByEq = {}; S.demandByEv = {}; S.viaByEv = {}; S.pickCache = {};
+  S.useByEq = {}; S.demandByEv = {}; S.viaByEv = {}; S.pickCache = {}; S.lkCache = null;
   S.ev.forEach(e => {
     const d = evDemand(e);
     S.demandByEv[e.id] = d;
@@ -3734,8 +3967,8 @@ function matSectionHtml(e) {
   } else {
     h += '<p class="matsum">' + plural(ms.lines, 'voce', 'voci') + ', ' + plural(ms.pieces, 'pezzo', 'pezzi') +
       (ms.rent ? ' <span class="pill blue">' + ms.rent + ' a noleggio</span>' : '') +
-      (ms.shortLines ? ' <span class="pill bad">manca materiale</span>' : (cancelled ? '' : ' <span class="pill ok">tutto disponibile</span>')) + '</p>';
-    h += pickBoxHtml(e);
+      (ms.shortLines ? ' <span class="pill bad">manca materiale</span>' : (cancelled ? '' : lkStatusPill(e))) + '</p>';
+    h += lkBannerHtml(e) + pickBoxHtml(e);
     h += groupLines(lines).map(g => '<h5>' + esc(catLabel(g.cat)) + '</h5><ul class="mats">' + g.items.map(c => lineRow(e, c)).join('') + '</ul>').join('');
   }
   if (cancelled) return h;
@@ -3759,17 +3992,21 @@ function lineRow(e, c) {
   if (i.short > 0) pills += '<span class="pill bad">mancano ' + i.short + '</span>';
   if (i.vshort > 0) pills += '<span class="pill bad">mancano ' + plural(i.vshort, 'pezzo sciolto', 'pezzi sciolti') + '</span>';
   if (i.sub > 0) pills += '<span class="pill blue">' + (i.sub >= q ? 'tutto a noleggio' : i.sub + ' a noleggio') + '</span>';
+  if (!i.m && i.need > 0 && canLink() && !lkDismissed()[c.id]) pills += '<span class="pill warn">non collegata</span>';
   if (todo.length) pills += '<span class="pill blue">dentro è cambiato</span>';
   else if (vars.length) pills += '<span class="pill ok">rimesso a posto</span>';
   return '<li class="mrow' + (miss > 0 ? ' short' : '') + (open ? ' open' : '') + (ro ? ' ro' : '') + '">' +
     (ro ? '<div class="mline">' : '<button type="button" class="mline" data-act="lineToggle" data-id="' + esc(c.id) + '" aria-expanded="' + open + '">') +
     '<span class="mq">' + q + '</span><span class="mn">' + esc(lineName(c)) + (i.m && isCase(i.m) ? ' ' + CASE_PILL : '') +
     (c.note ? '<small>' + esc(c.note) + '</small>' : '') + (i.m && caseSub(i.m) ? '<small class="cs">' + esc(caseSub(i.m)) + '</small>' : '') +
-    (presoParse(c.preso).length ? '<small class="cs">' + esc(cap(presoText(c, 'carico'))) + '</small>' : '') + '</span>' +
+    (presoParse(c.preso).length ? '<small class="cs">' + esc(cap(presoText(c, 'carico'))) + '</small>' : '') +
+    (pianteQ(c) ? '<small class="cs">' + (pianteQ(c) >= q ? 'dalla pianta dell\'evento' : pianteQ(c) + ' dalla pianta dell\'evento') + '</small>' : '') + '</span>' +
     (pills ? '<span class="mp">' + pills + '</span>' : '') + (ro ? '</div>' : '</button>') + (open ? lineEditor(e, c, i) : '') + '</li>';
 }
+// 4.8 — quanti pezzi di questa riga arrivano dalla pianta dell'evento (gli altri li hai messi tu: la pianta non li tocca)
+function pianteQ(c) { return Math.min(Number(c.quantita) || 0, Math.max(0, Number(c.pianta) || 0)); }
 function availHtml(i, lineId, e) {
-  if (!i.m) return '<p class="note muted">Questo articolo non è nel magazzino (noleggio da fuori o scritto a mano): non controllo la disponibilità.</p>';
+  if (!i.m) return lkLineNoteHtml(i, lineId ? S.car.find(x => x.id === lineId) : null, e);
   const a = i.a, m = i.m;
   let t = 'In magazzino ' + (Number(m.quantita) || 0) + (m.fuoriServizio ? ' (' + m.fuoriServizio + ' fuori uso)' : '') + '.';
   if (a.locked > 0) {
@@ -3786,9 +4023,10 @@ function availHtml(i, lineId, e) {
   const inConts = e ? viaQ((S.viaByEv[e.id] || {})[m.id]) : 0;
   if (inConts > 0) t += ' Le ceste di questo evento ne portano già ' + inConts + ' (' + viaNames(e, m) + ').';
   let h = '<p class="note ' + (i.short ? 'bad' : 'muted') + '">' + esc(t + (i.short ? ' Per questo evento ne mancano ' + i.short + '.' : '')) + '</p>';
+  if (i.short) h += svcHasHtml(m.nome);          // 4.8 — chi ce l'ha fra gli altri service (svc.js)
   const plan = e && !isCase(m) ? pickPlan(e, m) : null;
   if (plan && (plan.whole.length || plan.part.length)) {
-    h += '<p class="note ok cbn1"><b>Da caricare:</b> ' + esc(pickText(plan)) + '.</p>';
+    h += '<p class="note ok cbn1"><b>Da caricare:</b> ' + esc(pickText(plan)) + '.' + (plan.whole.length ? ' Il contenitore si carica intero: i pezzi viaggiano protetti.' : '') + '</p>';
     if (pickPending(e, plan) && canPickApply()) {
       h += '<div class="row" style="margin-top:6px"><button type="button" class="btn sm pri" data-act="pickApply" data-id="' + esc(e.id) + '" data-art="' + esc(m.id) + '">Sistema con le ceste</button></div>';
     }
@@ -4162,7 +4400,7 @@ function caseBadText(m) {
   return 'I case dicono di avere dentro ' + inCaseRaw(m) + ' pezzi (' + holdersText(m) + '), ma di questo articolo ne hai ' + (Number(m.quantita) || 0) +
     ' in tutto. Correggi la composizione dei case o la quantità.';
 }
-function stkText(m) { return (m.nome + ' ' + (m.marca || '') + ' ' + catLabel(m.categoria) + ' ' + (m.note || '') + ' ' + (m.posizione || '') + ' ' + (isCase(m) ? 'case cesta ' + caseInside(m) : '')).toLowerCase(); }
+function stkText(m) { return (m.nome + ' ' + (m.codice || '') + ' ' + schSearchText(m) + ' ' + (m.marca || '') + ' ' + catLabel(m.categoria) + ' ' + (m.note || '') + ' ' + (m.posizione || '') + ' ' + (isCase(m) ? 'case cesta ' + caseInside(m) : '')).toLowerCase(); }
 function stkCatOk(m, cat) {
   return S.stockCat === '~scorta' ? isLow(m) : S.stockCat === '~case' ? (isCase(m) && String(m.stato) !== 'dismesso') : (!S.stockCat || cat === S.stockCat);
 }
@@ -4174,7 +4412,7 @@ function stkHidden(m) {
 }
 function stkRow(m, dn) {
   const u = stockOnDay(m, dn);
-  const open = S.openStk === m.id;
+  const open = S.openStk === m.id && !S.sel;
   const out = Number(m.fuoriServizio) || 0, tot = Number(m.quantita) || 0;
   const dismissed = String(m.stato) === 'dismesso';
   const cat = catKey(m.categoria) || 'generale';
@@ -4186,6 +4424,9 @@ function stkRow(m, dn) {
   else pill = '<span class="pill ok">' + (u.free === 1 ? '1 libero' : u.free + ' liberi') + '</span>';
   if (!dismissed && caseBad(m)) pill += '<span class="pill bad">non tornano i conti</span>';
   if (isLow(m)) pill += '<span class="pill warn">sotto scorta</span>';
+  if (!dismissed) pill += schVerifPill(m);
+  const lk = dismissed ? [] : lkForArt(m, dn), lkN = lk.reduce((n, x) => n + fromStock(x.c), 0);
+  if (lkN) pill += '<span class="pill warn">' + lkN + ' da collegare</span>';
   const bits = [tot + (isCase(m) ? (tot === 1 ? ' pronto' : ' pronti') : ' in tutto')];
   if (out) bits.push(out + ' fuori uso');
   if (u.locked) bits.push(u.locked + ' nei case');
@@ -4199,6 +4440,11 @@ function stkRow(m, dn) {
         (viaWhere(x.e, m, x.q) ? ' <span class="muted">(' + esc(viaWhere(x.e, m, x.q)) + ')</span>' : '') +
         (x.e.stato === 'confermato' || x.e.stato === 'concluso' ? '' : ' <span class="muted">(' + esc(STAGE_LABEL[x.e.stato].toLowerCase()) + ')</span>')).join(', ') + '.</p>';
     } else if (!dismissed) det += '<p class="muted">Quel giorno nessun evento li usa' + (u.locked ? ' sciolti' : '') + '.</p>';
+    lk.forEach(x => {
+      det += '<p class="note warn">' + esc(x.e.cliente) + ' ha scritto a mano «' + esc(x.c.materiale) + '» (' + fromStock(x.c) + (fromStock(x.c) === 1 ? ' pezzo' : ' pezzi') +
+        '): sembra questo articolo, ma non è collegato, quindi qui risulta libero.' +
+        (S.mode === 'coord' || S.mode === 'wh' ? ' <button type="button" class="btn sm pri" data-act="lkOpen" data-id="' + esc(x.e.id) + '" data-line="' + esc(x.c.id) + '">Collega</button>' : '') + '</p>';
+    });
     const spec = [];
     if (m.peso_kg !== '' && m.peso_kg != null) spec.push(m.peso_kg + ' kg');
     const dims = [m.larghezza_mm, m.altezza_mm, m.profondita_mm].filter(x => x !== '' && x != null);
@@ -4214,22 +4460,27 @@ function stkRow(m, dn) {
     }
     if (!dismissed && caseBad(m)) det += '<p class="note bad">' + esc(caseBadText(m)) + '</p>';
     if (m.note) det += '<p>' + esc(m.note) + '</p>';
+    det += schSummaryHtml(m);
     det += stkExtraHtml(m);
-    if (S.mode !== 'coord') return stkShell(m, dismissed, cat, pill, bits, open, det + '</div>');       // solo da guardare
+    if (S.mode !== 'coord') {       // solo da guardare; il computer in magazzino può compilare la scheda tecnica (4.7)
+      return stkShell(m, dismissed, cat, pill, bits, open, det + (S.mode === 'wh' ? '<div class="row"><button type="button" class="btn sm" data-act="schOpen" data-id="' + esc(m.id) + '">' + ico('list') + ' Scheda tecnica</button></div>' : '') + '</div>');
+    }
     det += '<div class="row"><button type="button" class="btn sm" data-act="movOpen" data-id="' + esc(m.id) + '" data-tipo="entrata"' + (dismissed ? ' disabled' : '') + '>' + ico('down') + ' Entrata</button>' +
       '<button type="button" class="btn sm" data-act="movOpen" data-id="' + esc(m.id) + '" data-tipo="uscita"' + (dismissed ? ' disabled' : '') + '>' + ico('up') + ' Uscita</button>' +
       '<button type="button" class="btn sm" data-act="brkOpen" data-id="' + esc(m.id) + '"' + (dismissed ? ' disabled' : '') + '>' + ico('wrench') + ' Guasto</button>' +
       (isCase(m) && !dismissed ? '<button type="button" class="btn sm" data-act="compOpen" data-id="' + esc(m.id) + '">' + ico('list') + ' Cosa c\'è dentro</button>' +
         '<button type="button" class="btn sm" data-act="contDup" data-id="' + esc(m.id) + '">' + ico('copy') + ' Copia</button>' : '') +
       (!isCase(m) && !dismissed ? '<button type="button" class="btn sm" data-act="dsOpen" data-id="' + esc(m.id) + '">' + ico('box') + ' Dove sta</button>' : '') +
+      '<button type="button" class="btn sm" data-act="schOpen" data-id="' + esc(m.id) + '">' + ico('list') + ' Scheda tecnica</button>' +
       '<button type="button" class="btn sm" data-act="matEdit" data-id="' + esc(m.id) + '">' + ico('edit') + ' Modifica</button></div></div>';
   }
   return stkShell(m, dismissed, cat, pill, bits, open, det);
 }
 function stkShell(m, dismissed, cat, pill, bits, open, det) {
   return '<article class="stk' + (open ? ' open' : '') + (dismissed ? ' off' : '') + '" data-cat="' + esc(cat) + '" data-low="' + (isLow(m) ? '1' : '') + '" data-case="' + (isCase(m) && !dismissed ? '1' : '') + '" data-q="' + esc(stkText(m)) + '"' + (stkHidden(m) ? ' hidden' : '') + '>' +
-    '<button type="button" class="stkh" data-act="stkToggle" data-id="' + esc(m.id) + '" aria-expanded="' + open + '">' +
-    '<span class="stkn">' + esc(m.nome) + (isCase(m) ? ' ' + CASE_PILL : '') + (m.marca ? '<small>' + esc(m.marca) + '</small>' : '') +
+    (S.sel ? '<button type="button" class="stkh selh" data-act="selPick" data-id="' + esc(m.id) + '" aria-pressed="' + !!S.sel[m.id] + '"><span class="selbox" aria-hidden="true">' + (S.sel[m.id] ? ico('check') : '') + '</span>'
+      : '<button type="button" class="stkh" data-act="stkToggle" data-id="' + esc(m.id) + '" aria-expanded="' + open + '">') +
+    '<span class="stkn">' + esc(m.nome) + (isCase(m) ? ' ' + CASE_PILL : '') + (m.codice ? '<small class="cod">' + esc(m.codice) + '</small>' : '') + (m.marca ? '<small>' + esc(m.marca) + '</small>' : '') +
     (m.posizione ? '<small class="cs">posizione: ' + esc(m.posizione) + '</small>' : '') + '</span>' +
     '<span class="stkc">' + pill + '<small>' + esc(bits.join(' · ')) + '</small></span></button>' + det + '</article>';
 }
@@ -4246,12 +4497,16 @@ function viewArticoli() {
   let h = '<div class="toolbar">' + (ro ? '' : '<div class="row"><button class="btn pri" data-act="matNew">' + ico('plus') + ' Nuovo articolo</button>' +
     '<button class="btn" data-act="invOpen">' + ico('list') + ' Inventario</button>' +
     '<button class="btn" data-act="impOpen">' + ico('up') + ' Importa</button>' +
-    '<button class="btn" data-act="stkPlan">' + ico('plan') + ' Collegamenti editor</button></div>') +
+    '<button class="btn" data-act="stkPlan">' + ico('plan') + ' Collegamenti editor</button>' +
+    '<button class="btn" data-act="svcOpen">' + ico('user') + ' Altri service</button>' +
+    '<button class="btn" data-act="gapOpen" data-mesi="12">' + ico('warn') + ' Cosa manca più spesso</button>' +
+    '<button class="btn" data-act="selToggle" aria-pressed="' + !!S.sel + '">' + ico('check') + ' Seleziona</button></div>') +
     '<span class="muted">' + plural(active.length, 'articolo', 'articoli') + ', ' + plural(pieces, 'pezzo', 'pezzi') + '</span></div>';
   if (!all.length) {
     return h + '<p class="empty">' + (ro ? 'Il magazzino è vuoto: lo riempie il coordinatore.' :
       'Il magazzino è vuoto. Tocca «Importa» per caricare l\'elenco che hai già, oppure «Nuovo articolo» per aggiungere il primo. Si può anche compilare la scheda Materiali del foglio.') + '</p>';
   }
+  h += lkBarHtml();
   h += '<div class="datebar"><label class="fld"><span>Disponibilità del giorno</span>' +
     '<input type="date" value="' + esc(date) + '" min="' + esc(S.oggi) + '" data-chg="stockDate"></label>' + tentToggle() + '</div>';
   h += '<input type="search" id="stockq" class="srch" data-inp="stockQ" value="' + esc(S.stockQ) + '" placeholder="Cerca: nexo, cavo, pedana…" aria-label="Cerca nel magazzino" autocomplete="off" autocapitalize="off">';
@@ -4275,6 +4530,7 @@ function viewArticoli() {
       esc(g.k === '~dismessi' ? 'Dismessi' : catLabel(g.k)) + '</h3>' + g.items.map(m => stkRow(m, dn)).join('') + '</section>';
   }).join('') + '</div>';
   h += '<p class="empty" id="stock-empty"' + (shown ? ' hidden' : '') + '>Nessun articolo trovato. Prova un\'altra parola.</p>';
+  if (!ro) h += selBarHtml();                 // in fondo all'elenco: resta attaccata al bordo basso dello schermo mentre si scorre
   return h;
 }
 /* Filtra la lista mentre si scrive, senza ridisegnare la pagina (altrimenti la tastiera si chiude a ogni lettera) */
@@ -4304,6 +4560,8 @@ function matFormHtml(m) {
     '<div class="grid2"><label class="fld"><span>Categoria</span><input type="text" name="categoria" list="catlist" value="' + esc(catKey(v.categoria) || '') + '" placeholder="audio, luci…" autocomplete="off" autocapitalize="off"></label>' +
     '<label class="fld"><span>Marca</span><input type="text" name="marca" value="' + esc(v.marca || '') + '" autocomplete="off"></label></div>' +
     '<datalist id="catlist">' + cats.map(c => '<option value="' + esc(c) + '">').join('') + '</datalist>' +
+    '<div class="fld"><span>Codice materiale (facoltativo)</span><div class="codrow"><input type="text" name="codice" value="' + esc(v.codice || '') + '" maxlength="24" autocomplete="off" autocapitalize="characters" placeholder="es. AUD-012" aria-label="Codice materiale">' +
+    '<button type="button" class="btn sm" data-act="codNext">Proponi</button></div></div>' +
     '<label class="fld"><span>Posizione in magazzino (facoltativa)</span><input type="text" name="posizione" value="' + esc(v.posizione || '') + '" maxlength="80" autocomplete="off" placeholder="es. scaffale B2, vicino al portone"></label>' +
     '<label class="chk" style="margin-top:10px"><input type="checkbox" name="tipo" value="case" data-chg="matCase"' + (isCase(v) ? ' checked' : '') + '> È un case o una cesta già pronti</label>' +
     '<div class="casebox"' + (isCase(v) ? '' : ' hidden') + '><label class="fld"><span>Promemoria su cosa c\'è dentro (facoltativo)</span><textarea name="contenuto" maxlength="600" rows="2" placeholder="es. la chiave sta nella tasca laterale">' + esc(v.contenuto || '') + '</textarea></label>' +
@@ -4325,6 +4583,7 @@ function matFormHtml(m) {
     '<p class="hint">Serviranno per calcolare il carico dei furgoni e, più avanti, per disegnare l\'impianto.</p></details>' +
     '<label class="fld"><span>Note</span><textarea name="note">' + esc(v.note || '') + '</textarea></label>' +
     (m ? '<label class="chk" style="margin-top:6px"><input type="checkbox" name="dismesso"' + (String(v.stato) === 'dismesso' ? ' checked' : '') + '> Non è più in magazzino (venduto o dismesso)</label>' : '') +
+    (m ? '<p class="delp"><button type="button" class="lnk danger" data-act="matDel" data-id="' + esc(v.id) + '">Elimina dal magazzino…</button></p>' : '') +
     '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
     '<button type="submit" class="btn pri">Salva articolo</button></div></form>';
 }
@@ -4909,7 +5168,7 @@ SUB.matForm = async form => {
     fuoriServizio: g('fuoriServizio'), consumabile: f.has('consumabile'), dismesso: f.has('dismesso'), note: g('note'),
     peso_kg: g('peso_kg'), larghezza_mm: g('larghezza_mm'), altezza_mm: g('altezza_mm'), profondita_mm: g('profondita_mm'),
     altezzaInstallazioneMm: g('altezzaInstallazioneMm'), scortaMinima: g('scortaMinima'),
-    tipo: f.has('tipo') ? 'case' : '', posizione: g('posizione'), contenuto: g('contenuto') };
+    tipo: f.has('tipo') ? 'case' : '', posizione: g('posizione'), contenuto: g('contenuto'), codice: g('codice') };
   const err = $('.ferr', form);
   if (!m.nome) { err.textContent = 'Scrivi il nome dell\'articolo.'; $('[name=nome]', form).focus(); return; }
   err.textContent = '';
@@ -5069,6 +5328,7 @@ function coordApply(d) {
   S.comp = d.composizione || []; S.cvar = d.variazioni || [];
   S.modResp = d.modificheResp || [];
   S.whLink = d.magazzino || null;
+  S.svc = d.service || []; S.svcMat = d.serviceMat || [];        // 4.8 — gli altri service e quello che hanno (svc.js)
   S.copie = d.copie || null;                     // com'è messa la copia di sicurezza (arch.js)
   S.ready = true; S.view = coordView;
   derive(); paint();
@@ -5079,7 +5339,7 @@ async function coordBoot() {
   S.view = coordView;
   if (!S.pin) { paint(loginView()); return; }
   paint(loadingView());
-  try { await coordLoad(); }
+  try { await coordLoad(); schDeep(); }
   catch (e) {
     if (/codice|tentativi/i.test(e.message)) {
       S.pin = ''; store.del('pin'); paint(loginView(e.message));
@@ -5110,7 +5370,7 @@ function lineView(c) {
     id: c.id, nome: lineName(c), categoria: m ? catKey(m.categoria) : '', consumabile: m ? isTrue(m.consumabile) : false,
     quantita: toI(c.quantita), subnoleggio: toI(c.subnoleggio), caricato: toI(c.caricato), scaricato: toI(c.scaricato),
     danneggiato: toI(c.danneggiato), mancante: toI(c.mancante), van_id: c.van_id || '', note: c.note || '',
-    mancaDa: c.mancaDa || '', mancaNota: c.mancaNota || '', preso: c.preso || '',
+    mancaDa: c.mancaDa || '', mancaNota: c.mancaNota || '', preso: c.preso || '', pianta: toI(c.pianta),
     tipo: m && isCase(m) ? 'case' : '', posizione: m ? (m.posizione || '') : '', contenuto: m && isCase(m) ? (m.contenuto || '') : '',
     key: c.equipment_id ? 'e:' + c.equipment_id : 'n:' + String(lineName(c)).trim().toLowerCase(),
   };
@@ -5248,6 +5508,10 @@ function evProblems(e) {
       p.items.push({ level: 'warn', text: 'Carico chiuso incompleto: ' + (lm.pieces === 1 ? 'manca 1 pezzo' : 'mancano ' + lm.pieces + ' pezzi') +
         (w.length && (lm.ext || lm.van) ? ' (' + w.join(', ') + ')' : '') });
     }
+  }
+  if (!closed && isUpcoming(e) && canLink()) {
+    const nl = lkOwn(e).length;
+    if (nl) p.items.push({ level: 'warn', text: plural(nl, 'voce del materiale non è collegata', 'voci del materiale non sono collegate') + ' al magazzino' });
   }
   // al rientro: danneggiati e mancanti (il materiale di consumo che finisce non è un problema)
   let dmg = 0, lost = 0;
@@ -5435,6 +5699,8 @@ function todoItems() {
     out.push({ text: 'Carico chiuso con pezzi mancanti: ' + e.cliente + ' (' + fmtShort(e.data) + '), ' + (lm.pieces === 1 ? 'manca 1 pezzo' : 'mancano ' + lm.pieces + ' pezzi') +
       (lm.ext ? ', ' + lm.ext + ' da fornitore esterno' : ''), act: 'listOpen', ev: e.id, kind: 'carico' });
   });
+  const lkc = lkCounts();
+  if (lkc.lines) out.push({ text: plural(lkc.lines, 'voce del materiale scritta a mano non è collegata', 'voci del materiale scritte a mano non sono collegate') + ' al magazzino (' + plural(lkc.events, 'evento', 'eventi') + '): il magazzino non le conta', act: 'lkOpen' });
   const rb = reimbSummary();
   if (rb.n) out.push({ text: 'Rimborsi da fare: ' + plural(rb.n, 'spesa', 'spese') + ', ' + fmtEur(rb.tot) + ' (' + plural(rb.techs, 'tecnico', 'tecnici') + ')', act: 'goTab', tab: 'tecnici' });
   const toRepair = S.rip.filter(r => r.stato === 'da riparare').reduce((s, r) => s + toI(r.quantita), 0);
@@ -6480,19 +6746,22 @@ ACT.dsGo = async () => {
 };
 
 /* ====================================================================================================================
-   Ceste e case: cosa caricare (4.6)
+   Ceste e case: cosa caricare (4.6, regole riviste nella 4.6.1)
    I pezzi dentro una cesta o un case pronti contano come disponibili, se nessun altro evento usa quella cesta negli stessi giorni
-   (vedi availFor e evDemand in coord.js). Per ogni articolo con una riga nell'evento il programma dice cosa caricare:
-   1. i contenitori interi, dal più pieno (senza prenderne più del necessario);
-   2. i pezzi sciolti;
-   3. se avanza poco, un contenitore intero in più (resta un po' di scorta);
-   4. se manca ancora qualcosa, qualche pezzo tolto da dentro un altro contenitore libero.
+   (vedi availFor e evDemand in coord.js). Per ogni articolo con una riga nell'evento il programma dice cosa caricare. La regola è che i cavi e i
+   pezzi che stanno dentro un case, una cesta o una valigia viaggiano nel contenitore (protetti): sciolti si caricano solo quelli che non stanno in
+   nessun contenitore. Quindi:
+   1. il contenitore che ha dentro l'articolo (il più piccolo che basta da solo, o il più pieno se nessuno basta, tra quelli liberi) si carica
+      intero, anche se all'evento serve solo una parte di quello che ha dentro, quando i pezzi sciolti non bastano; i pezzi in più sono la scorta;
+   2. gli altri contenitori si caricano interi solo se all'evento serve almeno un terzo di quello che hanno dentro, e se un articolo arriva da più
+      contenitori quello in più si carica intero solo se ne serve almeno un terzo (4.7); altrimenti il resto che manca si prende da dentro un altro contenitore che nessun altro
+      evento usa quel giorno;
+   3. i pezzi sciolti (che non stanno in nessun contenitore) si caricano sciolti.
    «Sistema con le ceste» (api_cpick) mette i contenitori interi nell'elenco dell'evento, lascia nella riga solo i pezzi da prendere fuori
    e annota nella colonna `preso` della riga da quali contenitori si prendono: lo leggono anche i tecnici nelle liste di carico e di scarico.
    ==================================================================================================================== */
 
-const PICK_SPARE_PCT = 0.2;   // un contenitore intero si carica anche se ha qualche pezzo più del necessario, fino al 20% dei suoi pezzi
-const PICK_MIN_USE = 0.34;    // ...ma solo se all'evento serve almeno un terzo di quello che ha dentro (altrimenti si prendono i pezzi da dentro)
+const PICK_MIN_USE = 0.34;    // un contenitore che non è la fonte principale di niente si carica intero solo se all'evento serve almeno un terzo di quello che ha dentro
 
 /* ---------- le parole: «dalla Cesta XRL 1», «dal Case cavi», «da Contenitore 3» ---------- */
 function contGender(nome) {
@@ -6510,9 +6779,13 @@ function viaNames(e, m) {
 
 /* ---------- da dove vengono i pezzi degli articoli di un evento ---------- */
 /* Si sceglie quali contenitori caricare interi guardando tutti gli articoli dell'evento insieme (una cesta porta con sé tutto quello che ha
-   dentro, anche per gli altri articoli). Tra le scelte possibili vince quella con meno pezzi tolti da dentro altri contenitori, poi meno pezzi
-   sciolti, meno scorta e meno contenitori. Regole:
-   - un articolo non si carica per più della scorta ammessa (il 20% del contenitore più grande, e comunque non più dei pezzi liberi);
+   dentro, anche per gli altri articoli). Tra le scelte possibili vince quella con meno contenitori aperti per toglierne dei pezzi, meno pezzi
+   tolti da dentro, meno pezzi sciolti, meno scorta e meno contenitori. Regole:
+   - se i pezzi sciolti non bastano, la fonte principale dell'articolo (il contenitore più piccolo che da solo copre quello che serve o, se nessuno
+     basta, il più pieno, tra quelli che nessun altro evento usa) si carica intero, qualunque sia la scorta (purché siano pezzi che nessun altro
+     evento usa); gli altri contenitori solo se all'evento serve almeno PICK_MIN_USE di quello che hanno dentro;
+   - se un articolo arriva da più contenitori (compresi quelli già nell'elenco dell'evento) quello in più si carica intero solo se ne serve almeno un terzo (4.7), non conta più il 20% del contenitore più
+     grande e il resto che manca si prende da dentro;
    - un contenitore usato da un altro evento negli stessi giorni, o già nell'elenco di questo, non si può caricare un'altra volta;
    - gli altri eventi prendono prima i pezzi sciolti con le loro righe e solo dopo quelli da dentro i contenitori.
    Restituisce {list: [piano per articolo], add: [{c, copies}], short}. Il piano di un articolo:
@@ -6537,8 +6810,24 @@ function pickSolve(e) {
     const a = availFor(m, e), own = ownNet(e, m.id);
     const short = Math.min(need, Math.max(0, own - Math.max(0, a.free)));
     const direct = neededTogether(a.used.map(u => ({ e: u.e, q: u.q - (u.via || 0) })).filter(u => u.q !== 0));
-    arts.push({ m: m, need: need, short: short, t: need - short, slack: Math.max(0, a.free - own),
-      looseFree: Math.max(0, a.loose - direct), spill: Math.max(0, direct - a.loose), hold: hold });
+    const A = { m: m, need: need, short: short, t: need - short, slack: Math.max(0, a.free - own),
+      looseFree: Math.max(0, a.loose - direct), spill: Math.max(0, direct - a.loose), hold: hold };
+    // i contenitori già nell'elenco dell'evento che portano questo articolo contano come fonti già usate: quello che resta nella riga è il resto
+    // che manca (si prende da dentro un altro contenitore), non un motivo per caricarne un altro intero
+    const via = ((S.viaByEv[e.id] || {})[m.id]) || [];
+    A.viaN = via.length;
+    A.viaPer = via.reduce((n, v) => Math.max(n, ((S.compByCase[v.c.id] || []).filter(z => z.id === m.id)[0] || {}).q || 0), 0);
+    // i pezzi sciolti non bastano e nessun contenitore c'è già: l'articolo arriva da un contenitore, che si carica intero. Tra quelli che nessun
+    // altro evento usa è la fonte principale quello che da solo copre quello che serve (il più piccolo, per portare meno scorta) oppure, se nessuno
+    // basta da solo, il più pieno
+    A.force = A.looseFree < A.t && !A.viaN;
+    A.main = {};
+    const free = hold.filter(h => availFor(h.c, e).free >= 1), fit = free.filter(h => h.per >= A.t);
+    if (free.length) {
+      const per = fit.length ? Math.min.apply(null, fit.map(h => h.per)) : Math.max.apply(null, free.map(h => h.per));
+      free.forEach(h => { if (h.per === per) A.main[h.c.id] = true; });
+    }
+    arts.push(A);
   });
   if (!arts.length) return out;
   // i contenitori che si possono caricare interi: quelli che hanno dentro almeno uno di quegli articoli e copie libere
@@ -6572,21 +6861,30 @@ function pickSolve(e) {
   const evalX = () => {
     const prov = {};
     cand.forEach((k, i) => { if (x[i]) Object.keys(k.per).forEach(id => { prov[id] = (prov[id] || 0) + x[i] * k.per[id]; }); });
-    // la scorta ammessa: qualche pezzo in più per gli articoli dell'evento (fino al 20% del contenitore), e per gli altri articoli che i
+    // la scorta ammessa: qualche pezzo in più per gli articoli dell'evento (vedi sotto), e per gli altri articoli che i
     // contenitori portano con sé solo quelli che nessun altro evento usa
     let dead = 0;
     for (const id of Object.keys(prov)) {
       const A = arts.filter(z => z.m.id === id)[0];
       const over = Math.max(0, prov[id] - (A ? A.t : 0));
       if (!over) continue;
-      const maxper = Math.max.apply(null, cand.map((k, i) => (x[i] && k.per[id]) || 0));
-      const allowed = A ? Math.min(A.slack, Math.floor(maxper * PICK_SPARE_PCT)) : (extra[id] || 0);
+      let allowed;
+      if (A) {
+        // un articolo che arriva da un solo contenitore (una copia) si carica col contenitore intero, anche per pochi pezzi: viaggia protetto
+        // e la scorta è solo quella che nessun altro evento usa. 
+        const n = cand.reduce((t, k, i) => t + (x[i] && k.per[id] ? x[i] : 0), 0) + A.viaN;
+        // (4.7) se arriva da più contenitori, quello in più si carica intero quando i pezzi che servono non sono pochi: almeno un terzo di
+        // quello che ha dentro (quindi la scorta è al massimo i due terzi del contenitore più piccolo). Se sono pochi si tolgono da dentro.
+        const pers = cand.map((k, i) => (x[i] && k.per[id]) || 0).filter(v => v > 0);
+        const minper = pers.length ? Math.min.apply(null, pers) : 0;
+        allowed = n === 1 ? A.slack : Math.min(A.slack, Math.floor(minper * (1 - PICK_MIN_USE)));
+      } else allowed = extra[id] || 0;
       if (over > allowed) return;
       dead += over;
     }
-    // un contenitore si carica intero solo se all'evento serve una buona parte di quello che ha dentro
+    // un contenitore che non è la fonte principale di un articolo si carica intero solo se all'evento serve una buona parte di quello che ha dentro
     for (let i = 0; i < cand.length; i++) {
-      if (!x[i]) continue;
+      if (!x[i] || arts.some(A => A.force && A.main[cand[i].c.id])) continue;
       let tot = 0, use = 0;
       Object.keys(cand[i].per).forEach(id => {
         const A = arts.filter(z => z.m.id === id)[0];
@@ -6708,12 +7006,33 @@ function presoText(l, kind) {
 }
 
 /* ---------- il riquadro «Cosa caricare con le ceste» (nel materiale dell'evento e nella lista di carico) ---------- */
+/* Le azioni da fare, dette in breve per tutto l'evento: cosa caricare intero, cosa prendere da dentro, cosa va sciolto */
+function pickSummary(plans) {
+  const whole = [], seen = {}, part = [], loose = [];
+  plans.forEach(p => {
+    p.whole.forEach(w => {
+      if (seen[w.c.id]) return;                                   // la stessa cesta porta più articoli: si dice una volta sola
+      seen[w.c.id] = true;
+      whole.push((w.copies > 1 ? w.copies + ' × ' : '') + w.c.nome + (w.have > 0 ? ' (in più)' : ''));
+    });
+    p.part.forEach(x => part.push(x.q + ' ' + p.m.nome + ' ' + fromCont(x.c.nome)));
+    if (p.loose > 0) loose.push(p.loose + ' ' + p.m.nome);
+  });
+  return { whole: whole, part: part, loose: loose };
+}
 function pickBoxHtml(e) {
   if (!e || e.stato === 'annullato' || e.scaricoQuando) return '';
   const plans = pickPlans(e);
   if (!plans.length) return '';
   const pend = plans.filter(p => pickPending(e, p));
-  let h = '<section class="cbox" aria-label="Ceste e case"><h5>Cosa caricare con le ceste</h5><ul class="cbl">';
+  const sm = pickSummary(plans);
+  let h = '<section class="cbox" aria-label="Ceste e case"><h5>Cosa caricare con le ceste</h5>' +
+    '<p class="hint">Case, ceste e valigie si caricano interi: i cavi e i pezzi dentro viaggiano protetti. Sciolti vanno solo i pezzi che non stanno in nessun contenitore.' +
+    (sm.part.length ? ' Da dentro un contenitore si prende solo quello che manca per finire il conto, e solo se nessun altro evento lo usa quel giorno.' : '') + '</p>';
+  if (sm.whole.length) h += '<p class="cbs"><b>Carica interi:</b> ' + esc(sm.whole.join(', ')) + '.</p>';
+  if (sm.part.length) h += '<p class="cbs"><b>Prendi da dentro:</b> ' + esc(sm.part.join(', ')) + '.</p>';
+  if (sm.loose.length) h += '<p class="cbs"><b>Sciolti</b> (non stanno in nessun contenitore): ' + esc(sm.loose.join(', ')) + '.</p>';
+  h += '<ul class="cbl">';
   plans.forEach(p => {
     h += '<li><span class="cbn"><b>' + esc(p.m.nome) + '</b> <small>' + p.need + (p.need === 1 ? ' pezzo' : ' pezzi') + '</small></span>' +
       '<span class="cbt">' + esc(pickText(p)) + '</span>' +
@@ -6774,7 +7093,8 @@ function impLow(s) { return String(s == null ? '' : s).toLowerCase().normalize('
 function impPlain(s) { return impLow(s).replace(/[^a-z0-9]+/g, ''); }
 /* La chiave con cui si riconosce lo stesso articolo: «Cannon Audio Xrl 10Mt» e «cannon audio XRL 10 m» sono lo stesso nome */
 function impNorm(s) {
-  return impLow(s).replace(/[×✕]/g, 'x').replace(/(\d)\s*(?:metri|metro|mtr|mt|m)\b\.?/g, '$1m').replace(/[^a-z0-9]+/g, '');
+  // la virgola o il punto tra due cifre restano (4.6.1): «1,5 m» non è «15 m», e «4.5 m» è «4,5 m»
+  return impLow(s).replace(/[×✕]/g, 'x').replace(/(\d)[.,](?=\d)/g, '$1v').replace(/(\d)\s*(?:metri|metro|mtr|mt|m)\b\.?/g, '$1m').replace(/[^a-z0-9]+/g, '');
 }
 
 /* ---------- il reparto, indovinato dalle parole ---------- */
@@ -6892,8 +7212,9 @@ const IMP_HEAD = {
   marca: /^(?:marca|brand|produttore|costruttore|fabbricante|marchio)/,
   posizione: /^(?:posizione|ubicazione|dove|collocazione|scaffale|locazione|luogo|deposito|location)/,
   note: /^(?:note|nota|annotazioni|osservazioni|commento|commenti|dettagli|varie|notes)/,
+  codice: /^(?:codice\w*|cod|code|sku|matricola)$/,          // 4.7: il codice materiale («Codice», «Cod.», «Codice articolo»)
 };
-const IMP_FIELDS = [['nome', 'Nome dell\'articolo'], ['quantita', 'Pezzi'], ['categoria', 'Reparto'], ['marca', 'Marca'], ['posizione', 'Posizione'], ['note', 'Note']];
+const IMP_FIELDS = [['nome', 'Nome dell\'articolo'], ['quantita', 'Pezzi'], ['categoria', 'Reparto'], ['marca', 'Marca'], ['posizione', 'Posizione'], ['note', 'Note'], ['codice', 'Codice']];
 /* Quali colonne sono quali, leggendo la riga delle intestazioni */
 function impHeadMap(row) {
   const map = {}, used = {};
@@ -6976,7 +7297,7 @@ function impTabRaw(tab) {
       if (h) { section = h; return; }
     }
     if (impJunk(nome)) { skipped.push(nome); return; }
-    out.push({ nome: nome, n: q.n, bad: q.bad, cat: cell(r, 'categoria'), marca: cell(r, 'marca').slice(0, 60), pos: cell(r, 'posizione').slice(0, 80), note: cell(r, 'note').slice(0, 300), sec: section, warn: [] });
+    out.push({ nome: nome, n: q.n, bad: q.bad, cat: cell(r, 'categoria'), marca: cell(r, 'marca').slice(0, 60), pos: cell(r, 'posizione').slice(0, 80), cod: cell(r, 'codice').slice(0, 24), note: cell(r, 'note').slice(0, 300), sec: section, warn: [] });
   });
   return { rows: out, skipped: skipped };
 }
@@ -7088,6 +7409,7 @@ function impMerge(raw) {
     if (!cur.cat && x.cat) cur.cat = x.cat;
     if (!cur.marca && x.marca) cur.marca = x.marca;
     if (!cur.pos && x.pos) cur.pos = x.pos;
+    if (!cur.cod && x.cod) cur.cod = x.cod;
     if (!cur.note && x.note) cur.note = x.note;
     cur.merged = (cur.merged || 1) + 1;
     x.warn.forEach(w => { if (cur.warn.indexOf(w) < 0) cur.warn.push(w); });
@@ -7326,6 +7648,7 @@ function impMatch(r, ex) {
   if (m) {
     if (r.marca && !String(m.marca || '').trim()) fill.push('la marca');
     if (r.pos && !String(m.posizione || '').trim()) fill.push('la posizione');
+    if (r.cod && !String(m.codice || '').trim()) fill.push('il codice');
     if (r.note && !String(m.note || '').trim()) fill.push('le note');
   }
   r.fill = fill;
@@ -7348,7 +7671,7 @@ function impBuild() {
   const P = IMP, merged = impMerge(P.raw), ex = impExisting();
   P.cut = merged.length > IMP_MAX_ROWS ? merged.length : 0;
   P.rows = merged.slice(0, IMP_MAX_ROWS).map((x, i) => {
-    const r = { n: i, nome: x.nome, qty: x.n, bad: x.bad || '', cat: impCatOf(x.cat, x.sec, x.nome), marca: x.marca || '', pos: x.pos || '', note: x.note || '',
+    const r = { n: i, nome: x.nome, qty: x.n, bad: x.bad || '', cat: impCatOf(x.cat, x.sec, x.nome), marca: x.marca || '', pos: x.pos || '', cod: x.cod || '', note: x.note || '',
       parts: x.parts || [], merged: x.merged || 1, warn: x.warn.slice(), touched: false, saved: false, on: false };
     impMatch(r, ex);
     r.on = impAutoOn(r);
@@ -7442,7 +7765,7 @@ function impRowInfo(r) {
   else if (r.blocked) h += '<span class="pill muted">Contenitore</span>' + esc(r.blocked);
   else if (!m) {
     h += '<span class="pill ok">Nuovo</span>';
-    const bits = [r.marca, r.pos].filter(Boolean);
+    const bits = [r.cod, r.marca, r.pos].filter(Boolean);
     if (bits.length) h += '<span class="imm">' + esc(bits.join(' · ')) + '</span>';
   } else {
     const after = impAfter(r), same = r.qty !== null && after === r.have;
@@ -7618,6 +7941,7 @@ ACT.impBack = () => {
 /* ---------- 6. salvare ---------- */
 function impItem(r) {
   const o = { nome: r.nome, quantita: r.qty, marca: r.marca, posizione: r.pos, note: r.note };
+  if (r.cod) o.codice = r.cod;
   if (r.eq) {
     o.equipment_id = r.eq; o.azione = IMP.mode;
     if (IMP.mode === 'somma') o.era = r.have;       // se nel frattempo è cambiato, il server non somma una seconda volta
@@ -8302,6 +8626,7 @@ function pjCardHtml(p) {
   else if (p.tipo === 'modello') pill = '<span class="pill blue">modello</span>';
   else if (p.event_id && p.eventoStato === 'annullato') pill = '<span class="pill bad">evento annullato</span>';
   else if (p.event_id && p.eventoStato === 'archiviato') pill = '<span class="pill muted">evento in archivio</span>';
+  else if (p.autoMat) pill = '<span class="pill ok" title="Salvando la pianta, il suo materiale entra da solo nell\'elenco dell\'evento">tiene aggiornato l\'evento</span>';
   const side = p.cestino
     ? 'tolto ' + (p.cestinatoIl ? fmtWhen(p.cestinatoIl) : '') + (p.cestinatoDa ? ' · ' + firstName(p.cestinatoDa) : '')
     : pjSavedText(p);
@@ -8679,6 +9004,10 @@ ACT.pjMore = el => {
     pjMenuBtn('pjCopy', p.id, 'copy', 'Fai una copia') +
     pjMenuBtn('pjDown', p.id, 'down', 'Scarica il file');
   if (pjCanUse() && p.tipo === 'progetto') h += pjMenuBtn('pjUse', p.id, 'box', 'Porta il materiale in un evento');
+  // 4.8 — la pianta può tenere aggiornato da sola il materiale del suo evento
+  if (pjCanUse() && p.tipo === 'progetto' && p.event_id) {
+    h += pjMenuBtn('pjAuto', p.id, p.autoMat ? 'check' : 'refresh', p.autoMat ? 'Non tenere più aggiornato l\'evento' : 'Tieni aggiornato il materiale dell\'evento');
+  }
   if (pjCoord()) h += pjMenuBtn('pjTrash', p.id, 'trash', 'Metti nel cestino', ' data-confirm="Nel cestino? Tocca di nuovo"');
   openSheet(p.nome, h + '</div>', { noFocus: true });
 };
@@ -8773,6 +9102,34 @@ ACT.pjDown = el => {
 };
 
 /* cestino: solo il coordinatore */
+/* 4.8 — «Tieni aggiornato il materiale dell'evento»: accendendolo il materiale della pianta entra subito nell'evento */
+ACT.pjAuto = el => {
+  const p = pjById(el.dataset.id);
+  if (!p) return;
+  const on = !p.autoMat;
+  mutate(async () => {
+    const r = await call('api_pjAuto', pjAuth(), p.id, on);
+    p.autoMat = !!r.autoMat;
+    pjPut(p);
+    if (r.esito && r.esito.righe) setLines(p.event_id, r.esito.righe, r.esito.liste);
+    closeSheet(); paint();
+    if (!on) { toast('Da adesso il materiale dell\'evento lo cambi tu: la pianta non lo tocca più.', 'ok'); return; }
+    toast('D\'ora in poi, salvando la pianta, il suo materiale entra da solo nell\'evento. ' + autoText(r.esito), 'ok');
+  });
+};
+/* Cosa è successo nell'evento: la stessa frase la dice anche l'editor */
+function autoText(v) {
+  if (!v) return 'Per ora non c\'era niente da cambiare.';
+  if (v.bloccato) return 'Il materiale non l\'ho toccato: ' + v.bloccato;
+  const b = [];
+  if (v.aggiunte) b.push(plural(v.aggiunte, 'voce aggiunta', 'voci aggiunte'));
+  if (v.aggiornate) b.push(plural(v.aggiornate, 'voce cambiata', 'voci cambiate'));
+  if (v.tolte) b.push(plural(v.tolte, 'voce tolta', 'voci tolte'));
+  const parts = [b.length ? 'Nell\'evento: ' + b.join(', ') + '.' : 'Era già tutto uguale.'];
+  (v.ferme || []).forEach(f => parts.push('«' + f.voce + '» è già sul furgone o in cesta: l\'ho lasciata a ' + f.era + '.'));
+  if ((v.controlla || []).length) parts.push(plural(v.controlla.length, 'voce somiglia', 'voci somigliano') + ' a un articolo senza essere uguale: collegale da Magazzino › Collegamenti editor.');
+  return parts.join(' ');
+}
 ACT.pjTrash = el => {
   mutate(async () => {
     pjPut(await call('api_pjTrash', pjAuth(), el.dataset.id));
@@ -8918,11 +9275,27 @@ function puTokEq(x, y) {
   }
   return false;
 }
-/* Quanto due elenchi di parole si somigliano. Se tutti e due hanno dei numeri e non sono gli stessi (10 m e 5 m) non sono lo stesso articolo. */
+/* Il nome senza la descrizione: nel catalogo dell'editor la descrizione viene dopo un trattino lungo («QSC KW181 — sub 18" attivo» è «QSC KW181») (4.6.1).
+   puSet mette le parole in ordine: «Kw181 qsc» e «QSC KW181» sono lo stesso nome. puKeys: le chiavi con cui due nomi si dicono uguali (tutto il nome, e la
+   prima parte se c'è una descrizione). Le stesse regole del server: pjSetS_ e pjKeysS_ (progetti.gs). */
+function puSet(tok) { return tok.slice().sort().join(' '); }
+function puKeys(name, tok) {
+  const keys = [puSet(tok)];
+  const ht = puTokens(String(name == null ? '' : name).split(/\s[—–]\s/)[0]);
+  if (ht.length >= 2 && ht.length < tok.length) keys.push(puSet(ht));
+  return keys;
+}
+/* Quanto due elenchi di parole si somigliano. Se tutti e due hanno dei numeri e non sono gli stessi (10 m e 5 m) non sono lo stesso articolo;
+   fa eccezione il caso in cui i numeri di un nome ci sono tutti anche nell'altro («KW181» e «KW181 sub 18»): vale solo se tutte le parole del nome più corto ci sono (almeno 3). */
 function puSim(a, b) {
   if (!a.length || !b.length) return null;
-  const na = a.filter(w => /^\d+$/.test(w)).sort().join(','), nb = b.filter(w => /^\d+$/.test(w)).sort().join(',');
-  if (na && nb && na !== nb) return null;
+  const isN = w => /^\d+$/.test(w);
+  const na = uniq(a.filter(isN)).sort(), nb = uniq(b.filter(isN)).sort();
+  let sub = false;
+  if (na.length && nb.length && na.join(',') !== nb.join(',')) {
+    if (!na.every(x => nb.indexOf(x) >= 0) && !nb.every(x => na.indexOf(x) >= 0)) return null;
+    sub = true;
+  }
   const ua = uniq(a), ub = uniq(b), used = {};
   let sh = 0;
   ua.forEach(x => {
@@ -8930,41 +9303,52 @@ function puSim(a, b) {
       if (!used[i] && puTokEq(x, ub[i])) { used[i] = 1; sh++; return; }
     }
   });
+  if (sub && !(sh === Math.min(ua.length, ub.length) && sh >= 3)) return null;
   return { sh: sh, j: sh / (ua.length + ub.length - sh), ov: sh / Math.min(ua.length, ub.length) };
 }
 /* Gli articoli tra cui cercare (i case no: un pezzo della pianta non è un case) */
 function puArts() {
-  return S.mat.filter(m => String(m.stato) !== 'dismesso' && !isCase(m)).map(m => { const tok = puTokens(m.nome); return { m: m, tok: tok, norm: tok.join(' ') }; });
+  return S.mat.filter(m => String(m.stato) !== 'dismesso' && !isCase(m)).map(m => { const tok = puTokens(m.nome); return { m: m, tok: tok, keys: puKeys(m.nome, tok) }; });
 }
-/* Trova l'articolo del magazzino che somiglia a una voce: «esatto» (stesso nome) o «forse» (da controllare) */
-function puFind(tok, norm, arts) {
-  if (!tok.length) return null;
-  let best = null;
-  for (let i = 0; i < arts.length; i++) {
-    const x = arts[i];
-    if (x.norm === norm) return { m: x.m, kind: 'esatto' };
+/* Gli articoli del magazzino che somigliano a un nome, dal più somigliante: «esatto» (stesso nome) o «forse» (da controllare). max = quanti al massimo. */
+function puCands(name, arts, max) {
+  const tok = puTokens(name);
+  if (!tok.length) return [];
+  const keys = puKeys(name, tok), out = [];
+  arts.forEach(x => {
+    if (x.keys.some(k => keys.indexOf(k) >= 0)) { out.push({ m: x.m, kind: 'esatto', j: 1, ov: 1 }); return; }
     const s = puSim(tok, x.tok);
-    if (!s || s.sh < 2) continue;
-    if (!(s.j >= 0.5 || (s.ov >= 0.8 && s.sh >= 3))) continue;
-    if (!best || s.j > best.j || (s.j === best.j && s.ov > best.ov)) best = { m: x.m, kind: 'forse', j: s.j, ov: s.ov };
-  }
-  return best;
+    if (!s || s.sh < 2) return;
+    if (!(s.j >= 0.5 || (s.ov >= 0.8 && s.sh >= 3))) return;
+    out.push({ m: x.m, kind: 'forse', j: s.j, ov: s.ov });
+  });
+  out.sort((a, b) => (a.kind === b.kind ? 0 : a.kind === 'esatto' ? -1 : 1) || (b.j - a.j) || (b.ov - a.ov) || cmpName(a.m.nome, b.m.nome));
+  return out.slice(0, max || 1);
 }
-/* Come la voce della pianta si lega a un articolo: prima quello già scelto altre volte, poi il nome uguale, poi il più somigliante */
+/* L'articolo del magazzino che somiglia di più a un nome (o niente) */
+function puFind(name, arts) { return puCands(name, arts, 1)[0] || null; }
+/* Come la voce della pianta si lega a un articolo: prima quello già scelto altre volte, poi il nome uguale, poi il più somigliante.
+   how: mappa (scelto altre volte) · esatto · forse (da confermare) · libera (non è in magazzino, o non l'ho trovato) */
 function puLink(x, mappa, arts) {
   const tok = puTokens(x.i), norm = tok.join(' ');
   const key = x.k ? 'k:' + x.k : 'n:' + norm;
   const out = { key: key, eq: '', how: 'libera' };
-  if (Object.prototype.hasOwnProperty.call(mappa, key)) {
-    const id = mappa[key], m = id ? S.matById[id] : null;
-    if (id === '') { out.how = 'mappa'; return out; }
+  // il collegamento fatto da una riga dell'evento (api_clink) si ricorda dal nome, anche se la voce della pianta ha una chiave del catalogo
+  const mk = Object.prototype.hasOwnProperty.call(mappa, key) ? key : (x.k && Object.prototype.hasOwnProperty.call(mappa, 'n:' + norm) ? 'n:' + norm : '');
+  if (mk) {
+    const id = mappa[mk], m = id ? S.matById[id] : null;
+    if (id === '') {       // «non è in magazzino»: scelto da chi usa la pagina, oppure rimasto da quando non l'avevo trovato. Se adesso ne trovo uno lo propongo (da confermare)
+      const f = puFind(x.i, arts);
+      if (f) { out.eq = f.m.id; out.how = 'forse'; return out; }
+      out.how = 'mappa'; return out;
+    }
     if (m && String(m.stato) !== 'dismesso') { out.eq = id; out.how = 'mappa'; return out; }
   }
   if (x.k && String(x.k).indexOf('wh_') === 0) {          // un tipo nato da un articolo del magazzino («Usa in pianta» nell'editor) resta legato a quell'articolo
     const m = S.matById[String(x.k).slice(3)];
     if (m && String(m.stato) !== 'dismesso' && !isCase(m)) { out.eq = m.id; out.how = 'mappa'; return out; }
   }
-  const f = puFind(tok, norm, arts);
+  const f = puFind(x.i, arts);
   if (f) { out.eq = f.m.id; out.how = f.kind; }
   return out;
 }
@@ -9057,7 +9441,10 @@ function puAvInfo(r, calc) {
 /* L'articolo scelto per una voce, con il pulsante per cambiarlo */
 function puArtHtml(r, noneText) {
   const m = r.eq ? S.matById[r.eq] : null;
-  const chg = r.lock ? '' : '<button type="button" class="lnk" data-act="puChange" data-i="' + r.n + '">Cambia</button>';
+  const chg = r.lock ? '' : '<button type="button" class="lnk" data-act="puChange" data-i="' + r.n + '">' + (!m && r.how === 'libera' ? 'Cerca nel magazzino' : 'Cambia') + '</button>';
+  if (!m && r.how === 'libera') {       // non l'ho trovato: resta scritto a mano e il magazzino non lo conta (4.6.1)
+    return '<span class="pill warn">non collegata</span> <span>Non l\'ho trovato in magazzino: lo scrivo a mano nell\'evento e il magazzino non lo conta.</span> ' + chg;
+  }
   if (!m) return '<span>' + esc(noneText) + '</span> ' + chg;
   return (r.how === 'forse' ? '<span class="pill warn">forse è questo</span> ' : '') + '<span>Magazzino: <b>' + esc(m.nome) + '</b></span> ' + chg;
 }
@@ -9200,9 +9587,11 @@ function puUpdate() {
   });
   const s = $('#pusum'), go = $('#pugo');
   if (s) {
+    const free = PU.rows.filter(r => r.on && !r.eq && r.how === 'libera').length;     // voci che restano scritte a mano: il magazzino non le conta
+    const fr = free ? ' Attenzione: ' + plural(free, 'voce resta scritta a mano', 'voci restano scritte a mano') + ' e il magazzino non ' + (free === 1 ? 'la conta' : 'le conta') + ' (puoi ' + (free === 1 ? 'cercarla' : 'cercarle') + ' con «Cerca nel magazzino»).' : '';
     if (!calc.n) { s.className = 'pusum'; s.textContent = 'Spunta le voci da portare nell\'evento.'; }
-    else if (calc.short) { s.className = 'pusum bad'; s.textContent = plural(calc.n, 'voce', 'voci') + ': mancano ' + plural(calc.short, 'pezzo', 'pezzi') + ' di ' + plural(calc.shortArts, 'articolo', 'articoli') + '.'; }
-    else { s.className = 'pusum ok'; s.textContent = plural(calc.n, 'voce', 'voci') + ': in magazzino c\'è tutto per il ' + fmtShort(PU.e.data) + '.'; }
+    else if (calc.short) { s.className = 'pusum bad'; s.textContent = plural(calc.n, 'voce', 'voci') + ': mancano ' + plural(calc.short, 'pezzo', 'pezzi') + ' di ' + plural(calc.shortArts, 'articolo', 'articoli') + '.' + fr; }
+    else { s.className = 'pusum ' + (free ? 'warn' : 'ok'); s.textContent = plural(calc.n, 'voce', 'voci') + ': ' + (free ? 'per quelle trovate in magazzino' : 'in magazzino') + ' c\'è tutto per il ' + fmtShort(PU.e.data) + '.' + fr; }
   }
   if (go) { go.disabled = !calc.n; go.textContent = calc.n ? 'Porta nell\'evento (' + calc.n + ')' : 'Scegli le voci'; }
 }
@@ -9312,8 +9701,9 @@ CHG.puArt = el => {
 ACT.puGo = () => {
   const P = PU;
   if (!P) return;
-  const items = P.rows.filter(r => r.on).map(r => ({ chiave: r.key, voce: puName(r.item), equipment_id: r.eq, quantita: r.qty }));
+  const items = P.rows.filter(r => r.on).map(r => ({ chiave: r.key, voce: puName(r.item), equipment_id: r.eq, quantita: r.qty, fuori: r.how === 'scelto' && !r.eq }));
   if (!items.length) return;
+  const nFree = P.rows.filter(r => r.on && !r.eq).length;
   mutate(async () => {
     const res = await call('api_pjUse', CRED(), P.pid, P.e.id, items);
     setLines(P.e.id, res.righe, res.liste);
@@ -9326,8 +9716,9 @@ ACT.puGo = () => {
     const ms = matSummary(P.e);
     const msg = ['Nell\'evento: ' + (bits.join(', ') || 'niente di nuovo') + '.']
       .concat(ms.short ? ['Manca materiale: ' + plural(ms.short, 'pezzo', 'pezzi') + ' (guarda le voci in rosso).'] : [])
+      .concat(nFree ? [plural(nFree, 'voce è scritta a mano', 'voci sono scritte a mano') + ': non ' + (nFree === 1 ? 'è collegata' : 'sono collegate') + ' al magazzino (tocca «Collega al magazzino»).'] : [])
       .concat(res.avvisi || []);
-    toast(msg.join(' '), ms.short || (res.avvisi || []).length ? '' : 'ok');
+    toast(msg.join(' '), ms.short || nFree || (res.avvisi || []).length ? '' : 'ok');
   });
 };
 
@@ -9618,6 +10009,775 @@ async function pmOpen(pid) {
   S.onClose = () => { PM = null; };
 }
 ACT.pjMat = el => { pmOpen(el.dataset.id); };
+
+/* =====================================================================
+   RIGHE «SCRITTE A MANO»: COLLEGARLE AL MAGAZZINO (4.6.1)
+   Una riga del materiale che non ha un articolo del magazzino (il nome è scritto a mano, o viene da una pianta e non è stato riconosciuto) non conta
+   tra i pezzi impegnati: il magazzino la vede libera e il programma non controlla se ce n'è abbastanza. Qui si trovano queste righe, si propone
+   l'articolo giusto (puCands, prog2.js) e si collegano (api_clink, server.gs). I pezzi a noleggio da fuori non servono: non sono del magazzino.
+   «Va bene così» (una cosa che non è del magazzino) si ricorda solo su questo apparecchio: niente colonne nuove nel foglio.
+   ===================================================================== */
+function canLink() { return S.mode === 'coord' || S.mode === 'wh'; }
+
+/* ---------- «va bene così»: le righe che l'utente ha detto che non sono del magazzino ---------- */
+function lkDismissed() { try { return JSON.parse(store.get('lkok') || '{}') || {}; } catch (err) { return {}; } }
+function lkDismiss(ids) {
+  const m = lkDismissed();
+  ids.forEach(id => { m[id] = 1; });
+  store.set('lkok', JSON.stringify(m));
+}
+
+/* ---------- le righe da collegare ---------- */
+/* Le righe di un evento che non hanno un articolo del magazzino, non sono tutte a noleggio da fuori e non sono «va bene così» */
+function lkOwn(e) {
+  const ok = lkDismissed();
+  return (S.carByEv[e.id] || []).filter(c => !c.equipment_id && fromStock(c) > 0 && !ok[c.id]);
+}
+/* Tutte quelle degli eventi che devono ancora fare, con gli articoli che potrebbero essere: [{e, c, cands}]. Si rifà quando i dati cambiano (derive azzera S.lkCache). */
+function lkIndex() {
+  if (S.lkCache) return S.lkCache;
+  const arts = puArts(), list = [];
+  S.ev.filter(e => isUpcoming(e) && !e.scaricoQuando).sort(cmpEv).forEach(e => {
+    lkOwn(e).forEach(c => list.push({ e: e, c: c, cands: puCands(c.materiale, arts, 3) }));
+  });
+  S.lkCache = list;
+  return list;
+}
+function lkCounts() {
+  const list = canLink() ? lkIndex() : [], evs = {};
+  list.forEach(x => { evs[x.e.id] = true; });
+  return { lines: list.length, events: Object.keys(evs).length };
+}
+/* Le righe non collegate che potrebbero essere un articolo, nei giorni dell'evento che usano quel giorno (per la scheda dell'articolo nel Magazzino) */
+function lkForArt(m, dn) {
+  if (!canLink()) return [];
+  return lkIndex().filter(x => {
+    if (!x.cands.length || x.cands[0].m.id !== m.id || !holdsStock(x.e)) return false;
+    const r = occRange(x.e);
+    return !!r && dn >= r[0] && dn <= r[1];
+  });
+}
+
+/* ---------- avvisi: sulla riga, nell'elenco dell'evento, nel Magazzino, in «Da sistemare» ---------- */
+/* Il segno nel riassunto del materiale: «tutto disponibile» vale solo per le righe collegate al magazzino; se ce ne sono di non collegate non si può dirlo */
+function lkStatusPill(e) {
+  const n = canLink() && !e.scaricoQuando ? lkOwn(e).length : 0;
+  return n ? ' <span class="pill warn">' + n + ' da collegare</span>' : ' <span class="pill ok">tutto disponibile</span>';
+}
+function lkBannerHtml(e) {
+  if (!canLink() || e.stato === 'annullato' || e.scaricoQuando) return '';
+  const n = lkOwn(e).length;
+  if (!n) return '';
+  return '<div class="banner lkbox" role="status"><b>' + plural(n, 'voce non è collegata', 'voci non sono collegate') + ' al magazzino.</b> Il magazzino non ' + (n === 1 ? 'la conta' : 'le conta') +
+    ' tra i pezzi impegnati (risultano liberi) e non controllo se ce ne sono abbastanza.' +
+    '<div class="row" style="margin-top:8px"><button type="button" class="btn sm pri" data-act="lkOpen" data-id="' + esc(e.id) + '">' + ico('list') + ' Collega al magazzino</button></div></div>';
+}
+function lkBarHtml() {
+  const c = lkCounts();
+  if (!c.lines) return '';
+  return '<div class="banner lkbox" role="status"><b>' + plural(c.lines, 'voce del materiale non è collegata', 'voci del materiale non sono collegate') + ' al magazzino</b> (' +
+    plural(c.events, 'evento', 'eventi') + '): il magazzino non ' + (c.lines === 1 ? 'la conta' : 'le conta') + ' tra i pezzi impegnati.' +
+    '<div class="row" style="margin-top:8px"><button type="button" class="btn sm pri" data-act="lkOpen">' + ico('list') + ' Collega al magazzino</button></div></div>';
+}
+/* La nota nel dettaglio di una riga senza articolo (al posto del vecchio «non è nel magazzino»): cosa significa e come si collega. i = lineInfo, c = la riga. */
+function lkLineNoteHtml(i, c, e) {
+  if (!canLink() || !c) return '<p class="note muted">Questo articolo non è nel magazzino (noleggio da fuori o scritto a mano): non controllo la disponibilità.</p>';
+  if (!(i.need > 0)) return '<p class="note muted">È a noleggio da fuori: non è del magazzino e non controllo la disponibilità.</p>';
+  if (lkDismissed()[c.id]) {
+    return '<p class="note muted">Scritta a mano: hai detto che non è del magazzino, e non controllo la disponibilità.</p>' +
+      '<div class="row" style="margin-top:6px"><button type="button" class="btn sm" data-act="lkOpen" data-id="' + esc(e.id) + '" data-line="' + esc(c.id) + '" data-force="1">Cerca nel magazzino</button></div>';
+  }
+  const cands = puCands(c.materiale, puArts(), 3);
+  return '<div class="banner lkbox"><b>Non è collegata al magazzino.</b> Il magazzino non conta ' + (i.need === 1 ? 'questo pezzo' : 'questi ' + i.need + ' pezzi') +
+    ' tra quelli impegnati (' + (i.need === 1 ? 'risulta libero' : 'risultano liberi') + ') e io non controllo se ce ne sono abbastanza.' +
+    '<div class="row lkrow" style="margin-top:8px">' + cands.map(x => '<button type="button" class="btn sm pri" data-act="lkLine" data-id="' + esc(c.id) + '" data-eq="' + esc(x.m.id) + '">Collega a «' +
+      esc(x.m.nome) + '»' + (x.kind === 'esatto' ? '' : ' (forse)') + '</button>').join('') +
+    '<button type="button" class="btn sm" data-act="lkOpen" data-id="' + esc(e.id) + '" data-line="' + esc(c.id) + '">Cerca nel magazzino</button>' +
+    '<button type="button" class="btn sm" data-act="lineRent" data-id="' + esc(c.id) + '" data-n="' + i.need + '">È un noleggio da fuori</button>' +
+    '<button type="button" class="btn sm" data-act="lkOk" data-id="' + esc(c.id) + '">Va bene così</button></div></div>';
+}
+
+/* ---------- collegare una riga con un tocco (dal suo dettaglio) ---------- */
+function lkApply(res) { (res.eventi || []).forEach(x => setLines(x.id, x.righe, x.liste)); }
+function lkDoneMsg(res, extra) {
+  const miss = (res.eventi || []).map(x => S.evById[x.id]).filter(Boolean).map(e => ({ e: e, s: matSummary(e) })).filter(x => x.s.short > 0);
+  const t = [(res.collegate === 1 ? 'Collegata 1 riga' : 'Collegate ' + res.collegate + ' righe') + ' al magazzino.'];
+  miss.forEach(x => t.push('Attenzione: in «' + x.e.cliente + '» ' + (x.s.short === 1 ? 'manca 1 pezzo' : 'mancano ' + x.s.short + ' pezzi') + ' (guarda le voci in rosso).'));
+  if (extra) t.push(extra);
+  toast(t.join(' '), miss.length ? '' : 'ok');
+}
+ACT.lkLine = el => {
+  const c = S.car.find(x => x.id === el.dataset.id), m = S.matById[el.dataset.eq];
+  if (!c || !m || !canLink()) return;
+  mutate(async () => {
+    const res = await call('api_clink', CRED(), [{ line_id: c.id, equipment_id: m.id }]);
+    lkApply(res);
+    S.openLine = null; paint();
+    lkDoneMsg(res);
+  });
+};
+ACT.lkOk = el => {
+  const c = S.car.find(x => x.id === el.dataset.id);
+  if (!c) return;
+  lkDismiss([c.id]);
+  S.lkCache = null; S.openLine = null; paint();
+  toast('Va bene: non è del magazzino. Se cambi idea, la trovi sempre dal suo dettaglio.', 'ok');
+};
+
+/* ---------- la finestra «Collega al magazzino» ---------- */
+let LK = null;       // la finestra aperta: {evId, only, rows: [{n, e, c, cands, eq, ok}]}
+function lkBuild(evId, only, force) {
+  const arts = puArts();
+  let src;
+  if (evId) {
+    const e = S.evById[evId];
+    const ok = lkDismissed();
+    src = e ? (S.carByEv[e.id] || []).filter(c => !c.equipment_id && fromStock(c) > 0 && (force || !ok[c.id])).map(c => ({ e: e, c: c, cands: puCands(c.materiale, arts, 3) })) : [];
+  } else src = lkIndex();
+  if (only) src = src.filter(x => x.c.id === only);
+  return src.map((x, n) => ({ n: n, e: x.e, c: x.c, cands: x.cands, eq: x.cands[0] ? x.cands[0].m.id : '', ok: false }));
+}
+/* Quanti pezzi chiederebbe ogni evento scegliendo questi collegamenti, e se bastano */
+function lkCalc() {
+  const out = { n: 0, ok: 0, short: 0, shortArts: 0, by: {} };
+  LK.rows.forEach(r => {
+    if (r.ok) { out.ok++; return; }
+    if (!r.eq || !S.matById[r.eq]) return;
+    out.n++;
+    const k = r.e.id + '|' + r.eq;
+    const g = out.by[k] = out.by[k] || { e: r.e, m: S.matById[r.eq], add: 0 };
+    g.add += fromStock(r.c);
+  });
+  Object.keys(out.by).forEach(k => {
+    const g = out.by[k];
+    g.after = ownNet(g.e, g.m.id) + g.add;
+    g.a = availFor(g.m, g.e);
+    g.short = Math.max(0, g.after - Math.max(0, g.a.free));
+    out.short += g.short;
+    if (g.short) out.shortArts++;
+  });
+  return out;
+}
+function lkRowInfo(r, calc) {
+  const m = r.eq && !r.ok ? S.matById[r.eq] : null;
+  if (!m) return null;
+  const g = calc.by[r.e.id + '|' + r.eq], free = Math.max(0, g.a.free);
+  const where = g.a.stock + (g.a.locked ? ' (' + g.a.locked + ' nei case)' : '');
+  if (stockOf(m) === 0) return { cls: 'bad', text: 'Nessun pezzo utilizzabile in magazzino.' };
+  if (g.short) {
+    const o = puOthers(g.a);
+    return { cls: 'bad', text: 'Mancano ' + g.short + ': servono ' + g.after + ', liberi ' + free + ' su ' + where + (o ? ' · negli stessi giorni servono anche a ' + o : '') + '.' };
+  }
+  return { cls: 'ok', text: 'Servono ' + g.after + ' · liberi ' + free + ' su ' + where + '.' };
+}
+/* Cosa dice l'etichetta sopra la scelta */
+function lkLabel(r) {
+  if (r.ok) return 'Non è del magazzino:';
+  if (!r.eq) return r.cands.length ? 'Collega a:' : 'Non ho trovato niente di simile:';
+  const best = r.cands.filter(x => x.m.id === r.eq)[0];
+  return best ? (best.kind === 'esatto' ? 'Stesso nome:' : 'Forse è questo:') : 'Hai scelto:';
+}
+function lkOptions(r, full) {
+  const sel = r.ok ? '~ok' : r.eq;
+  let h = '<option value=""' + (!sel ? ' selected' : '') + '>Lascia com\'è (non collegare)</option><option value="~ok"' + (sel === '~ok' ? ' selected' : '') + '>Va bene così: non è del magazzino</option>';
+  if (r.cands.length) {
+    h += '<optgroup label="Proposte">' + r.cands.map(x => '<option value="' + esc(x.m.id) + '"' + (x.m.id === sel ? ' selected' : '') + '>' + esc(x.m.nome) +
+      (x.kind === 'esatto' ? '' : ' (forse)') + '</option>').join('') + '</optgroup>';
+  }
+  if (!full) {
+    const other = sel && sel !== '~ok' && !r.cands.some(x => x.m.id === sel) ? S.matById[sel] : null;
+    if (other) h += '<option value="' + esc(other.id) + '" selected>' + esc(other.nome) + '</option>';
+    return h + '<option value="~altro">Un altro articolo…</option>';
+  }
+  const items = S.mat.filter(m => String(m.stato) !== 'dismesso').sort((a, b) => cmpCat(a.categoria, b.categoria) || cmpName(a.nome, b.nome));
+  const cats = uniq(items.map(m => catKey(m.categoria) || 'generale')).sort(cmpCat);
+  return h + cats.map(c => '<optgroup label="' + esc(catLabel(c)) + '">' + items.filter(m => (catKey(m.categoria) || 'generale') === c).map(m =>
+    '<option value="' + esc(m.id) + '"' + (m.id === sel && !r.cands.some(x => x.m.id === sel) ? ' selected' : '') + '>' + esc(m.nome + (m.marca ? ' · ' + m.marca : '')) + '</option>').join('') + '</optgroup>').join('');
+}
+function lkRowHtml(r, calc, showEv) {
+  const info = lkRowInfo(r, calc), tot = Number(r.c.quantita) || 0, sub = Math.min(tot, Number(r.c.subnoleggio) || 0);
+  return '<li class="pk pur lkr' + (r.eq || r.ok ? ' sel' : '') + '" data-i="' + r.n + '">' +
+    '<div class="pkm"><b>' + tot + ' × ' + esc(r.c.materiale) + '</b><small>' + (showEv ? esc(r.e.cliente) + ' · ' + esc(fmtShort(r.e.data)) : '') +
+    (sub ? (showEv ? ' · ' : '') + sub + ' a noleggio' : '') + '</small>' +
+    '<span class="pua"><span class="lkl">' + esc(lkLabel(r)) + '</span> <select data-chg="lkSel" data-i="' + r.n + '" aria-label="Articolo del magazzino per ' + esc(r.c.materiale) + '">' + lkOptions(r, false) + '</select></span></div>' +
+    '<span class="pkav ' + (info ? info.cls : 'mut') + '"' + (info ? '' : ' hidden') + '>' + (info ? esc(info.text) : '') + '</span></li>';
+}
+function lkSheetHtml() {
+  const L = LK, calc = lkCalc();
+  let h = '<p class="hint" style="margin-top:0">Queste righe del materiale sono scritte a mano: il magazzino non le conta tra i pezzi impegnati (risultano libere) e non controllo se ce ne sono abbastanza. ' +
+    'Per ognuna ho scelto l\'articolo che le somiglia di più: controlla (soprattutto quelle con «forse») e collega. Quello che lasci com\'è resta com\'è.</p>';
+  if (!L.rows.length) {
+    return h + '<p class="empty">Non ci sono righe da collegare.</p><div class="sheetfoot"><button type="button" class="btn pri" data-act="closeSheet">Chiudi</button></div>';
+  }
+  const evIds = uniq(L.rows.map(r => r.e.id));
+  evIds.forEach(id => {
+    const rows = L.rows.filter(r => r.e.id === id), e = rows[0].e;
+    if (evIds.length > 1) h += '<h3 class="catsep">' + esc(e.cliente) + '<small class="pudn">' + esc(fmtShort(e.data)) + ' · ' + plural(rows.length, 'voce', 'voci') + '</small></h3>';
+    h += '<ul class="pick pusel">' + rows.map(r => lkRowHtml(r, calc, false)).join('') + '</ul>';
+  });
+  h += '<div class="pubar"><p class="pusum" id="lksum" role="status" aria-live="polite"></p><div class="sheetfoot" style="margin-top:8px">' +
+    '<button type="button" class="btn" data-act="closeSheet">Annulla</button><button type="button" class="btn pri" id="lkgo" data-act="lkGo" disabled>Scegli gli articoli</button></div></div>';
+  return h;
+}
+/* Aggiorna la finestra senza ridisegnarla (altrimenti la scelta in corso si chiude) */
+function lkUpdate() {
+  if (!LK) return;
+  const calc = lkCalc();
+  LK.rows.forEach(r => {
+    const li = $('#sheet li.lkr[data-i="' + r.n + '"]');
+    if (!li) return;
+    li.classList.toggle('sel', !!(r.eq || r.ok));
+    const lab = $('.lkl', li), av = $('.pkav', li), info = lkRowInfo(r, calc);
+    if (lab) lab.textContent = lkLabel(r);
+    if (av) { av.className = 'pkav ' + (info ? info.cls : 'mut'); av.textContent = info ? info.text : ''; av.hidden = !info; }
+  });
+  const s = $('#lksum'), go = $('#lkgo');
+  const n = calc.n + calc.ok;
+  if (s) {
+    if (!n) { s.className = 'pusum'; s.textContent = 'Scegli gli articoli da collegare.'; }
+    else {
+      const bits = [];
+      if (calc.n) bits.push(plural(calc.n, 'riga da collegare', 'righe da collegare'));
+      if (calc.ok) bits.push(plural(calc.ok, 'riga «va bene così»', 'righe «va bene così»'));
+      s.className = 'pusum ' + (calc.short ? 'bad' : 'ok');
+      s.textContent = bits.join(' · ') + (calc.short ? ': con i collegamenti mancano ' + plural(calc.short, 'pezzo', 'pezzi') + ' di ' + plural(calc.shortArts, 'articolo', 'articoli') + '.' : '.');
+    }
+  }
+  if (go) { go.disabled = !n; go.textContent = n ? (calc.n ? 'Collega (' + calc.n + ')' : 'Conferma') : 'Scegli gli articoli'; }
+}
+ACT.lkOpen = el => {
+  if (!canLink()) return;
+  const evId = el.dataset.id || '', only = el.dataset.line || '';
+  LK = { evId: evId, only: only, rows: lkBuild(evId, only, el.dataset.force === '1') };
+  const e = evId ? S.evById[evId] : null;
+  openSheet('Collega al magazzino' + (e ? ' · ' + e.cliente : ''), lkSheetHtml(), { noFocus: true });
+  S.onClose = () => { LK = null; };
+  lkUpdate();
+};
+CHG.lkSel = el => {
+  const r = LK && LK.rows[+el.dataset.i];
+  if (!r) return;
+  if (el.value === '~altro') {                       // l'elenco completo del magazzino (di solito bastano le proposte)
+    el.innerHTML = lkOptions(r, true);
+    el.value = r.ok ? '~ok' : (r.eq || '');
+    el.focus();
+    return;
+  }
+  r.ok = el.value === '~ok';
+  r.eq = r.ok ? '' : el.value;
+  lkUpdate();
+};
+ACT.lkGo = () => {
+  const L = LK;
+  if (!L) return;
+  const items = L.rows.filter(r => r.eq && !r.ok).map(r => ({ line_id: r.c.id, equipment_id: r.eq }));
+  const oks = L.rows.filter(r => r.ok).map(r => r.c.id);
+  if (!items.length && !oks.length) return;
+  if (oks.length) lkDismiss(oks);
+  if (!items.length) { S.lkCache = null; closeSheet(); paint(); toast('Va bene: ' + (oks.length === 1 ? 'quella riga non è' : 'quelle righe non sono') + ' del magazzino.', 'ok'); return; }
+  mutate(async () => {
+    const res = await call('api_clink', CRED(), items);
+    lkApply(res);
+    closeSheet(); paint();
+    lkDoneMsg(res, oks.length ? plural(oks.length, 'riga lasciata «va bene così»', 'righe lasciate «va bene così»') + '.' : '');
+  });
+};
+/* =====================================================================
+   SCHEDA TECNICA, CODICE MATERIALE, ELIMINA (4.7) — il magazzino comanda
+   Ogni articolo del magazzino ha la sua scheda tecnica (corrente, segnali, prese una per una, che cavo è, sicurezza, altri dati, identità e
+   acquisto, manuale): la scrive il coordinatore (o il computer in magazzino) e l'editor della pianta la legge da qui, senza cambiarla.
+   I conti e le parole comuni con l'editor stanno in schcom.js; il server in scheda.gs (api_saveScheda, api_matBulk).
+   Qui: il riassunto nella scheda dell'articolo (schSummaryHtml), la finestra (schFormHtml, SUB.schForm), il codice materiale («Proponi»),
+   «Elimina» e la scelta di più articoli insieme (S.sel), l'apertura da un link dell'editor (#scheda=ID).
+   ===================================================================== */
+// nomi suggeriti per gli «altri dati», secondo il reparto dell'articolo
+const SCH_SUGG = {
+  audio: ['Impedenza', 'Potenza RMS', 'SPL massimo', 'Dispersione', 'Risposta in frequenza', 'Banda di frequenze', 'Canali', 'Phantom 48V', 'Figura polare', 'Tipo di microfono', 'Batterie'],
+  luci: ['Sorgente', 'Angolo', 'Zoom', 'Modi DMX', 'Temperatura colore', 'Lumen', 'Colori', 'Gobo', 'Lampada di ricambio', 'Fusibile'],
+  video: ['Risoluzione', 'Luminosità', 'Ottica', 'Rapporto di tiro', 'Passo del ledwall', 'Dimensioni dello schermo', 'Formato', 'Frequenza'],
+  comune: ['Materiale', 'Sezione del cavo', 'Carico di lavoro', 'Altezza massima', 'Altezza minima', 'Certificazione', 'Colore', 'Numero di prese'],
+};
+function schOf(m) { return m && m.scheda && typeof m.scheda === 'object' ? m.scheda : null; }
+function schCanEdit() { return S.mode === 'coord' || S.mode === 'wh'; }
+/* Il testo della scheda che serve alla ricerca del Magazzino (modello, numeri di serie) */
+function schSearchText(m) { const s = schOf(m); return s ? ((s.mod || '') + ' ' + (s.serie || '')) : ''; }
+/* Il segno «verifica scaduta / in scadenza» sulla riga dell'articolo */
+function schVerifPill(m) {
+  const v = schVerif(schOf(m), S.oggi);
+  return v ? '<span class="pill ' + (v === 'scaduta' ? 'bad' : 'warn') + '">verifica ' + (v === 'scaduta' ? 'scaduta' : 'in scadenza') + '</span>' : '';
+}
+/* Il riassunto nella scheda aperta dell'articolo */
+function schSummaryHtml(m) {
+  const s = schOf(m), L = s ? schLines(s) : [];
+  if (!L.length && !(s && s.man)) return schCanEdit() ? '<p class="muted schno">Scheda tecnica: non ancora compilata.</p>' : '';
+  const state = s.ver ? '<span class="pill ok">controllata sul manuale</span>' : (s.da === 'editor' ? '<span class="pill warn">dal catalogo dell\'editor: da controllare</span>' : '');
+  return '<div class="schsum"><p class="scht"><b>Scheda tecnica</b> ' + state + '</p><dl>' +
+    L.map(x => '<div><dt>' + esc(x.l) + '</dt><dd>' + esc(x.v) + '</dd></div>').join('') + '</dl>' +
+    (s.man ? '<p><a href="' + esc(s.man) + '" target="_blank" rel="noopener">Apri il manuale</a></p>' : '') + '</div>';
+}
+
+/* ---------- la finestra ---------- */
+function schOpts(list, val, none) {
+  return (none === undefined ? '' : '<option value="">' + esc(none) + '</option>') +
+    list.map(x => '<option value="' + esc(x[0]) + '"' + (String(val == null ? '' : val) === x[0] ? ' selected' : '') + '>' + esc(x[1]) + '</option>').join('');
+}
+function schIoRowHtml(r) {
+  r = r || {};
+  return '<div class="schrow io"><input type="text" name="io_n" value="' + esc(r.n || '') + '" maxlength="40" placeholder="nome (es. Main L)" aria-label="Nome della presa" autocomplete="off">' +
+    '<select name="io_t" aria-label="Tipo di presa" data-chg="schIo">' + schOpts(SCH_IO_T, r.t || '', '— tipo —') + '</select>' +
+    '<select name="io_d" aria-label="Entrata o uscita" data-chg="schIo">' + schOpts(SCH_IO_D, r.d || 'in') + '</select>' +
+    '<input type="text" inputmode="numeric" name="io_q" value="' + esc(r.q || 1) + '" maxlength="3" aria-label="Quante" data-inp="schIo">' +
+    '<button type="button" class="btn sm ic" data-act="schDel" aria-label="Togli questa presa">' + ico('trash') + '</button></div>';
+}
+function schDatoRowHtml(r) {
+  r = r || {};
+  return '<div class="schrow da"><input type="text" name="da_n" value="' + esc(r.n || '') + '" maxlength="40" list="schsugg" placeholder="nome (es. Impedenza)" aria-label="Nome del dato" autocomplete="off">' +
+    '<input type="text" name="da_v" value="' + esc(r.v == null ? '' : r.v) + '" maxlength="120" placeholder="valore (es. 8 ohm)" aria-label="Valore" autocomplete="off">' +
+    '<button type="button" class="btn sm ic" data-act="schDel" aria-label="Togli questo dato">' + ico('trash') + '</button></div>';
+}
+function schFormHtml(m) {
+  const s = schOf(m) || {}, v = k => (s[k] === undefined || s[k] === null) ? '' : String(s[k]).replace('.', k === 'man' || k === 'verif' ? '.' : ',');
+  const has = ks => ks.some(k => s[k] !== undefined && s[k] !== null && s[k] !== '');
+  const num = (k, label, ph) => '<label class="fld"><span>' + label + '</span><input type="text" inputmode="decimal" name="' + k + '" value="' + esc(v(k)) + '"' +
+    (ph ? ' placeholder="' + esc(ph) + '"' : '') + ' autocomplete="off"></label>';
+  const txt = (k, label, max, ph) => '<label class="fld"><span>' + label + '</span><input type="text" name="' + k + '" value="' + esc(s[k] || '') + '" maxlength="' + max + '"' +
+    (ph ? ' placeholder="' + esc(ph) + '"' : '') + ' autocomplete="off"></label>';
+  const sel = (k, label, list, none) => '<label class="fld"><span>' + label + '</span><select name="' + k + '">' + schOpts(list, s[k], none) + '</select></label>';
+  const sec = (title, open, body) => '<details class="free schsec"' + (open ? ' open' : '') + '><summary>' + title + '</summary>' + body + '</details>';
+  const io = Array.isArray(s.io) ? s.io : [], dati = Array.isArray(s.dati) ? s.dati : [];
+  const g = !s.cavo ? schCableGuess(m.nome) : null;
+  const dept = deptWh(m.categoria);
+  let h = '<form data-submit="schForm" novalidate><input type="hidden" name="id" value="' + esc(m.id) + '">' +
+    '<p class="hint">Tutto facoltativo: compila solo quello che serve. L\'editor della pianta legge questi dati da qui' + (S.mode === 'coord' ? ' e non li cambia' : '') + '.</p>';
+  h += sec('Corrente', has(['W', 'pin', 'thru', 'cord']),
+    '<div class="grid2">' + num('W', 'Potenza (W)') + num('cord', 'Cavo in dotazione (m)') +
+    sel('pin', 'Spina / presa', SCH_CONN, '— non indicata —') + sel('thru', 'Uscita passante', SCH_CONN.map(x => x[0] === 'none' ? ['none', 'nessuna'] : x), '— non indicata —') + '</div>');
+  h += sec('Segnali: audio, video, DMX', has(['ain', 'aout', 'vin', 'vout', 'vt', 'dmx', 'dpin', 'dthru', 'univ', 'dmxOut']),
+    '<div class="grid2">' + num('ain', 'Ingressi audio') + num('aout', 'Uscite audio') + num('vin', 'Ingressi video') + num('vout', 'Uscite video') +
+    txt('vt', 'Connettori video', 60, 'es. HDMI + SDI') + num('dmx', 'Canali DMX (il modo che usate)') +
+    sel('dpin', 'Prese DMX', SCH_DPIN, '— non indicate —') + sel('dthru', 'Uscita DMX', [['1', 'sì: entrata e uscita'], ['0', 'no: solo entrata']], '— non indicata —') +
+    num('univ', 'Universi DMX (mixer luci)') + num('dmxOut', 'Uscite DMX (splitter)') + '</div>' +
+    '<p class="hint">Sono i numeri che l\'editor usa per il patch e per i cavi. Ingressi e uscite, se li lasci vuoti, li conto dalle prese che scrivi qui sotto.</p>');
+  h += sec('Prese, una per una' + (io.length ? ' (' + io.length + ')' : ''), io.length > 0,
+    '<div class="schrows" data-k="io">' + io.map(schIoRowHtml).join('') + '</div>' +
+    '<button type="button" class="btn sm" data-act="schAdd" data-k="io">' + ico('plus') + ' Aggiungi una presa</button>' +
+    '<p class="hint">Per esempio «Mic/Line», XLR, entrata, 24. «Passante» è una presa che ripete il segnale (link, thru).</p>');
+  h += sec('È un cavo? Tipo e lunghezza', has(['cavo', 'len']) || !!g,
+    (g ? '<p class="note schg">Dal nome sembra: <b>' + esc(schLabel(SCH_CAVO, g.cavo)) + ', ' + esc(schNum(g.len)) + ' m</b>. ' +
+      '<button type="button" class="btn sm pri" data-act="schGuess" data-cavo="' + esc(g.cavo) + '" data-len="' + esc(schNum(g.len)) + '">Usa</button></p>' : '') +
+    '<div class="grid2">' + sel('cavo', 'Che cavo è', SCH_CAVO, '— non è un cavo —') + num('len', 'Lunghezza (m)') + '</div>' +
+    '<p class="hint">Così l\'editor sa quali lunghezze hai e quante, anche se il nome dell\'articolo è scritto a modo tuo.</p>');
+  h += sec('Sicurezza', has(['kg', 'verif', 'ip']),
+    '<div class="grid2">' + num('kg', 'Portata massima (kg)') +
+    '<label class="fld"><span>Prossima verifica</span><input type="date" name="verif" value="' + esc(s.verif || '') + '"></label>' +
+    txt('ip', 'Grado IP', 10, 'es. IP65') + '</div>' +
+    '<p class="hint">Per americane, elevatori e paranchi: quando la verifica è scaduta lo segno sull\'articolo. Il grado IP dice se si può usare all\'aperto.</p>');
+  h += sec('In dotazione e avvertenze', has(['acc', 'avv']),
+    '<label class="fld"><span>Accessori in dotazione</span><textarea name="acc" maxlength="300" rows="2" placeholder="es. staffa, cavo di sicurezza, telecomando">' + esc(s.acc || '') + '</textarea></label>' +
+    '<label class="fld"><span>Avvertenze d\'uso</span><textarea name="avv" maxlength="300" rows="2" placeholder="es. non usare sotto la pioggia">' + esc(s.avv || '') + '</textarea></label>');
+  h += sec('Altri dati' + (dati.length ? ' (' + dati.length + ')' : ''), dati.length > 0,
+    '<div class="schrows" data-k="dati">' + dati.map(schDatoRowHtml).join('') + '</div>' +
+    '<button type="button" class="btn sm" data-act="schAdd" data-k="dati">' + ico('plus') + ' Aggiungi un dato</button>' +
+    '<datalist id="schsugg">' + (SCH_SUGG[dept] || SCH_SUGG.comune).map(x => '<option value="' + esc(x) + '">').join('') + '</datalist>' +
+    '<p class="hint">Un nome e il suo valore, per quello che serve sapere: si vede anche nell\'editor quando tocchi l\'elemento.</p>');
+  // valore e fornitore (i dati d'acquisto) li vede e li scrive solo il coordinatore: il computer in magazzino non li riceve nemmeno (server: schedaPub_)
+  const own = S.mode === 'coord';
+  h += sec(own ? 'Identità e acquisto' : 'Identità', has(own ? ['mod', 'serie', 'anno', 'forn', 'val'] : ['mod', 'serie', 'anno']),
+    txt('mod', 'Modello', 80, 'es. Allen & Heath SQ-6') +
+    '<label class="fld"><span>Numeri di serie</span><textarea name="serie" maxlength="600" rows="2" placeholder="uno per pezzo, separati da una virgola">' + esc(s.serie || '') + '</textarea></label>' +
+    (own ? '<div class="grid2">' + num('anno', 'Anno di acquisto') + num('val', 'Valore (€)') + '</div>' + txt('forn', 'Fornitore', 80) +
+      '<p class="hint">Valore e fornitore li vedi solo tu: il computer in magazzino, i tecnici e l\'editor non li ricevono.</p>'
+      : num('anno', 'Anno di acquisto')));
+  h += '<label class="fld"><span>Manuale (link)</span><input type="url" name="man" value="' + esc(s.man || '') + '" maxlength="300" placeholder="https://…" autocomplete="off"></label>' +
+    '<label class="chk" style="margin-top:8px"><input type="checkbox" name="ver"' + (s.ver ? ' checked' : '') + '> Dati controllati sul manuale</label>' +
+    (s.at ? '<p class="hint">Ultima modifica: ' + esc(schDate(s.at)) + (s.da ? ', ' + esc(s.da === 'editor' ? 'dal catalogo dell\'editor (da controllare)' : s.da) : '') + '.</p>' : '') +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="submit" class="btn pri">Salva scheda</button></div></form>';
+  return h;
+}
+function schRead(form) {
+  const f = new FormData(form), g = k => String(f.get(k) == null ? '' : f.get(k)).trim(), o = {};
+  ['mod', 'serie', 'anno', 'forn', 'val', 'W', 'pin', 'thru', 'cord', 'ain', 'aout', 'vin', 'vout', 'vt', 'dmx', 'dpin', 'dthru', 'univ', 'dmxOut', 'cavo', 'len',
+    'kg', 'verif', 'ip', 'acc', 'avv', 'man'].forEach(k => { const x = g(k); if (x !== '') o[k] = x; });
+  if (f.has('ver')) o.ver = 1;
+  const n = f.getAll('io_n'), t = f.getAll('io_t'), d = f.getAll('io_d'), q = f.getAll('io_q');
+  o.io = n.map((x, i) => ({ n: String(x).trim(), t: String(t[i] || ''), d: String(d[i] || 'in'), q: String(q[i] || '').trim() })).filter(r => r.n || r.t);
+  const dn = f.getAll('da_n'), dv = f.getAll('da_v');
+  o.dati = dn.map((x, i) => ({ n: String(x).trim(), v: String(dv[i] == null ? '' : dv[i]).trim() })).filter(r => r.n || r.v);
+  return o;
+}
+/* Sotto i campi vuoti di ingressi e uscite si legge quello che si conta dalle prese */
+function schPh(form) {
+  if (!form) return;
+  const d = schDerive({ io: schRead(form).io.filter(r => r.t) });
+  ['ain', 'aout', 'vin', 'vout', 'vt'].forEach(k => {
+    const el = $('[name=' + k + ']', form);
+    if (el) el.placeholder = d[k] === undefined || d[k] === '' ? (k === 'vt' ? 'es. HDMI + SDI' : '') : 'dalle prese: ' + d[k];
+  });
+}
+ACT.schOpen = el => {
+  const m = S.matById[el.dataset.id];
+  if (!m || !schCanEdit()) return;
+  openSheet('Scheda tecnica · ' + m.nome, schFormHtml(m));
+  schPh($('#sheet form'));
+};
+ACT.schAdd = el => {
+  const box = $('.schrows[data-k="' + el.dataset.k + '"]', el.closest('form'));
+  if (!box) return;
+  const max = el.dataset.k === 'io' ? 60 : 40;
+  if (box.children.length >= max) { toast('Al massimo ' + max + ' righe.'); return; }
+  box.insertAdjacentHTML('beforeend', el.dataset.k === 'io' ? schIoRowHtml(null) : schDatoRowHtml(null));
+  const inp = $('input', box.lastElementChild);
+  if (inp) inp.focus();
+};
+ACT.schDel = el => { const form = el.closest('form'), row = el.closest('.schrow'); if (row) row.remove(); schPh(form); };
+ACT.schGuess = el => {
+  const form = el.closest('form');
+  $('[name=cavo]', form).value = el.dataset.cavo;
+  $('[name=len]', form).value = el.dataset.len;
+  const p = el.closest('.schg');
+  if (p) p.remove();
+};
+CHG.schIo = el => schPh(el.closest('form'));
+INP.schIo = el => schPh(el.closest('form'));
+SUB.schForm = async form => {
+  const id = String(new FormData(form).get('id') || ''), err = $('.ferr', form);
+  err.textContent = '';
+  const r = await mutate(async () => {
+    const res = await call('api_saveScheda', CRED(), id, schRead(form));
+    upsert(S.mat, res.materiale);
+    derive();
+    closeSheet();
+    S.openStk = id;
+    paint();
+    toast('Scheda tecnica salvata.', 'ok');
+  }, true);
+  if (!r.ok) err.textContent = r.err;
+};
+
+/* ---------- codice materiale: il prossimo numero libero per reparto (AUD-001, LUC-001, VID-001, GEN-001) ---------- */
+function schCodeNext(cat) {
+  const k = catKey(cat) || 'generale';
+  const pre = ({ audio: 'AUD', luci: 'LUC', video: 'VID', generale: 'GEN' })[k] || (String(k).normalize('NFD').replace(/[^a-z0-9]/gi, '').slice(0, 3).toUpperCase() || 'GEN');
+  let max = 0;
+  S.mat.forEach(m => {
+    const x = new RegExp('^' + pre + '-(\\d+)$').exec(String(m.codice || '').toUpperCase());
+    if (x) max = Math.max(max, parseInt(x[1], 10));
+  });
+  return pre + '-' + String(max + 1).padStart(3, '0');
+}
+ACT.codNext = el => {
+  const form = el.closest('form'), inp = $('[name=codice]', form);
+  if (inp) { inp.value = schCodeNext($('[name=categoria]', form).value); inp.focus(); }
+};
+
+/* ---------- eliminare articoli, uno o tanti insieme (solo il coordinatore) ---------- */
+function selCount() { return S.sel ? Object.keys(S.sel).length : 0; }
+function selBarHtml() {
+  if (!S.sel) return '';
+  const n = selCount();
+  return '<div class="selbar" role="region" aria-label="Articoli scelti"><b id="selN">' + (n ? plural(n, 'scelto', 'scelti') : 'Tocca gli articoli da scegliere') + '</b>' +
+    '<span class="row"><button type="button" class="btn sm" data-act="selAll">Tutti quelli in elenco</button>' +
+    '<button type="button" class="btn sm danger" data-act="selGo" data-az="elimina"' + (n ? '' : ' disabled') + '>' + ico('trash') + ' Elimina</button>' +
+    '<button type="button" class="btn sm" data-act="selGo" data-az="dismetti"' + (n ? '' : ' disabled') + '>Segna dismessi</button>' +
+    '<button type="button" class="btn sm" data-act="selToggle">Fine</button></span></div>';
+}
+ACT.selToggle = () => { S.sel = S.sel ? null : {}; S.openStk = null; paint(); };
+ACT.selPick = el => {
+  if (!S.sel) return;
+  const id = el.dataset.id;
+  if (S.sel[id]) delete S.sel[id]; else S.sel[id] = true;
+  paint();
+};
+ACT.selAll = () => {
+  if (!S.sel) return;
+  $$('#stocklist .stk:not([hidden]) .stkh').forEach(b => { if (b.dataset.id) S.sel[b.dataset.id] = true; });
+  paint();
+};
+function bulkAskHtml(ids, az) {
+  const n = ids.length, one = n === 1 ? S.matById[ids[0]] : null;
+  const what = one ? '«' + esc(one.nome) + '»' : plural(n, 'articolo', 'articoli');
+  return '<div class="bulkask">' + (az === 'elimina'
+    ? '<p>' + (one ? what + ' viene tolto' : what + ' vengono tolti') + ' dal magazzino <b>per sempre</b>, con la scheda tecnica, i collegamenti con l\'editor e, per un case, quello che ha dentro.</p>' +
+      '<p class="hint">Un articolo che è nel materiale di un evento o ha una riparazione aperta non si elimina: te lo dico e puoi segnarlo «dismesso», così lo storico degli eventi resta giusto.</p>'
+    : '<p>' + (one ? what + ' viene segnato' : what + ' vengono segnati') + ' «non più in magazzino»: non si possono più mettere negli eventi, ma restano tra i Dismessi e nello storico. Si possono riattivare.</p>') +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="button" class="btn ' + (az === 'elimina' ? 'danger' : 'pri') + '" data-act="bulkDo">' + (az === 'elimina' ? 'Elimina' : 'Segna dismessi') + (n > 1 ? ' (' + n + ')' : '') + '</button></div></div>';
+}
+function bulkAsk(ids, az) {
+  if (S.mode !== 'coord' || !ids.length) return;
+  S.bulk = { ids: ids, az: az };
+  openSheet(az === 'elimina' ? 'Elimina dal magazzino' : 'Segna dismessi', bulkAskHtml(ids, az));
+}
+ACT.selGo = el => bulkAsk(Object.keys(S.sel || {}).filter(id => S.matById[id]), el.dataset.az);
+ACT.matDel = el => { if (S.matById[el.dataset.id]) bulkAsk([el.dataset.id], 'elimina'); };
+ACT.bulkDo = async el => {
+  const b = S.bulk;
+  if (!b || !b.ids.length) return;
+  const err = $('.ferr', el.closest('.bulkask'));
+  if (err) err.textContent = '';
+  const r = await mutate(async () => {
+    const res = await call('api_matBulk', S.pin, b.ids, b.az);
+    const fatti = res.fatti || [], bl = res.bloccati || [];
+    await coordLoad();                       // gli articoli, quello che c'è nei case e i collegamenti cambiano insieme: rileggo tutto
+    S.bulk = null;
+    S.sel = S.sel && bl.length ? bl.reduce((o, x) => { o[x.id] = true; return o; }, {}) : (S.sel ? {} : null);
+    if (S.openStk && !S.matById[S.openStk]) S.openStk = null;
+    closeSheet();
+    S.tab = 'mag';
+    paint();
+    if (b.az === 'dismetti') { toast(fatti.length === 1 ? 'Segnato come dismesso.' : 'Segnati come dismessi: ' + fatti.length + '.', 'ok'); return; }
+    if (!bl.length) { toast(fatti.length === 1 ? 'Articolo eliminato.' : 'Eliminati ' + fatti.length + ' articoli.', 'ok'); return; }
+    S.bulk = { ids: bl.map(x => x.id), az: 'dismetti' };
+    openSheet('Non eliminati', '<div class="bulkask"><p>' + (fatti.length ? (fatti.length === 1 ? 'Ho eliminato 1 articolo. ' : 'Ho eliminato ' + fatti.length + ' articoli. ') : '') +
+      (bl.length === 1 ? 'Questo non si può eliminare:' : 'Questi ' + bl.length + ' non si possono eliminare:') + '</p><ul class="bulkl">' +
+      bl.map(x => '<li><b>' + esc(x.nome) + '</b> ' + esc(x.motivo) + '</li>').join('') + '</ul>' +
+      '<p class="hint">Puoi segnarli «dismessi»: non si potranno più mettere negli eventi nuovi, e lo storico resta giusto.</p>' +
+      '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Lascia così</button>' +
+      '<button type="button" class="btn pri" data-act="bulkDo">Segna dismessi' + (bl.length > 1 ? ' (' + bl.length + ')' : '') + '</button></div></div>');
+  }, true);
+  if (!r.ok && err) err.textContent = r.err;
+};
+
+/* ---------- dal link dell'editor («Apri la scheda nel magazzino»): …/#scheda=ID ---------- */
+function schDeep() {
+  const x = /^#scheda=([\w-]+)$/.exec(window.location.hash || '');
+  if (!x || S.mode !== 'coord') return;
+  try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch (e) { /* niente */ }
+  const m = S.matById[x[1]];
+  if (!m) { toast('Questo articolo non è più in magazzino.'); return; }
+  S.tab = 'mag'; S.magTab = 'articoli'; S.stockCat = ''; S.stockQ = ''; S.sel = null; S.openStk = m.id;
+  paint();
+  ACT.schOpen({ dataset: { id: m.id } });
+}
+/* ====================================================================================================================
+   4.8 — ALTRI SERVICE (scheda Magazzino › «Altri service»)
+   La rubrica dei service con cui lavoriamo e, per ognuno, quello che ha: serve a sapere chi ce l'ha quando a noi manca
+   qualcosa. L'attrezzatura si scrive una per riga, come viene («4 × Parled China», «Parled China x4», «2 Nexo S1210»).
+   Dove compare: nell'elenco del materiale di un evento, sotto una riga che non basta, e nelle soluzioni dei cavi.
+   Server: svc.gs (api_svcSave, api_svcDel, api_svcMat). Lo tiene il coordinatore; gli altri lo leggono.
+   ==================================================================================================================== */
+const SVC_Q = /^\s*(?:(\d+)\s*(?:x|×|per|pz|pezzi)?\s*[-–:.)]?\s+)?(.*?)(?:\s*[,;:]?\s*(?:x|×)\s*(\d+)|\s*[,;:]\s*(\d+)|\s+(\d+))?\s*$/i;
+
+/* Una riga scritta a mano → {nome, quantita}. Senza numero vale 1. */
+function svcLine(s) {
+  const m = SVC_Q.exec(String(s || '').trim());
+  if (!m) return null;
+  const nome = String(m[2] || '').trim().replace(/\s+/g, ' ');
+  if (!nome) return null;
+  const q = Number(m[1] || m[3] || m[4] || m[5] || 1);
+  return { nome: nome.slice(0, 120), quantita: Math.max(0, Math.min(9999, q || 1)) };
+}
+function svcParse(text) {
+  const out = [];
+  String(text || '').split('\n').forEach(r => { const x = svcLine(r); if (x) out.push(x); });
+  return out;
+}
+function svcText(items) {
+  return (items || []).slice().sort((a, b) => cmpName(a.nome, b.nome))
+    .map(x => (x.quantita > 1 ? x.quantita + ' × ' : '') + x.nome).join('\n');
+}
+
+function svcById(id) { return (S.svc || []).find(x => x.id === id) || null; }
+function svcMatOf(id) { return (S.svcMat || []).filter(x => x.service_id === id); }
+function svcCan() { return S.mode === 'coord'; }
+
+/* Chi ce l'ha: i service che hanno qualcosa con questo nome (prima il nome uguale, poi chi somiglia). */
+function svcWhoHas(nome, max) {
+  const tok = puTokens(nome);
+  if (!tok.length || !(S.svcMat || []).length) return [];
+  const keys = puKeys(nome, tok), out = [];
+  (S.svcMat || []).forEach(r => {
+    const s = svcById(r.service_id);
+    if (!s || s.attivo === false) return;
+    const rt = puTokens(r.nome), rk = puKeys(r.nome, rt);
+    let kind = '';
+    if (rk.some(k => keys.indexOf(k) >= 0)) kind = 'esatto';
+    else {
+      const sim = puSim(tok, rt);
+      if (sim && sim.sh >= 2 && (sim.j >= 0.5 || (sim.ov >= 0.8 && sim.sh >= 3))) kind = 'forse';
+    }
+    if (kind) out.push({ svc: s, voce: r.nome, q: r.quantita, kind: kind });
+  });
+  out.sort((a, b) => (a.kind === b.kind ? 0 : a.kind === 'esatto' ? -1 : 1) || (b.q - a.q) || cmpName(a.svc.nome, b.svc.nome));
+  return out.slice(0, max || 3);
+}
+
+/* La riga «ce l'ha…» da mettere sotto una voce che non basta */
+function svcHasHtml(nome) {
+  const w = svcWhoHas(nome, 3);
+  if (!w.length) return '';
+  const txt = w.map(x => x.svc.nome + (x.q ? ' (' + x.q + ')' : '') + (x.kind === 'forse' ? ' — ha «' + x.voce + '»' : '') +
+    (x.svc.telefono ? ' · ' + x.svc.telefono : '')).join('; ');
+  return '<p class="note ok">' + esc('Ce l\'ha: ' + txt + '.') + '</p>';
+}
+
+/* ---------- la finestra ---------- */
+ACT.svcOpen = () => openSheet('Altri service', svcListHtml());
+function svcBack() { openSheet('Altri service', svcListHtml()); }
+
+function svcListHtml() {
+  const all = (S.svc || []).slice().sort((a, b) => cmpName(a.nome, b.nome));
+  let h = '<p class="muted">I service con cui lavoriamo e quello che hanno loro: quando a noi manca qualcosa, sai a chi chiederlo. ' +
+    'Le quantità sono quelle che ti hanno detto, non il loro magazzino vero.</p>';
+  if (svcCan()) h += '<div class="row"><button class="btn pri" data-act="svcNew">' + ico('plus') + ' Nuovo service</button></div>';
+  if (!all.length) return h + '<p class="empty">Non c\'è ancora nessun service in rubrica.</p>';
+  h += '<ul class="list svcl">';
+  all.forEach(s => {
+    const items = svcMatOf(s.id), pezzi = items.reduce((n, x) => n + (Number(x.quantita) || 0), 0);
+    h += '<li' + (s.attivo === false ? ' class="off"' : '') + '><div class="row between"><span><b>' + esc(s.nome) + '</b>' +
+      (s.citta ? ' <span class="muted">· ' + esc(s.citta) + '</span>' : '') +
+      (s.attivo === false ? ' <span class="pill muted">non attivo</span>' : '') +
+      '<small class="cs">' + esc([s.referente, s.telefono, s.email].filter(Boolean).join(' · ') || 'nessun contatto') + '</small>' +
+      '<small class="cs">' + (items.length ? plural(items.length, 'attrezzatura', 'attrezzature') + ', ' + plural(pezzi, 'pezzo', 'pezzi') : 'non so cosa ha') + '</small>' +
+      (s.note ? '<small class="cs">' + esc(s.note) + '</small>' : '') + '</span>' +
+      (svcCan() ? '<span class="row">' +
+        '<button class="btn sm" data-act="svcMat" data-id="' + esc(s.id) + '">' + ico('box') + ' Cosa ha</button>' +
+        '<button class="btn sm" data-act="svcEdit" data-id="' + esc(s.id) + '">' + ico('edit') + ' Modifica</button></span>'
+        : (items.length ? '<button class="btn sm" data-act="svcMat" data-id="' + esc(s.id) + '">Cosa ha</button>' : '')) +
+      '</div>';
+    if (items.length) {
+      h += '<details class="free"><summary>' + esc(plural(items.length, 'attrezzatura', 'attrezzature')) + '</summary><p class="mono sm">' +
+        esc(svcText(items).split('\n').join(' · ')) + '</p></details>';
+    }
+    h += '</li>';
+  });
+  return h + '</ul>';
+}
+
+ACT.svcNew = () => svcForm(null);
+ACT.svcEdit = el => svcForm(svcById(el.dataset.id));
+
+function svcForm(s) {
+  s = s || {};
+  const h = '<form data-submit="svcForm">' +
+    '<input type="hidden" name="id" value="' + esc(s.id || '') + '">' +
+    '<label class="fld"><span>Nome del service</span><input name="nome" maxlength="120" required value="' + esc(s.nome || '') + '" placeholder="es. Rossi Audio Service"></label>' +
+    '<div class="grid2"><label class="fld"><span>Referente</span><input name="referente" maxlength="80" value="' + esc(s.referente || '') + '"></label>' +
+    '<label class="fld"><span>Telefono</span><input name="telefono" maxlength="40" inputmode="tel" value="' + esc(s.telefono || '') + '"></label></div>' +
+    '<div class="grid2"><label class="fld"><span>Email</span><input name="email" type="email" maxlength="120" value="' + esc(s.email || '') + '"></label>' +
+    '<label class="fld"><span>Città</span><input name="citta" maxlength="80" value="' + esc(s.citta || '') + '"></label></div>' +
+    '<label class="fld"><span>Note</span><textarea name="note" maxlength="500" rows="2" placeholder="come lavoriamo con loro, cosa ci prestiamo…">' + esc(s.note || '') + '</textarea></label>' +
+    '<label class="chk"><input type="checkbox" name="attivo"' + (s.attivo === false ? '' : ' checked') + '> Ci lavoriamo ancora</label>' +
+    '<div class="row end">' + (s.id ? '<button type="button" class="lnk danger" data-act="svcDel" data-id="' + esc(s.id) + '">Togli dalla rubrica…</button>' : '') +
+    '<button type="submit" class="btn pri">Salva</button></div></form>';
+  openSheet(s.id ? 'Modifica «' + s.nome + '»' : 'Nuovo service', h);
+}
+
+SUB.svcForm = async form => {
+  const f = new FormData(form), g = k => String(f.get(k) == null ? '' : f.get(k)).trim();
+  const o = { id: g('id'), nome: g('nome'), referente: g('referente'), telefono: g('telefono'),
+    email: g('email'), citta: g('citta'), note: g('note'), attivo: f.has('attivo') };
+  await mutate(async () => {
+    svcPut(await call('api_svcSave', S.pin, o));
+    svcBack();
+    toast('Service salvato.', 'ok');
+  });
+};
+
+ACT.svcDel = el => {
+  const s = svcById(el.dataset.id);
+  if (!s) return;
+  openSheet('Togli «' + s.nome + '»', '<div class="bulkask"><p>Viene tolto dalla rubrica, con l\'elenco di quello che ha. ' +
+    'Gli eventi e il tuo magazzino non cambiano.</p><p class="ferr" role="alert"></p>' +
+    '<div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="button" class="btn danger" data-act="svcDelDo" data-id="' + esc(s.id) + '">Togli dalla rubrica</button></div></div>');
+};
+ACT.svcDelDo = async el => {
+  const s = svcById(el.dataset.id);
+  if (!s) return;
+  await mutate(async () => {
+    svcPut(await call('api_svcDel', S.pin, s.id));
+    svcBack();
+    toast('«' + s.nome + '» non è più in rubrica.', 'ok');
+  });
+};
+
+/* Cosa ha un service: una riga per attrezzatura */
+ACT.svcMat = el => {
+  const s = svcById(el.dataset.id);
+  if (!s) return;
+  const items = svcMatOf(s.id);
+  if (!svcCan()) {
+    openSheet('Cosa ha «' + s.nome + '»', '<p class="mono">' + esc(svcText(items) || 'Non lo so.').split('\n').join('<br>') + '</p>');
+    return;
+  }
+  const h = '<form data-submit="svcMatForm"><input type="hidden" name="id" value="' + esc(s.id) + '">' +
+    '<p class="muted">Una riga per attrezzatura, come viene: <b>4 × Parled China</b>, <b>Nexo S1210 x2</b>, <b>2 quadri 32A</b>. ' +
+    'Senza numero vale 1. I nomi uguali ai tuoi articoli si riconoscono da soli.</p>' +
+    '<label class="fld"><span>Quello che ha</span><textarea name="righe" rows="12" placeholder="4 × Parled China&#10;2 × Nexo GEO S1210&#10;1 × Quadro 32A">' + esc(svcText(items)) + '</textarea></label>' +
+    '<div class="row end"><button type="submit" class="btn pri">Salva</button></div></form>';
+  openSheet('Cosa ha «' + s.nome + '»', h);
+};
+
+SUB.svcMatForm = async form => {
+  const f = new FormData(form);
+  const id = String(f.get('id') || ''), righe = svcParse(f.get('righe'));
+  await mutate(async () => {
+    svcPut(await call('api_svcMat', S.pin, id, righe));
+    svcBack();
+    toast(righe.length ? plural(righe.length, 'attrezzatura salvata', 'attrezzature salvate') + '.' : 'Elenco svuotato.', 'ok');
+  });
+};
+
+function svcPut(r) {
+  if (!r) return;
+  if (r.service) S.svc = r.service;
+  if (r.serviceMat) S.svcMat = r.serviceMat;
+  paint();
+}
+
+/* ====================================================================================================================
+   4.8 — COSA MANCA PIÙ SPESSO (scheda Magazzino)
+   Il rapporto degli ultimi 12 mesi, eventi archiviati compresi: cosa abbiamo noleggiato da fuori, cosa non era in
+   magazzino, cosa si rompe spesso e cosa è mancato allo scarico. Server: gaps.gs (api_gaps).
+   ==================================================================================================================== */
+ACT.gapOpen = async el => {
+  const mesi = Number(el.dataset.mesi) || 12;
+  openSheet('Cosa manca più spesso', '<p class="muted">Sto guardando indietro ' + mesi + ' mesi…</p>');
+  const r = await mutate(async () => { S.gap = await call('api_gaps', S.pin, mesi); });
+  if (!r.ok) { closeSheet(); return; }
+  openSheet('Cosa manca più spesso', gapHtml(S.gap));
+};
+
+function gapRows(list, kind) {
+  if (!list.length) return '<p class="empty">Niente da segnalare.</p>';
+  return '<ul class="list gapl">' + list.slice(0, 30).map(x => {
+    const quante = plural(x.volte, 'volta', 'volte');
+    const dove = x.eventi.length ? ' <small class="cs">' + esc(x.eventi.join(', ')) + '</small>' : '';
+    let cons = '';
+    if (kind === 'nol') cons = x.volte >= 3 ? 'tre volte o più: forse conviene comprarlo' : 'guarda se conviene comprarlo';
+    if (kind === 'fuori') cons = x.cavo ? 'è un cavo: si può fare' : (x.inMagazzino ? 'c\'è in magazzino: forse la riga non era collegata' : 'da comprare, o da chiedere a un altro service');
+    if (kind === 'rotti') cons = x.volte >= 2 ? 'si rompe spesso: tieni un ricambio' : '';
+    if (kind === 'manc') cons = 'da ricomprare';
+    return '<li><div class="row between"><span><b>' + esc(x.nome) + '</b>' +
+      '<small class="cs">' + esc(quante + ', ' + plural(x.pezzi, 'pezzo', 'pezzi') + ' in tutto' +
+        (x.max > 1 ? ' (fino a ' + x.max + ' in una volta)' : '') + (x.ultima ? ' · ultima: ' + fmtShort(x.ultima) : '')) + '</small>' +
+      (cons ? '<small class="cs">' + esc(cons) + '</small>' : '') + dove + '</span>' +
+      '<span class="pill' + (x.volte >= 3 ? ' bad' : ' muted') + '">' + x.volte + '</span></div>' +
+      svcHasHtml(x.nome) + '</li>';
+  }).join('') + '</ul>';
+}
+
+function gapHtml(g) {
+  const blocchi = [
+    ['Noleggiato da fuori', 'nol', g.noleggi, 'Le righe degli eventi con «di cui a noleggio»: queste cose non le avevamo.'],
+    ['Non era in magazzino', 'fuori', g.fuori, 'Righe scritte a mano, senza articolo del magazzino: da comprare, da fare, o da chiedere.'],
+    ['Si rompe spesso', 'rotti', g.rotti, 'Le riparazioni aperte in questo periodo.'],
+    ['Mancato allo scarico', 'manc', g.mancati, 'Pezzi segnati mancanti quando il furgone è tornato: i consumabili da ricomprare.'],
+  ];
+  const daTxt = fmtShort(g.da) + (String(g.da).slice(0, 4) !== String(g.a).slice(0, 4) ? ' ' + String(g.da).slice(0, 4) : '');
+  let h = '<p class="muted">Dal ' + esc(daTxt) + ' a oggi: ' + esc(plural(g.eventi, 'evento', 'eventi')) +
+    (g.archiviati ? ' e ' + esc(plural(g.archiviati, 'evento archiviato', 'eventi archiviati')) : '') + '. ' +
+    'Conta solo quello che è scritto negli eventi.' + (g.troncato ? ' <b>Nota:</b> ci sono più eventi archiviati di quelli che riesco ad aprire in una volta.' : '') + '</p>' +
+    '<div class="row">' + [6, 12, 24].map(m => '<button type="button" class="btn sm' + (g.mesi === m ? ' pri' : '') +
+      '" data-act="gapOpen" data-mesi="' + m + '">' + m + ' mesi</button>').join('') + '</div>';
+  blocchi.forEach(([tit, kind, list, spiega]) => {
+    h += '<details class="free"' + (list.length ? ' open' : '') + '><summary>' + esc(tit) + ' (' + list.length + ')</summary>' +
+      '<p class="hint">' + esc(spiega) + '</p>' + gapRows(list, kind) + '</details>';
+  });
+  return h;
+}
 /* ============================================================================================================
    LUOGHI, SOPRALLUOGHI E FOTO (4.6)
 
