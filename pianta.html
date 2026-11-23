@@ -86,6 +86,128 @@ const SCH_DPIN = [['xlr3', '3 poli'], ['xlr5', '5 poli'], ['xlr35', '3 e 5 poli'
 const SCH_CAT_F = ['W', 'pin', 'thru', 'cord'];
 const SCH_IO_F = ['ain', 'aout', 'vin', 'vout', 'vt', 'dmx', 'dpin', 'dthru', 'univ', 'dmxOut'];
 
+/* ---------- 5.0 — SOTTOGRUPPI DEL MAGAZZINO E CAMPI PER TIPO ----------
+   Dentro ogni reparto (audio, luci, video, generale) gli articoli si dividono in sottogruppi, scelti a mano uno per
+   uno: è il sottogruppo che dice quali dati servono davvero in scheda (un elevatore vuole altezze e portata, un
+   microfono vuole dinamico o condensatore e la figura polare) e che simbolo usare nell'editor della pianta.
+   SCH_GRP: [codice, nome, simbolo dell'editor, campi in più (separati da virgola)]. */
+const SCH_XF = {
+  peso: ['Peso di un pezzo (kg)', 'n'],
+  dimC: ['Ingombro da chiuso', 't', 'es. 110×110×180 cm'],
+  dimA: ['Ingombro da aperto / montato', 't', 'es. 210×210 cm'],
+  hmin: ['Altezza minima (m)', 'n'],
+  hmax: ['Altezza massima (m)', 'n'],
+  mict: ['Tipo di microfono', 's'],
+  pol: ['Figura polare', 's'],
+  ph48: ['Phantom 48V', 's'],
+  ang: ['Angolo del fascio', 't', 'es. 25° oppure 15-45°'],
+  ott: ['Ottica / rapporto di tiro', 't', 'es. 1,2-1,5:1'],
+  pitch: ['Passo del ledwall (mm)', 'n'],
+  poll: ['Pollici', 'n'],
+  imp: ['Impedenza (ohm)', 'n'],
+  sez: ['Sezione del cavo (mm²)', 'n'],
+  post: ['Posti (prese)', 'n']
+};
+const SCH_MICT = [['din', 'dinamico'], ['cond', 'a condensatore'], ['nastro', 'a nastro'], ['piezo', 'piezo / a contatto']];
+const SCH_POL = [['card', 'cardioide'], ['super', 'supercardioide'], ['iper', 'ipercardioide'], ['omni', 'omnidirezionale'], ['fig8', 'a otto'], ['shot', 'shotgun']];
+const SCH_PH48 = [['1', 'sì, gli serve'], ['0', 'no']];
+const SCH_GRP = {
+  audio: [
+    ['aste', 'Aste e stativi microfonici', 'gstand', 'peso,dimC,hmin,hmax'],
+    ['mic', 'Microfoni', 'mic', 'mict,pol,ph48'],
+    ['archetti', 'Archetti e lavalier', 'mic', 'mict,pol,ph48'],
+    ['radio', 'Radiomicrofoni e riceventi', 'micw', 'ain,aout'],
+    ['iem', 'In-ear e monitor personali', 'iem', 'ain'],
+    ['di', 'D.I. attive e passive', 'di', 'ain,aout,ph48'],
+    ['split', 'Splitter e ciabatte microfoniche', 'stagebox', 'ain,aout'],
+    ['dig', 'Trasporti digitali e schede mixer', 'stagebox', 'ain,aout'],
+    ['mixer', 'Mixer audio', 'mixer', 'ain,aout,peso'],
+    ['imp', 'Impianti: casse attive e passive', 'spk', 'imp,peso'],
+    ['mon', 'Satelliti, monitor e sub', 'wedge', 'imp,peso'],
+    ['finali', 'Finali di potenza', 'amp', 'imp,peso'],
+    ['cavia', 'Cavi XLR microfonici', '', 'sez'],
+    ['jack', 'Jack e adattatori audio', '', ''],
+    ['meccA', 'Meccaniche audio: supporti, flange, piedi', 'rack', 'peso,kg']
+  ],
+  luci: [
+    ['fisse', 'Luci fisse: par led, scena led, par cob, accecatori, barre', 'par', 'ang,peso'],
+    ['teste', 'Teste mobili: beam, spot, wash', 'mover', 'ang,peso'],
+    ['fumo', 'Macchine fumo, hazer, effetti', 'haze', 'peso'],
+    ['dmxspl', 'Splitter DMX', 'dmxsplit', 'dmxOut,univ'],
+    ['banchi', 'Mixer e banchi luci', 'lightdesk', 'univ,dmxOut'],
+    ['cavidmx', 'Cavi DMX 3 e 5 poli', '', ''],
+    ['adtdmx', 'Adattatori DMX 3-5 e 5-3', '', ''],
+    ['pcon', 'Cavi powercon', '', ''],
+    ['meccL', 'Meccaniche luci: ganci, staffe, sicure', 'rack', 'peso,kg']
+  ],
+  video: [
+    ['mixv', 'Mixer video', 'switcher', 'vin,vout,vt'],
+    ['tv', 'Schermi e TV', 'tv', 'poll,vin,vt'],
+    ['proj', 'Proiettori e ottiche', 'projector', 'ott,vin,vt,peso'],
+    ['led', 'Ledwall e controller', 'ledwall', 'pitch,vin,peso'],
+    ['cavieth', 'Cavi ethernet, segnale e corrente', '', 'sez'],
+    ['splv', 'Splitter e convertitori HDMI / VGA', 'splitter', 'vin,vout,vt'],
+    ['adtv', 'Adattatori video', '', ''],
+    ['meccV', 'Meccaniche video: supporti e totem', 'rack', 'peso,kg']
+  ],
+  generale: [
+    ['piantane', 'Piantane e stativi luci', 'lstand', 'peso,dimC,hmin,hmax,kg'],
+    ['elevatori', 'Elevatori e paranchi', 'lift', 'peso,dimC,dimA,hmin,hmax,kg'],
+    ['americane', 'Americane quadrate e triangolari', 'truss', 'peso,dimC,kg'],
+    ['tubi', 'Tubi, sicure, cinghie, occhielli e pin', '', 'peso,kg'],
+    ['palco', 'Palco, KDC, piedi riser e piedi bassi', 'stage', 'peso,dimC,kg'],
+    ['supporti', 'Altri supporti e legni per livellamento', '', 'peso,kg'],
+    ['passacavi', 'Passacavi', 'cableramp', 'peso,dimC'],
+    ['ceste', 'Ceste e case vuoti', 'box', 'peso,dimC'],
+    ['arredo', 'Gazebo, moquette, quinte, teli, tavoli, gonnelline', '', 'peso,dimC,dimA'],
+    ['ccee', 'Cavi di corrente con spina CEE', '', 'sez,post'],
+    ['cciv', 'Cavi di corrente con spina civile', '', 'sez,post'],
+    ['varie', 'Altro', '', '']
+  ]
+};
+/* I simboli dell'editor della pianta che si possono scegliere in scheda (gli stessi codici del suo catalogo: SCHEDA_SYM in scheda.gs) */
+const SCH_SYM = [
+  ['spk', 'Cassa'], ['sub', 'Sub'], ['wedge', 'Monitor da palco'], ['linearray', 'Line array'], ['amp', 'Finale di potenza'],
+  ['mixer', 'Mixer audio'], ['stagebox', 'Stagebox / ciabatta microfonica'], ['pmix', 'Mixer personale'], ['mic', 'Microfono'],
+  ['micw', 'Radiomicrofono'], ['iem', 'In-ear'], ['di', 'D.I.'], ['gstand', 'Asta / stativo'], ['leggio', 'Leggio'],
+  ['par', 'Faro fisso (par)'], ['mover', 'Testa mobile'], ['profile', 'Sagomatore'], ['fresnel', 'Fresnel'], ['blinder', 'Accecatore'],
+  ['strobe', 'Strobo'], ['follow', 'Seguipersona'], ['bar', 'Barra led'], ['haze', 'Macchina fumo / hazer'], ['lightdesk', 'Banco luci'],
+  ['dmxsplit', 'Splitter DMX'],
+  ['ledwall', 'Ledwall'], ['projector', 'Proiettore'], ['screen', 'Schermo / telo'], ['tv', 'TV'], ['camera', 'Telecamera'],
+  ['switcher', 'Mixer video'], ['router', 'Switch / router'],
+  ['quadro', 'Quadro elettrico'], ['splitter', 'Sdoppio'], ['strip', 'Ciabatta'], ['gen', 'Generatore'],
+  ['truss', 'Americana'], ['frame', 'Telaio di americane'], ['tower', 'Torre'], ['lift', 'Elevatore'], ['liftf', 'Elevatore a forche'],
+  ['hoist', 'Paranco'], ['lstand', 'Stativo luci'], ['cableramp', 'Passacavi'], ['box', 'Cesta / case'], ['rack', 'Rack / scatola'],
+  ['stage', 'Pedana'], ['table', 'Tavolo'], ['chair', 'Sedia'], ['keys', 'Tastiera'], ['drums', 'Batteria'], ['perc', 'Percussioni'], ['dj', 'Consolle DJ']
+];
+const SCH_GRP_DEPT = ['audio', 'luci', 'video', 'generale'];
+/* Il sottogruppo per codice: {dept, k, l, sym, campi[]} oppure null */
+function schGrp(code) {
+  const c = String(code == null ? '' : code).trim();
+  if (!c) return null;
+  for (let i = 0; i < SCH_GRP_DEPT.length; i++) {
+    const d = SCH_GRP_DEPT[i], list = SCH_GRP[d];
+    for (let j = 0; j < list.length; j++) {
+      if (list[j][0] !== c) continue;
+      return { dept: d, k: list[j][0], l: list[j][1], sym: list[j][2], campi: list[j][3] ? list[j][3].split(',') : [] };
+    }
+  }
+  return null;
+}
+function schGrpLabel(code) { const g = schGrp(code); return g ? g.l : ''; }
+/* I sottogruppi di un reparto (deptWh: audio, luci, video, comune → generale) */
+function schGrpList(dept) { return SCH_GRP[dept] || SCH_GRP.generale; }
+/* In che sezione della finestra sta un campo che il sottogruppo chiede (per aprirla già aperta) */
+const SCH_SEZ_OF = {
+  W: 'cor', pin: 'cor', thru: 'cor', cord: 'cor',
+  ain: 'seg', aout: 'seg', vin: 'seg', vout: 'seg', vt: 'seg', dmx: 'seg', dpin: 'seg', dthru: 'seg', univ: 'seg', dmxOut: 'seg',
+  kg: 'sic'
+};
+/* I campi «in più» di un sottogruppo che hanno una casella loro (gli altri stanno già in un'altra sezione) */
+function schGrpXF(code) { const g = schGrp(code); return g ? g.campi.filter(k => SCH_XF[k]) : []; }
+/* Una sezione della finestra la apro se il sottogruppo chiede qualcosa che sta lì dentro */
+function schGrpWants(code, sez) { const g = schGrp(code); return !!g && g.campi.some(k => SCH_SEZ_OF[k] === sez); }
+
 function schLabel(list, code) { for (let i = 0; i < list.length; i++) if (list[i][0] === code) return list[i][1]; return ''; }
 function schSet(v) { return v !== undefined && v !== null && v !== ''; }
 /* Una scheda senza dati (c'è solo chi l'ha toccata e quando) */
@@ -180,6 +302,35 @@ function schCableGuess(name) {
   if (!cavo || !(len > 0) || len > 1000) return null;
   return { cavo: cavo, len: Math.round(len * 10) / 10 };
 }
+/* 4.9 — le americane: gli stessi codici dei sistemi dell'editor (TRUSS). Nella scheda: trss (che americana è) e len (quanto è lunga). */
+const SCH_TRUSS = [['QX30', 'Litec QX30SA — quadra 30×30'], ['TX30', 'Litec TX30SA — triangolare 29 cm'],
+  ['F34', 'Global Truss F34 — quadra 29 cm'], ['F33', 'Global Truss F33 — triangolare 29 cm'], ['F32', 'Global Truss F32 — piatta 29 cm'],
+  ['F44', 'Global Truss F44 — quadra 40 cm'], ['F24', 'Global Truss F24 — quadra 22 cm'],
+  ['X30V', 'Prolyte X30V — quadra 29 cm'], ['H30V', 'Prolyte H30V — quadra 29 cm pesante']];
+
+/* Dal nome di un articolo: che americana sembra e quanto è lunga ({trss, len}), oppure null.
+   «Americana Litec QX30SA 3 m» → Litec QX30SA, 3 m. Elevatori, paranchi, cubi e angoli non sono barre con una lunghezza. */
+function schTrussGuess(name) {
+  const t = String(name == null ? '' : name).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  if (!t.trim() || /elevator|paranc|motor|cubo|angolo|corner|base|piastra|golfar|clamp|morsett/.test(t)) return null;
+  const lm = t.match(/(\d+(?:[.,]\d+)?)\s*(?:m|mt|mts|metri|metro)\b(?!m)/g);
+  const len = lm ? parseFloat(lm[lm.length - 1].replace(',', '.')) : 0;
+  let trss = '';
+  if (/\bf34\b/.test(t)) trss = 'F34';
+  else if (/\bf33\b/.test(t)) trss = 'F33';
+  else if (/\bf32\b/.test(t)) trss = 'F32';
+  else if (/\bf44\b/.test(t)) trss = 'F44';
+  else if (/\bf24\b/.test(t)) trss = 'F24';
+  else if (/x ?30 ?v|prolyte.*\bx ?30\b/.test(t)) trss = 'X30V';
+  else if (/h ?30 ?v|prolyte.*\bh ?30\b/.test(t)) trss = 'H30V';
+  else if (/tx ?30|litec.*triangol/.test(t)) trss = 'TX30';
+  else if (/qx ?30|litec/.test(t)) trss = 'QX30';
+  if (!trss && /american|truss|traliccio/.test(t) && /30 ?x ?30|quadra/.test(t)) trss = 'QX30';
+  if (!trss || !(len > 0) || len > 20) return null;
+  if (!/american|truss|traliccio|barra|trave|\bqx\b|\btx\b|\bf\d\d\b|prolyte|litec|global/.test(t)) return null;
+  return { trss: trss, len: Math.round(len * 100) / 100 };
+}
+
 function schDate(d) { const p = String(d || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : String(d || ''); }
 function schNum(n) { return String(n).replace('.', ','); }
 /* 2890.5 -> "2.890,50 €" (come fmtEur dell'app: qui serve anche dove l'app non c'è) */
@@ -200,6 +351,7 @@ function schLines(s) {
   const L = [];
   if (!s || typeof s !== 'object') return L;
   const d = schDerive(s), val = k => schSet(s[k]) ? s[k] : d[k], pl = (n, a, b) => n + ' ' + (n === 1 ? a : b);
+  if (s.grp && schGrpLabel(s.grp)) L.push({ k: 'grp', l: 'Che cos\'è', v: schGrpLabel(s.grp) });
   if (s.mod) L.push({ k: 'mod', l: 'Modello', v: String(s.mod) });
   const pw = [];
   if (schSet(s.W)) pw.push(schNum(s.W) + ' W');
@@ -223,6 +375,23 @@ function schLines(s) {
   if (s.verif) sic.push('prossima verifica ' + schDate(s.verif));
   if (s.ip) sic.push(String(s.ip));
   if (sic.length) L.push({ k: 'sicurezza', l: 'Sicurezza', v: sic.join(' · ') });
+  // 5.0 — i dati che cambiano secondo che cosa è (un elevatore, un microfono, un proiettore…)
+  const tip = [];
+  if (schSet(s.mict)) tip.push(schLabel(SCH_MICT, s.mict));
+  if (schSet(s.pol)) tip.push(schLabel(SCH_POL, s.pol));
+  if (schSet(s.ph48)) tip.push(+s.ph48 ? 'phantom 48V' : 'senza phantom');
+  if (s.ang) tip.push('fascio ' + s.ang);
+  if (s.ott) tip.push('ottica ' + s.ott);
+  if (schSet(s.pitch) && +s.pitch > 0) tip.push('passo ' + schNum(s.pitch) + ' mm');
+  if (schSet(s.poll) && +s.poll > 0) tip.push(schNum(s.poll) + '"');
+  if (schSet(s.imp) && +s.imp > 0) tip.push(schNum(s.imp) + ' ohm');
+  if (schSet(s.sez) && +s.sez > 0) tip.push('sezione ' + schNum(s.sez) + ' mm²');
+  if (schSet(s.post) && +s.post > 0) tip.push(pl(+s.post, 'posto', 'posti'));
+  if (schSet(s.peso) && +s.peso > 0) tip.push(schNum(s.peso) + ' kg l\'uno');
+  if (schSet(s.hmin) || schSet(s.hmax)) tip.push('altezza ' + (schSet(s.hmin) ? schNum(s.hmin) : '?') + '–' + (schSet(s.hmax) ? schNum(s.hmax) : '?') + ' m');
+  if (s.dimC) tip.push('chiuso ' + s.dimC);
+  if (s.dimA) tip.push('aperto ' + s.dimA);
+  if (tip.length) L.push({ k: 'tipo', l: schGrpLabel(s.grp) || 'Caratteristiche', v: tip.filter(Boolean).join(' · ') });
   if (s.acc) L.push({ k: 'acc', l: 'In dotazione', v: String(s.acc) });
   if (s.avv) L.push({ k: 'avv', l: 'Avvertenze', v: String(s.avv) });
   (Array.isArray(s.dati) ? s.dati : []).forEach(x => { if (x && x.n) L.push({ k: 'dato', l: String(x.n), v: String(x.v == null ? '' : x.v) }); });
@@ -234,6 +403,342 @@ function schLines(s) {
   if (s.serie) L.push({ k: 'serie', l: 'Numeri di serie', v: String(s.serie) });
   return L;
 }
+
+/* ==================================================================================================================
+   Gestionale service 5.0 — aggiunte all'editor della pianta (valgono anche quando l'editor si apre da solo).
+
+   Qui dentro:
+   · PW_NOTES(PW)      gli avvisi gialli del bilancio elettrico: ognuno dice il perché in parole semplici, fa vedere
+                       in pianta i pezzi o i cavi che lo riguardano e, dove si può, lo risolve con un tocco.
+   · PW_NOPOWER(k,a,b) la corrente va solo dove serve: americane, elevatori, stativi, palco e aste non si collegano
+                       alla corrente (chi ci sta sopra sì).
+
+   Questo file viene caricato prima del corpo dell'editor: le cose dell'editor (S, Lk, push, afterEdit, say,
+   highlightIds, powerCalc…) si usano solo dentro le funzioni, mai al caricamento.
+   ================================================================================================================== */
+(function () {
+  'use strict';
+
+  function esc_(s) {
+    return String(s === undefined || s === null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function nomi_(list, max) {
+    var n = list.slice(0, max || 8).map(function (o) { return o && o.l ? o.l : '?'; }).join(', ');
+    return list.length > (max || 8) ? n + '…' : n;
+  }
+
+  /* ---------- gli avvisi, uno per riga: titolo, chi riguarda, perché, «fammelo vedere» e la soluzione ---------- */
+  function riga_(n) {
+    var h = '<div class="wnote"><div><b>' + esc_(n.t) + '</b>' + (n.d ? ' <span class="wwho">' + esc_(n.d) + '</span>' : '') + '</div>';
+    if (n.w) h += '<div class="wwhy">' + esc_(n.w) + '</div>';
+    var b = '';
+    if (n.ids && n.ids.length) b += '<button class="sm" data-see="' + esc_(n.ids.join(',')) + '" data-see-l="' + esc_(n.lbl || 'In pianta') + '">👁️ fammelo vedere</button>';
+    if (n.fix) b += '<button class="sm pri" data-wfix="' + esc_(n.fix) + '">' + esc_(n.fixl) + '</button>';
+    if (b) h += '<div class="wbtn">' + b + '</div>';
+    return h + '</div>';
+  }
+
+  window.PW_NOTES = function (PW) {
+    var N = [], i;
+    try {
+      /* 1 · chi aspetta la corrente e non ce l'ha */
+      if (PW.unfed.length) N.push({
+        t: PW.unfed.length === 1 ? '1 attrezzatura senza corrente' : PW.unfed.length + ' attrezzature senza corrente',
+        d: nomi_(PW.unfed),
+        w: 'Hanno bisogno di corrente per andare, ma in pianta non c\'è nessun cavo che gliela porti: non sono attaccate a un quadro, a una ciabatta o a uno sdoppio. Le strutture (americane, elevatori, stativi, palco) non compaiono mai qui, perché la corrente non gli serve.',
+        ids: PW.unfed.map(function (o) { return o.id; }), lbl: 'Senza corrente',
+        fix: 'unfed', fixl: '⚡ attaccale al più vicino'
+      });
+
+      /* 2 · i cavi che chiudono un anello: fanno vedere quali sono e si tolgono */
+      if (PW.loops.length) {
+        var dove = PW.loops.slice(0, 4).map(function (lk) {
+          var a = PW.byId[lk.a], b = PW.byId[lk.b];
+          return 'da ' + (a ? a.l : '?') + ' a ' + (b ? b.l : '?');
+        }).join('; ');
+        N.push({
+          t: PW.loops.length === 1 ? '1 cavo di corrente in più: chiude un anello' : PW.loops.length + ' cavi di corrente in più: chiudono un anello',
+          d: dove + (PW.loops.length > 4 ? '…' : ''),
+          w: 'La corrente deve arrivare a ogni attrezzatura da una strada sola. Qui due strade si richiudono fra loro: questi cavi sono quelli in più e vanno tolti (il resto dell\'impianto resta alimentato lo stesso).',
+          ids: PW.loops.map(function (lk) { return lk.id; }), lbl: 'Cavi in più',
+          fix: 'loops', fixl: '✂️ togli i cavi in più'
+        });
+      }
+
+      /* 3 · gli avvisi che nascono su un pezzo preciso (prese finite, presa passante, adattatori, cavo che non arriva) */
+      var vis = {};
+      (PW.issues || []).forEach(function (x) {
+        if (!x || !x.msg || vis[x.msg]) return;
+        vis[x.msg] = 1;
+        var ids = [];
+        if (x.o && x.o.id) ids.push(x.o.id);
+        if (x.lk && x.lk.id) ids.push(x.lk.id);
+        var w = '';
+        if (/cavi collegati ma/.test(x.msg)) w = 'Su quella presa ci sono più cavi di quanti posti ha: serve un\'altra ciabatta, uno sdoppio o un quadro con più uscite.';
+        else if (/presa passante/.test(x.msg)) w = 'Quell\'apparecchio non ha l\'uscita per dare corrente al successivo: porta il cavo del secondo direttamente alla ciabatta o al quadro.';
+        else if (/non arriva/.test(x.msg)) w = 'Il cavo in dotazione è più corto della distanza che c\'è in pianta: metti una prolunga o avvicina il pezzo.';
+        N.push({ t: '⚠️ ' + x.msg, w: w, ids: ids, lbl: 'In pianta' });
+      });
+
+      /* 4 · quelli alimentati di cui non sappiamo il consumo */
+      if (PW.noW.length) N.push({
+        t: PW.noW.length === 1 ? '1 apparecchio alimentato senza potenza' : PW.noW.length + ' apparecchi alimentati senza potenza',
+        d: nomi_(PW.noW, 4),
+        w: 'Sono collegati alla corrente ma non sappiamo quanto consumano, così il conto per fase resta incompleto. La potenza si scrive nel pannello del pezzo, o nella scheda tecnica dell\'articolo in magazzino.',
+        ids: PW.noW.map(function (o) { return o.id; }), lbl: 'Senza potenza'
+      });
+
+      /* 5 · le potenze che sono solo stime */
+      var est = [];
+      try {
+        S.forEach(function (o) {
+          var c = catBy(o.k);
+          if (c && c.est && PW.seen.has(o.id)) est.push(o);
+        });
+      } catch (e) { /* niente */ }
+      if (est.length) N.push({
+        t: 'Qualche potenza è una stima',
+        d: nomi_(est, 4),
+        w: 'Sono valori medi di quella famiglia di attrezzature, non quelli del tuo modello: controllali sulla targhetta o sul manuale e scrivili nella scheda tecnica, così il bilancio diventa quello vero.',
+        ids: est.map(function (o) { return o.id; }), lbl: 'Potenza stimata'
+      });
+    } catch (e) { /* se qualcosa va storto meglio nessun avviso che una pagina rotta */ }
+
+    if (!N.length) return '';
+    var h = '<div class="callout warn wnotes" style="margin-top:10px">';
+    for (i = 0; i < N.length; i++) h += riga_(N[i]);
+    return h + '</div>';
+  };
+
+  /* ---------- gli avvisi di «Luci e video»: stesso trattamento, perché e dove ----------
+     Qui gli avvisi arrivano come frasi («Barra led 3: non ha l'uscita DMX (thru) — …»): i pezzi che riguardano si
+     trovano dal nome che c'è scritto dentro. Le luci in catena (una che alimenta la successiva) sono normali e non
+     sono mai un avviso: l'avviso esce solo quando la catena non può funzionare. */
+  var DMX_W = [
+    [/oltre i 32/, 'Una linea DMX regge 32 apparecchi in catena: oltre, il segnale non è più sicuro. Si divide con uno splitter DMX, che fa partire più rami dalla stessa uscita — uno per area o per gruppo di luci.'],
+    [/uscita DMX \(thru\)/, 'Quell\'apparecchio non ha il DMX passante: la catena si ferma lì. Porta il cavo del successivo a un apparecchio che ha l\'uscita, oppure a uno splitter DMX.'],
+    [/linee DMX ma/, 'Dal banco partono più linee di quante uscite (universi) ha: mettine qualcuna in catena sulla stessa linea, o usa uno splitter DMX.'],
+    [/indirizzi sovrapposti/, 'Due apparecchi occupano gli stessi canali e si muovono insieme: cambia l\'indirizzo a uno dei due, o togli quello messo a mano e lascia fare all\'editor.'],
+    [/oltre i 512/, 'Un universo ha 512 canali: sposta una parte delle luci su un\'altra uscita del banco (un altro universo).'],
+    [/sorgenti video ma|uscite usate ma/, 'Le prese di quell\'apparecchio non bastano per i cavi che ci arrivano: serve uno switch, un mixer con più ingressi, o meno sorgenti.']
+  ];
+  window.DMX_NOTES = function (warn) {
+    var h = '<div class="callout warn wnotes" style="margin-bottom:8px">';
+    (warn || []).forEach(function (w) {
+      var t = String(w), why = '', ids = [], i;
+      for (i = 0; i < DMX_W.length; i++) if (DMX_W[i][0].test(t)) { why = DMX_W[i][1]; break; }
+      try {
+        S.forEach(function (o) { if (o.l && String(o.l).length > 2 && t.indexOf(o.l) >= 0) ids.push(o.id); });
+      } catch (e) { /* niente */ }
+      h += riga_({ t: '⚠️ ' + t, w: why, ids: ids, lbl: 'In pianta' });
+    });
+    return h + '</div>';
+  };
+
+  /* ---------- la corrente va solo dove serve davvero ---------- */
+  // Strutture e supporti: non si accendono, quindi non si collegano alla corrente (chi ci sta sopra sì).
+  var NO_PW = { truss: 1, frame: 1, tower: 1, lift: 1, liftf: 1, lstand: 1, gstand: 1, stage: 1, stairs: 1, chair: 1, table: 1, zone: 1, note: 1, leggio: 1 };
+  var NO_PW_L = { truss: 'Le americane', frame: 'I telai di americana', tower: 'Le torri', lift: 'Gli elevatori', liftf: 'Gli elevatori', lstand: 'Gli stativi', gstand: 'Le aste e gli stativi', stage: 'Il palco', stairs: 'Le scalette', chair: 'Le sedie', table: 'I tavoli', zone: 'Le aree', note: 'Le note', leggio: 'I leggii' };
+
+  window.PW_NOPOWER = function (kind, aId, bId) {
+    if (kind !== 'power') return false;
+    try {
+      var bad = null;
+      [aId, bId].forEach(function (id) {
+        var o = S.filter(function (x) { return x.id === id; })[0];
+        if (o && NO_PW[o.sym] && !bad) bad = o;
+      });
+      if (!bad) return false;
+      say((NO_PW_L[bad.sym] || 'Le strutture') + ' non hanno bisogno di corrente: «' + bad.l + '» non si collega alla rete elettrica. ' +
+        'Se devi alimentare quello che ci sta sopra (fari, teste mobili, ledwall), porta il cavo a quello.');
+      return true;
+    } catch (e) { return false; }
+  };
+
+  /* ================= LEGENDA DEI SIMBOLI (5.0) =================
+     Tutto quello che c'è in pianta, diviso per famiglia, col simbolo vero e quanti sono. Toccando una voce, quei pezzi
+     si accendono in pianta (bordo azzurro). Sotto, i cavi: colore, quanti e quanti metri. Ha preso il posto delle
+     etichette e della grandezza del testo nella finestra «Vista». */
+  var LEG_CAT = [['audio', '🔊 Audio'], ['strumenti', '🎸 Strumenti'], ['luci', '💡 Luci'], ['video', '🎬 Video'],
+  ['elettrico', '⚡ Corrente'], ['rigging', '🏗️ Strutture'], ['palco', '🎭 Palco e spazi'], ['personalizzati', '📦 I tuoi tipi']];
+
+  function legSym(o) {
+    try {
+      var m = Math.max(.25, Math.max(o.w || .4, o.h || .4) * .78);
+      return '<svg class="legsym" viewBox="' + (-m) + ' ' + (-m) + ' ' + (2 * m) + ' ' + (2 * m) + '" width="34" height="34" aria-hidden="true">' +
+        '<style>*{vector-effect:non-scaling-stroke}</style>' + symbol(o, {}) + '</svg>';
+    } catch (e) { return '<svg class="legsym" width="34" height="34"></svg>'; }
+  }
+
+  window.LEG_RENDER = function () {
+    var box = document.getElementById('legBox');
+    if (!box) return;
+    try {
+      var by = {}, ord = [];
+      S.forEach(function (o) {
+        if (o.sym === 'note' || o.sym === 'zone') return;
+        var c = null;
+        try { c = catBy(o.k); } catch (e) { c = null; }
+        var cat = (c && c.cat) || 'personalizzati', key = cat + '|' + o.k;
+        if (!by[key]) { by[key] = { cat: cat, l: (c && c.l ? String(c.l).split(' — ')[0] : o.l) || o.l, o: o, ids: [], n: 0 }; ord.push(key); }
+        by[key].ids.push(o.id); by[key].n++;
+        if (o.l && by[key].ids.length === 1) by[key].l = o.l;
+      });
+      var h = '', vuoto = !ord.length;
+      LEG_CAT.forEach(function (c) {
+        var list = ord.filter(function (k) { return by[k].cat === c[0]; });
+        if (!list.length) return;
+        h += '<div class="legfam"><div class="legtit">' + c[1] + '</div><div class="leggrid">';
+        list.sort(function (a, b) { return by[a].l.localeCompare(by[b].l); }).forEach(function (k) {
+          var e = by[k];
+          h += '<button class="legrow" title="' + esc_(e.l) + '" data-see="' + esc_(e.ids.join(',')) + '" data-see-l="' + esc_(e.l) + '">' +
+            legSym(e.o) + '<span class="legl">' + esc_(e.l) + '</span><span class="chip">' + e.n + '</span></button>';
+        });
+        h += '</div></div>';
+      });
+      // i cavi: colore, quanti e quanti metri
+      var fam = {};
+      Lk.forEach(function (lk) {
+        var f = fam[lk.k] = fam[lk.k] || { n: 0, m: 0, ids: [] };
+        f.n += (+lk.n || 1); f.ids.push(lk.id);
+        try { f.m += lkNeed(lk) * (+lk.n || 1); } catch (e) { /* niente */ }
+      });
+      var fk = Object.keys(fam);
+      if (fk.length) {
+        h += '<div class="legfam"><div class="legtit">🧵 Cavi</div><div class="leggrid">';
+        fk.forEach(function (k) {
+          var F = FAM[k] || { l: k, c: '#607D8B', d: '' }, f = fam[k];
+          h += '<button class="legrow" data-see="' + esc_(f.ids.join(',')) + '" data-see-l="Cavi ' + esc_(F.l) + '">' +
+            '<svg class="legsym" width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><style>*{vector-effect:non-scaling-stroke}</style>' +
+            '<line x1="3" y1="17" x2="31" y2="17" stroke="' + F.c + '" stroke-width="2.6"' + (F.d ? ' stroke-dasharray="' + F.d + '"' : '') + '/></svg>' +
+            '<span class="legl">' + esc_(F.l) + '</span><span class="chip">' + f.n + (f.m > 0 ? ' · ' + Math.round(f.m) + ' m' : '') + '</span></button>';
+        });
+        h += '</div></div>';
+        vuoto = false;
+      }
+      box.innerHTML = vuoto
+        ? '<p class="empty-note">Metti qualcosa in pianta: qui compare la legenda, con il simbolo di ogni attrezzatura divisa per famiglia.</p>'
+        : h + '<p class="hint" style="margin:6px 0 0">Tocca una voce per accendere quei pezzi in pianta (bordo azzurro). Tocca di nuovo uno spazio vuoto della pianta per spegnerli.</p>';
+    } catch (e) { /* niente */ }
+  };
+
+  /* ================= LA PIANTA SU PIÙ FOGLI (5.0) =================
+     Nella finestra «Scarica in PDF» si sceglie in quanti fogli dividere ogni tavola della pianta. I fogli sono una
+     griglia (2 = 2×1, 4 = 2×2, 6 = 3×2…): si prende la divisione che riempie meglio la carta. Ogni foglio sconfina un
+     po' su quello accanto, così si attaccano con lo scotch senza perdere niente, e in alto a destra c'è la mappina
+     che dice quale pezzo di pianta è. I reparti (audio, luci, video, corrente) restano quelli di adesso: ogni tavola
+     scelta si divide nello stesso modo. */
+  var TILE = null;
+
+  window.PDF_TILES = function (full, n, sz) {
+    n = Math.max(1, Math.min(12, n | 0));
+    var fm = PDF_FMT[sz] || PDF_FMT.A4;
+    var pr = Math.max(fm[0], fm[1]) / Math.min(fm[0], fm[1]), best = null, c, r, tw, th, tr, cost;
+    for (c = 1; c <= n; c++) {
+      if (n % c) continue;
+      r = n / c; tw = full.w / c; th = full.h / r;
+      tr = Math.max(tw, th) / Math.min(tw, th);
+      cost = Math.abs(Math.log(tr / pr));
+      if (!best || cost < best.cost) best = { c: c, r: r, cost: cost };
+    }
+    // ogni foglio è grande uguale agli altri (stessa scala su tutti, così si attaccano) e sconfina di un po' su quelli
+    // accanto; i fogli di bordo mostrano un filo di vuoto in più, che non dà fastidio
+    var tw0 = full.w / best.c, th0 = full.h / best.r;
+    var ov = Math.max(.3, Math.min(tw0, th0) * .04), out = [], i, j;
+    for (i = 0; i < best.r; i++) for (j = 0; j < best.c; j++) {
+      out.push({
+        vb: { x: full.x + j * tw0 - ov, y: full.y + i * th0 - ov, w: tw0 + 2 * ov, h: th0 + 2 * ov },
+        r: i + 1, c: j + 1, rows: best.r, cols: best.c, full: full, n: i * best.c + j + 1, tot: n
+      });
+    }
+    return out;
+  };
+  window.PDF_TILE_ON = function (t) { TILE = t || null; };
+
+  // la mappina in alto a destra della tavola: tutta la pianta, con in scuro il pezzo che è su questo foglio
+  window.PDF_TILEMAP = function (p, x0, y0, w, h) {
+    if (!TILE) return;
+    try {
+      var F = TILE.full, mw = 62, mh = Math.max(22, Math.min(62, mw * F.h / F.w)), mx = x0 + w - mw - 10, my = y0 + 10;
+      var s = Math.min(mw / F.w, mh / F.h), bw = F.w * s, bh = F.h * s;
+      mx = x0 + w - bw - 10;
+      pzR(p, mx - 3, my - 3, bw + 6, bh + 16, '#FFFFFF', PK.line, .5);
+      pzR(p, mx, my, bw, bh, '#EEF1F5', PK.line, .4);
+      pzR(p, mx + (TILE.vb.x - F.x) * s, my + (TILE.vb.y - F.y) * s, TILE.vb.w * s, TILE.vb.h * s, '#FFCC80', PK.acc, .7);
+      pzT(p, mx + bw / 2, my + bh + 9, 'foglio ' + TILE.n + '/' + TILE.tot + ' · riga ' + TILE.r + ' col. ' + TILE.c, { sz: 5.5, c: PK.mut, al: 'c' });
+    } catch (e) { /* la mappina è un di più */ }
+  };
+
+  /* ---------- i pulsanti degli avvisi ---------- */
+  function fixUnfed() {
+    try {
+      var PW = powerCalc(), list = PW.unfed.slice(), n = 0, no = [];
+      if (!list.length) { say('Adesso hanno corrente tutte.'); return; }
+      push();
+      list.forEach(function (o) { if (autoCablePower(o)) n++; else no.push(o.l); });
+      if (!n) {
+        hist.pop();
+        say('Non c\'è una ciabatta, uno sdoppio o un quadro con una presa libera a cui attaccarle: mettine uno vicino e riprova.');
+        return;
+      }
+      afterEdit(true);
+      say('Collegate ' + n + (n === 1 ? ' attrezzatura' : ' attrezzature') + ' alla ciabatta o al quadro più vicino con una presa libera.' +
+        (no.length ? ' Restano senza: ' + nomi_(no.map(function (l) { return { l: l }; }), 5) + ' — lì vicino non c\'era niente con una presa libera.' : '') +
+        ' Se non ti torna, ↩︎ Annulla.');
+    } catch (e) { /* niente */ }
+  }
+  function fixLoops() {
+    try {
+      var PW = powerCalc(), ids = {};
+      PW.loops.forEach(function (lk) { ids[lk.id] = 1; });
+      var n = Object.keys(ids).length;
+      if (!n) { say('Non ci sono più cavi che chiudono un anello.'); return; }
+      push();
+      Lk = Lk.filter(function (lk) { return !ids[lk.id]; });
+      afterEdit(true);
+      say('Tolt' + (n === 1 ? 'o 1 cavo che chiudeva' : 'i ' + n + ' cavi che chiudevano') + ' l\'anello. Se ne serviva uno, ↩︎ Annulla e togli l\'altro.');
+    } catch (e) { /* niente */ }
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest ? e.target.closest('[data-see],[data-wfix]') : null;
+    if (!b) return;
+    e.preventDefault();
+    if (b.hasAttribute('data-see')) {
+      try { highlightIds(b.getAttribute('data-see').split(','), b.getAttribute('data-see-l') || 'In pianta'); } catch (err) { /* niente */ }
+      return;
+    }
+    var k = b.getAttribute('data-wfix');
+    if (k === 'unfed') fixUnfed();
+    else if (k === 'loops') fixLoops();
+  });
+
+  /* ---------- come si vedono gli avvisi ---------- */
+  function stile() {
+    if (document.getElementById('ed50css')) return;
+    var s = document.createElement('style');
+    s.id = 'ed50css';
+    s.textContent =
+      '.wnotes{display:grid;gap:8px}' +
+      '.wnotes .wnote{display:grid;gap:3px}' +
+      '.wnotes .wnote+.wnote{border-top:1px solid rgba(0,0,0,.12);padding-top:8px}' +
+      '.wnotes .wwho{opacity:.9}' +
+      '.wnotes .wwhy{font-size:11.5px;line-height:1.35;opacity:.85}' +
+      '.wnotes .wbtn{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}' +
+      '#legBox .legfam+.legfam{margin-top:10px}' +
+      '#legBox .legtit{font-size:12px;font-weight:600;opacity:.75;margin:0 0 4px}' +
+      '#legBox .leggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:4px}' +
+      '#legBox .legrow{display:flex;align-items:center;gap:7px;width:100%;text-align:left;padding:3px 6px;font-size:12px;' +
+      'background:transparent;border:1px solid transparent;border-radius:7px;cursor:pointer}' +
+      '#legBox .legrow:hover{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.12)}' +
+      '#legBox .legsym{flex:0 0 auto;overflow:hidden}' +
+      '#legBox .legl{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
+    (document.head || document.documentElement).appendChild(s);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', stile); else stile();
+})();
 
 /* Adattatore dell'editor «Planimetria Evento» al gestionale.
    L'editor nasce dentro Claude e salva con window.claude.use('db' | 'assets' | 'downloads' | 'sample').
@@ -671,7 +1176,7 @@ function schLines(s) {
      al numero del magazzino e la pagina dice dov'è che si cambia; un articolo scritto solo qui non si crea in magazzino e resta una voce
      dell'editor; i materiali nuovi si aggiungono dal gestionale. Gli articoli del magazzino che l'editor non conosce stanno in
      «Dal magazzino» e con un tocco diventano tipi del catalogo. Tutto lo fa api_pjSync (progetti.gs); qui si porta e si applica. */
-  var WH = { on: false, map: {}, nuovi: [], snap: {}, warned: {}, q: '', fermi: '' };
+  var WH = { on: false, map: {}, nuovi: [], svc: [], snap: {}, warned: {}, q: '', fermi: '' };
   var WH_STOP = { di: 1, da: 1, del: 1, della: 1, dei: 1, delle: 1, con: 1, per: 1, e: 1, il: 1, la: 1, le: 1, lo: 1, un: 1, una: 1, in: 1, tipo: 1 };
   // Le parole di un nome, come in puTokens (prog2.js) e pjTokS_ (progetti.gs): la chiave di una voce deve venire uguale dappertutto
   function whTok(s) {
@@ -788,6 +1293,17 @@ function schLines(s) {
       if (!same) { st.cables[sp] = want; changed = true; }
       Object.keys(want).forEach(function (len) { snapSet(whKey({ i: WHX.cav[sp][len].n }), want[len]); });
     });
+    // 4.9 — le americane: le barre che il magazzino dichiara (scheda: che americana è e quanto è lunga) per sistema e lunghezza
+    st.truss = st.truss || {};
+    Object.keys(WHX.trs).forEach(function (sys) {
+      if (!whTrussOk(sys)) return;
+      var want = {}, cur = st.truss[sys] || {}, same = true;
+      Object.keys(WHX.trs[sys]).forEach(function (len) { var q = WHX.trs[sys][len].q; if (q > 0) want[len] = q; });
+      Object.keys(want).forEach(function (len) { if ((parseInt(cur[len], 10) || 0) !== want[len]) same = false; });
+      Object.keys(cur).forEach(function (len) { if ((parseInt(cur[len], 10) || 0) > 0 && !want[String(+len)]) same = false; });
+      if (!same) { st.truss[sys] = want; changed = true; }
+      Object.keys(want).forEach(function (len) { snapSet(whKey({ i: WHX.trs[sys][len].n }), want[len]); });
+    });
     return { changed: changed, restored: restored };
   }
   // All'apertura del catalogo: il magazzino com'è adesso, già dentro le scorte che l'editor sta per caricare
@@ -797,6 +1313,7 @@ function schLines(s) {
       WH.on = true;
       WH.map = v.mappa && typeof v.mappa === 'object' ? v.mappa : {};
       WH.nuovi = Array.isArray(v.nuovi) ? v.nuovi : [];
+      WH.svc = Array.isArray(v.svc) ? v.svc : [];                                // 5.0: le aste e le piantane degli altri service
       whIndex();
       if (data && typeof data === 'object') {
         var st = data.stock = (data.stock && typeof data.stock === 'object') ? data.stock : {};
@@ -818,6 +1335,7 @@ function schLines(s) {
       whSnap(stockEntriesOf(STOCK, null));                                      // com'era alla lettura: da qui si vede cosa cambia l'utente
       whBlurFields();
       whApplyAll();                                                              // 4.7: schede tecniche e nomi del magazzino sui tipi del catalogo
+      whAutoTypes();                                                             // 4.9: gli articoli del magazzino entrano da soli nel catalogo
       if (whMerge(STOCK, CustomCat, { live: true }).changed) { try { renderStockAll(); renderReports(); } catch (e) { /* niente */ } }
       whRender();
       whMark('data-wh', 'pronto');
@@ -888,6 +1406,7 @@ function schLines(s) {
           whIndex();
           whBlurFields();
           whApplyAll();
+          whAutoTypes();
           if (seq === WH.seq && typeof STOCK === 'object' && STOCK) {          // se nel frattempo è partito un altro invio, vale la risposta di quello
             var m = whMerge(STOCK, typeof CustomCat !== 'undefined' ? CustomCat : null, { live: true, pushed: pushed });
             if (m.changed) { try { renderStockAll(); renderReports(); if (typeof sel !== 'undefined' && sel && typeof pn === 'function') pn(); } catch (e) { /* niente */ } }
@@ -897,8 +1416,9 @@ function schLines(s) {
           whSay(v);
           whDoubts(v);
         } catch (e) { /* un di più */ }
+        WHX.linking = false;                   // 4.9: i collegamenti automatici di questo giro sono finiti
         whMark('data-wh-sync', ++whDone);
-      }, function () { whMark('data-wh-sync', ++whDone); /* offline o altro: alla prossima modifica si riprova (le voci cambiate restano diverse dalla fotografia) */ });
+      }, function () { WHX.linking = false; whMark('data-wh-sync', ++whDone); /* offline o altro: alla prossima modifica si riprova (le voci cambiate restano diverse dalla fotografia) */ });
     } catch (e) { /* un di più */ }
   }
   var WH_SOFT = { passivo: 1, passiva: 1, attivo: 1, attiva: 1, nexo: 1 };
@@ -944,7 +1464,7 @@ function schLines(s) {
   function whRender() {
     var host = document.getElementById('itemStockBox');
     if (!host || !host.parentNode) return;
-    whNote(host);
+    whStockOff();
     var box = document.getElementById('whBox');
     if (!WH.on || window.PJ_ROLE === 'm') { if (box) box.hidden = true; return; }
     if (!box) {
@@ -965,7 +1485,9 @@ function schLines(s) {
     }
     var used = {};
     (typeof CustomCat !== 'undefined' ? CustomCat : []).forEach(function (t) { var id = whIdOf(t.k); if (id) used[id] = 1; });
-    var list = WH.nuovi.filter(function (a) { return !used[a.id] && !a.u; });
+    var list = WH.nuovi.filter(function (a) {
+      return !used[a.id] && !a.u && !(a.s && typeof a.s === 'object' && (a.s.cavo || a.s.trss));
+    });
     box.hidden = !list.length;
     if (!list.length) { box.innerHTML = ''; return; }
     box.innerHTML = '<h3 style="font-size:13.5px;margin:16px 0 4px">Dal magazzino dell\'app</h3>' +
@@ -974,20 +1496,43 @@ function schLines(s) {
       '<div id="whList"></div>';
     whList();
   }
-  // 4.7 — una riga sopra le caselle delle scorte: i pezzi li comanda il magazzino, qui si leggono
-  function whNote(host) {
-    var n = document.getElementById('whNote');
-    if (!WH.on) { if (n) n.hidden = true; return; }
-    if (!n) {
-      n = document.createElement('p');
-      n.id = 'whNote';
-      n.className = 'hint';
-      n.style.margin = '0 0 6px';
-      n.innerHTML = 'I pezzi li comanda il <b>Magazzino</b> del gestionale: qui si leggono. Per cambiarli (o per aggiungere un articolo) usa la scheda Magazzino dell\'app.';
-      host.parentNode.insertBefore(n, host);
+  /* 4.9 — il magazzino comanda su tutto: le caselle delle scorte dentro l'editor non servono più e spariscono.
+     Restano solo quando l'editor è aperto da solo (senza gestionale): lì le scorte le scrive l'utente, come prima. */
+  function whStockOff() {
+    if (!WH.on) return;
+    var hid = 0;
+    ['lensBox', 'itemStockBox', 'stockBox'].forEach(function (id) {
+      var box = document.getElementById(id);
+      if (!box || box.hidden) return;
+      var p = box.previousElementSibling;
+      if (p && p.id === 'whNote') { var q = p.previousElementSibling; p.parentNode.removeChild(p); p = q; }
+      if (p && p.tagName === 'P') { p.hidden = true; p = p.previousElementSibling; }
+      if (p && p.tagName === 'H3') p.hidden = true;
+      box.hidden = true;
+      hid++;
+    });
+    var rc = document.getElementById('btnRecompose');
+    if (rc) rc.hidden = true;
+    if (!hid && document.getElementById('whSay')) return;
+    var sec = document.getElementById('secSettings');
+    if (sec) {
+      var sum = sec.querySelector('summary');
+      if (sum) sum.textContent = 'Impostazioni — margini, delay, orecchie del pubblico';
+      var body = sec.querySelector('.sec-body');
+      if (body && !document.getElementById('whSay')) {
+        var n = document.createElement('p');
+        n.id = 'whSay';
+        n.className = 'hint';
+        n.style.margin = '0 0 10px';
+        n.innerHTML = 'Cavi, americane, quadri, sdoppi, elevatori e attrezzature li comanda il <b>Magazzino</b> del gestionale: l\'editor li legge da lì ' +
+          'e li usa per comporre le tratte e per avvisarti quando non bastano. Si cambiano dalla scheda <b>Magazzino</b> dell\'app.';
+        body.insertBefore(n, body.firstChild);
+      }
     }
-    n.hidden = false;
+    var go = document.querySelector('[data-goto="secSettings"]');
+    if (go) go.textContent = '⚙️ Impostazioni';
   }
+
   function whList() {
     var el = document.getElementById('whList');
     if (!el) return;
@@ -1007,38 +1552,235 @@ function schLines(s) {
     if (!list.length) h = '<p class="hint" style="margin:4px 0">Nessun articolo con questo nome.</p>';
     el.innerHTML = h;
   }
-  function whUse(id) {
-    var a = WH.nuovi.filter(function (x) { return x.id === id; })[0];
-    if (!a || typeof CustomCat === 'undefined') return;
+  /* 4.9 — il simbolo e la misura di un articolo che arriva dal magazzino, indovinati dal nome: una testa mobile sembra una testa
+     mobile, un hazer un hazer, un par un par. Se non si capisce resta il rettangolo con il nome dentro, che si cambia da
+     «✏️ Modifica il tipo». Prima i nomi più precisi, poi quelli generici. */
+  var WH_SYMS = [
+    [/testa ?mobil|moving ?head|\bbeam\b|\bwash\b/, 'mover', .4, .4],
+    [/seguipersona|follow ?spot/, 'follow', .5, .5],
+    [/sagomator|profile|\bleko\b|\bets\b/, 'profile', .4, .4],
+    [/fresnel|\bpc\b 1|piano ?convesso/, 'fresnel', .35, .35],
+    [/blinder|molefay/, 'blinder', .5, .3],
+    [/strobo|strobe|atomic/, 'strobe', .4, .3],
+    [/hazer|\bhaze\b|macchina ?(del )?fumo|smoke|fog|nebbia|ghiaccio secco/, 'haze', .45, .3],
+    [/ledwall|led ?wall|scena ?led|schermo ?led|pannello ?led|pixel ?panel/, 'ledwall', .5, .5],
+    [/videoproiet|proiettor|projector|\bvpr\b/, 'projector', .4, .35],
+    [/telecamer|camera|\bptz\b/, 'camera', .25, .25],
+    [/schermo|\btelo\b|screen/, 'screen', 2, .1],
+    [/barra ?led|bar ?led|led ?bar|strip ?led|pixel ?bar/, 'bar', 1, .12],
+    [/\bpar\b|parled|par ?led|uplight|\bpc\b led/, 'par', .25, .25],
+    [/mixer luci|banco luci|consol[el] luci|light ?desk|grandma|avolites|chamsys/, 'lightdesk', .6, .4],
+    [/line ?array/, 'linearray', .7, .4],
+    [/\bsub\b|subwoofer/, 'sub', .6, .6],
+    [/monitor ?(da )?palco|\bspia\b|wedge/, 'wedge', .5, .4],
+    [/cassa|diffusor|speaker|satellit|\btop\b/, 'spk', .4, .4],
+    [/finale|amplificator|\bampli\b|nxamp|powersoft/, 'amp', .5, .5],
+    [/stage ?box|\bdx1|\bab1|\bsq ?rack|io ?box/, 'stagebox', .4, .3],
+    [/splitter ?dmx|dmx ?split/, 'dmxsplit', .4, .25],
+    [/sdoppi|splitter ?(di )?corrente|splitter ?cee/, 'splitter', .4, .25],
+    [/splitter|distributor/, 'rack', .4, .25],
+    [/mixer|consol[el]|banco audio|\bsq-?\d|\bqu-?\d|\bx32\b|\bm32\b/, 'mixer', .7, .5],
+    [/radiomicrofon|wireless|\bew ?1|\bsk ?\d|\bslx\b|\bqlxd\b/, 'micw', .2, .2],
+    [/in-?ear|\biem\b/, 'iem', .2, .2],
+    [/microfon|\bmic\b|\bsm58\b|\bsm57\b|\be604\b|\bbeta\b/, 'mic', .2, .2],
+    [/\bdi\b|direct ?box/, 'di', .2, .15],
+    [/asta|stativ|\bstand\b|treppied/, 'gstand', .3, .3],
+    [/leggio/, 'leggio', .5, .3],
+    [/elevator|\blift\b|crank|alzatrice/, 'lift', .5, .5],
+    [/paranco|\bhoist\b|motor/, 'hoist', .3, .3],
+    [/american|truss|traliccio/, 'truss', 2, .3],
+    [/ciabatt|multipres/, 'strip', .4, .12],
+    [/quadro|distribuzion/, 'quadro', .4, .3],
+    [/generator|gruppo elettrogen/, 'gen', 1.2, .8],
+    [/tastier|keyboard|piano digitale/, 'keys', 1.3, .35],
+    [/batteri|\bdrum\b/, 'drums', 1.6, 1.4],
+    [/percussion|conga|timpan/, 'perc', .6, .6],
+    [/\bdj\b|giradisch|cdj|lettore/, 'dj', 1.2, .6],
+    [/\btavolo\b|table|scrivania|banco regia/, 'table', 1.6, .8],
+    [/sedia|chair|sgabell/, 'chair', .5, .5],
+    [/pedana|praticabil|\bstage\b|palco/, 'stage', 2, 1],
+    [/rack|case|flight/, 'rack', .6, .6]
+  ];
+  /* 5.0 — la corrente solo dove serve: per famiglia, quanto consuma più o meno, che spina ha, se ha la presa passante e
+     quanto cavo ha in dotazione. Sono stime di classe (est), si vedono segnate come tali e la scheda tecnica
+     dell'articolo le sostituisce appena la riempi (SCH_CAT_F: W, pin, thru, cord). Chi non è in elenco non chiede
+     corrente: strutture, americane, elevatori, aste, microfoni, casse passive, tavoli, ceste. */
+  var WH_PW = {
+    mover: { W: 400, pin: 'pcon', thru: 'pcon' }, follow: { W: 1200, pin: 'civ', cord: 2 },
+    profile: { W: 300, pin: 'civ', cord: 2 }, fresnel: { W: 1000, pin: 'civ', cord: 2 },
+    blinder: { W: 1000, pin: 'civ', cord: 2 }, strobe: { W: 750, pin: 'civ', cord: 2 },
+    haze: { W: 1200, pin: 'civ', cord: 2 }, ledwall: { W: 150, pin: 'pcon', thru: 'pcon' },
+    projector: { W: 400, pin: 'civ', cord: 2 }, camera: { W: 30, pin: 'civ', cord: 2 },
+    bar: { W: 150, pin: 'pcon', thru: 'pcon' }, par: { W: 150, pin: 'pcon', thru: 'pcon' },
+    lightdesk: { W: 60, pin: 'civ', cord: 2 }, amp: { W: 1000, pin: 'civ', cord: 2 },
+    stagebox: { W: 40, pin: 'civ', cord: 2 }, dmxsplit: { W: 20, pin: 'civ', cord: 2 },
+    mixer: { W: 100, pin: 'civ', cord: 2 }, micw: { W: 20, pin: 'civ', cord: 2 },
+    iem: { W: 20, pin: 'civ', cord: 2 }, keys: { W: 30, pin: 'civ', cord: 2 }, dj: { W: 200, pin: 'civ', cord: 2 },
+    // questi non consumano: distribuiscono o danno corrente (come le voci dell'editor da cui sono copiati)
+    strip: { role: 'split', p: { posti: 5, plug: 'cee16', cord: 'auto' } },
+    splitter: { role: 'split', p: { spec: 'cee16x2' } },
+    quadro: { role: 'dist', p: { inPlug: 'cee32', inCord: 1, groups: [{ n: 6, t: 'cee16', A: 16, mcb: 'C16 1P+N' }], rcd: '' } },
+    gen: { role: 'supply', p: { kva: 30, spec: 'CEE 63A 400V 5p' } }
+  };
+  function whSym_(nome, cat) {
+    var t = String(nome || '').toLowerCase().normalize ? String(nome || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') : String(nome || '').toLowerCase();
+    for (var i = 0; i < WH_SYMS.length; i++) if (WH_SYMS[i][0].test(t)) return { sym: WH_SYMS[i][1], w: WH_SYMS[i][2], h: WH_SYMS[i][3] };
+    return { sym: cat === 'luci' ? 'par' : cat === 'video' ? 'projector' : 'rack', w: .5, h: .4 };
+  }
+
+  /* 5.0 — i modelli di asta e di piantana li dice il magazzino: gli articoli del sottogruppo «Aste e stativi
+     microfonici» o «Piantane e stativi luci» (o, senza sottogruppo, quelli che dal nome sembrano aste). Il tipo di
+     asta (giraffa, corta, dritta, da tavolo, clip) si legge dal nome. In fondo quello che si può farsi prestare dagli
+     altri service (4.8). Se il magazzino non ha nessuna asta, l'editor tiene i suoi modelli di esempio. */
+  function whAstaTipo_(nome) {
+    var t = String(nome || '').toLowerCase();
+    if (/clip|morsett|pinza/.test(t)) return 'clip';
+    if (/tavolo|desk|table|da ?banco/.test(t)) return 'tavolo';
+    if (/cort|short|bass|\blow\b|25900|\b259\b/.test(t)) return 'corta';
+    if (/dritt|straight|tonda|base ?tonda|26010/.test(t)) return 'dritta';
+    return 'giraffa';
+  }
+  window.WH_ASTE = function () {
+    if (!WH.on) return null;
+    var out = { giraffa: [], corta: [], dritta: [], tavolo: [], clip: [] }, n = 0;
+    var mine = function (a) {
+      var g = a && a.s && a.s.grp ? String(a.s.grp) : '';
+      if (g === 'aste' || g === 'piantane') return true;
+      if (g) return false;                                                       // ha già un sottogruppo suo: non è un'asta
+      return /\b(asta|aste|astina|stativ|piantan|treppied|giraffa)\b/i.test(String(a && a.n || ''));
+    };
+    WH.nuovi.forEach(function (a) {
+      if (!a || a.u || !mine(a)) return;
+      var q = Math.max(0, Math.round(Number(a.q) || 0));
+      if (!q) return;
+      out[whAstaTipo_(a.n)].push({ m: String(a.n), q: q, s: '' });
+      n++;
+    });
+    Object.keys(WH.map || {}).forEach(function (k) {
+      var a = WH.map[k];
+      if (!a || !mine(a)) return;
+      var q = Math.max(0, Math.round(Number(a.q) || 0));
+      if (!q) return;
+      out[whAstaTipo_(a.n)].push({ m: String(a.n), q: q, s: '' });
+      n++;
+    });
+    (WH.svc || []).forEach(function (x) {
+      if (!x || !x.n) return;
+      out[whAstaTipo_(x.n)].push({ m: String(x.n), q: Math.max(0, Math.round(Number(x.q) || 0)), s: String(x.s || '') });
+      n++;
+    });
+    return n ? out : null;
+  };
+
+  function whSize_(sym) {
+    for (var i = 0; i < WH_SYMS.length; i++) if (WH_SYMS[i][1] === sym) return [WH_SYMS[i][2], WH_SYMS[i][3]];
+    return [.5, .4];
+  }
+  /* 5.0 — il simbolo lo dice la scheda tecnica: quello scelto a mano, se no quello del sottogruppo del magazzino
+     («teste mobili» → testa mobile, «elevatori» → elevatore). Senza scheda resta l'indovinello sul nome. */
+  function whSymOf_(a) {
+    var sc = a && a.s, sym = '', g;
+    if (sc && typeof sc === 'object') {
+      if (sc.sym) sym = String(sc.sym);
+      else if (sc.grp && typeof schGrp === 'function') { g = schGrp(sc.grp); if (g && g.sym) sym = g.sym; }
+    }
+    if (!sym) return whSym_(a ? a.n : '', a ? a.c : '');
+    var wh = whSize_(sym);
+    return { sym: sym, w: wh[0], h: wh[1] };
+  }
+
+  // Un articolo del magazzino diventa un tipo che si può mettere in pianta (i pezzi restano quelli del magazzino)
+  function whAddType(a) {
+    if (!a || typeof CustomCat === 'undefined') return false;
     var cat = (a.c === 'audio' || a.c === 'luci' || a.c === 'video') ? a.c : 'personalizzati';
-    var sym = cat === 'luci' ? 'par' : cat === 'video' ? 'projector' : 'rack';
+    var g = whSymOf_(a), sym = g.sym;
     var k = 'wh_' + a.id;
-    if (CustomCat.some(function (t) { return t.k === k; })) return;
-    CustomCat.push({ k: k, gen: 'altro', cat: cat, custom: 1, l: a.n, sym: sym, w: .5, h: .4, c: '#455A64', W: 0, pin: 'none' });
+    if (CustomCat.some(function (t) { return t.k === k; })) return false;
+    var t = { k: k, gen: 'altro', cat: cat, custom: 1, wh: 1, l: a.n, sym: sym, w: g.w, h: g.h, c: '#455A64', W: 0, pin: 'none' };
+    // 5.0 — se è una famiglia che per andare vuole corrente, nasce già con la spina e una potenza di massima (stimata):
+    // così entra nel bilancio elettrico e l'editor avvisa quando non è collegata. La scheda tecnica, quando c'è, comanda.
+    var q = WH_PW[sym];
+    if (q) {
+      if (q.W) { t.W = q.W; t.est = 1; }
+      if (q.pin) t.pin = q.pin;
+      if (q.thru) t.thru = q.thru;
+      if (q.cord !== undefined) t.cord = q.cord;
+      if (q.role) t.role = q.role;
+      if (q.p) t.p = JSON.parse(JSON.stringify(q.p));
+    }
+    CustomCat.push(t);
     STOCK.items = STOCK.items || {};
     STOCK.items[k] = a.q;
     WH.snap['k:' + k] = Math.round(a.q);
+    return true;
+  }
+  function whUse(id) {
+    var a = WH.nuovi.filter(function (x) { return x.id === id; })[0];
+    if (!whAddType(a)) return;
+    var cat = (a.c === 'audio' || a.c === 'luci' || a.c === 'video') ? a.c : 'personalizzati';
     try { rebuildAddSelect(); renderStockAll(); if (typeof renderTypeList === 'function') renderTypeList(); saveGlobal(); } catch (e) { /* niente */ }
     whRender();
     if (typeof say === 'function') say('«' + a.n + '» è nel catalogo: lo trovi in Inserisci' + (cat === 'personalizzati' ? ' › I tuoi tipi' : '') + '. I pezzi li legge dal magazzino. Misure e simbolo si cambiano da ✏️ Modifica il tipo.');
+  }
+
+  /* 4.9 — l'editor è integrato col magazzino: ogni articolo del magazzino che non sia un cavo o un'americana (quelli sono scorte, non pezzi da
+     mettere in pianta) entra da solo nel catalogo, così lo trovi in «Inserisci» cercandolo per nome. Quelli che il magazzino non ha più se ne
+     vanno, a meno che siano già in pianta. Non serve più creare tipi a mano. */
+  function whAutoTypes() {
+    if (!WH.on || typeof CustomCat === 'undefined' || typeof STOCK !== 'object' || !STOCK) return 0;
+    var added = 0, gone = 0;
+    var link = [], mod = [], vis = {};
+    WH.nuovi.forEach(function (a) {
+      if (!a || a.u) return;
+      var sc = a.s;
+      if (sc && typeof sc === 'object' && (sc.cavo || sc.trss)) return;              // è un cavo o un'americana: va nelle scorte, non in pianta
+      // 4.9 — il magazzino ha ragione: se l'articolo somiglia a una voce che l'editor ha già, l'editor usa quella (si collega da solo e prende
+      // nome e pezzi dal magazzino); si disfa dalla finestra «Collegamenti editor» dell'app
+      var g = window.PJ_ROLE === 'c' ? whGuess(a) : null;
+      if (g && !vis['k:' + g.k]) { vis['k:' + g.k] = 1; link.push({ c: g.c, i: a.n, q: Math.max(1, a.q), k: g.k }); mod.push('k:' + g.k); return; }
+      if (g) return;                                                                  // due articoli per la stessa voce: il secondo aspetta
+      if (whAddType(a)) added++;
+    });
+    if (link.length && !WHX.linking) { WHX.linking = true; try { whPush(link, mod); } catch (e) { WHX.linking = false; } }
+    var inUse = {};
+    try { (typeof S !== 'undefined' ? S : []).forEach(function (o) { if (o && o.k) inUse[o.k] = 1; }); } catch (e) { /* niente */ }
+    var keep = CustomCat.filter(function (t) {
+      if (!t || !t.wh) return true;
+      if (inUse[t.k]) return true;
+      return !!WHX.id[t.k] || !!(WH.map && WH.map['k:' + t.k]);
+    });
+    if (keep.length !== CustomCat.length) { gone = CustomCat.length - keep.length; CustomCat = keep; }
+    // 5.0 — i tipi appena nati prendono subito quello che dice la loro scheda tecnica (potenza, spina, uscita passante,
+    // cavo in dotazione): la scheda comanda sulla stima di famiglia
+    if (added) { try { window.WH_CAT(); } catch (e) { /* niente */ } }
+    // non si salva niente: questi tipi li rifà il magazzino a ogni apertura (e un salvataggio qui ruberebbe il turno a quello della pianta)
+    if (added || gone) {
+      try { rebuildAddSelect(); renderStockAll(); if (typeof renderTypeList === 'function') renderTypeList(); } catch (e) { /* niente */ }
+    }
+    var bt = document.getElementById('btnCustomType');
+    if (bt) bt.hidden = true;                                                        // le attrezzature si aggiungono in Magazzino, non qui
+    return added;
   }
 
   /* ---------- 4.7 — il magazzino comanda: schede tecniche, nomi e cavi arrivano dal magazzino; l'editor chiede quando ha un dubbio ----------
      WHX.id / name / s: per ogni tipo del catalogo collegato a un articolo, l'articolo, il suo nome e la sua scheda tecnica (se ha dei dati);
      WHX.has: la scheda c'è (anche vuota: il coordinatore l'ha toccata); WHX.cav: i cavi per tipo e lunghezza {tipo: {metri: {q, n, id}}};
      WHX.cat0: com'erano i dati del catalogo prima che il magazzino li cambiasse. Le funzioni WH_* le chiama l'editor (build_pianta.py). */
-  var WHX = { id: {}, name: {}, s: {}, has: {}, cav: {}, cat0: {}, ed: {}, proposed: false, asked: false };
+  var WHX = { id: {}, name: {}, s: {}, has: {}, cav: {}, trs: {}, cat0: {}, ed: {}, proposed: false, asked: false, linking: false };
   window.WH_COUP = { nl4: 'Accoppiatore Speakon (per unire due cavi)', cat: 'Accoppiatore RJ45 / etherCON (per unire due cavi)', hdmi: 'Accoppiatore HDMI (per unire due cavi)',
     sdi: 'Barilotto BNC (per unire due cavi)', jack: 'Accoppiatore jack (per unire due cavi)', fibra: 'Bussola per fibra ottica (per unire due cavi)' };
   function whStore(k, v) {
     try { if (v === undefined) return window.localStorage.getItem(k) || ''; window.localStorage.setItem(k, v); } catch (e) { /* niente */ }
     return '';
   }
+  function whTrussOk(sys) {
+    try { return !!(typeof TRUSS === 'object' && TRUSS && TRUSS[sys]); } catch (e) { return false; }
+  }
   function whSpecOk(sp) {
     try { return Object.keys(SPECS).some(function (f) { return (SPECS[f] || []).some(function (x) { return x.k === sp; }); }); } catch (e) { return false; }
   }
   function whIndex() {
-    var id = {}, name = {}, s = {}, has = {}, cav = {}, seen = {};
+    var id = {}, name = {}, s = {}, has = {}, cav = {}, trs = {}, seen = {};
     var take = function (k, a, eid) {
       if (!k || !a || !eid) return;
       id[k] = String(eid); name[k] = String(a.n || '');
@@ -1048,10 +1790,13 @@ function schLines(s) {
       var x = a && a.s;
       if (!eid || seen[eid]) return;
       seen[eid] = true;
-      if (!x || typeof x !== 'object' || !x.cavo || !(+x.len > 0)) return;
-      var sp = String(x.cavo), len = String(+x.len);
-      cav[sp] = cav[sp] || {};
-      var c = cav[sp][len] = cav[sp][len] || { q: 0, n: String(a.n || ''), id: String(eid) };
+      if (!x || typeof x !== 'object' || !(+x.len > 0)) return;
+      var len = String(+x.len), box, c;
+      // 4.9 — un articolo con la scheda può essere un cavo (cavo) o un'americana (trss): tutti e due portano la loro lunghezza
+      if (x.cavo) { box = (cav[String(x.cavo)] = cav[String(x.cavo)] || {}); }
+      else if (x.trss) { box = (trs[String(x.trss)] = trs[String(x.trss)] || {}); }
+      else return;
+      c = box[len] = box[len] || { q: 0, n: String(a.n || ''), id: String(eid) };
       c.q += Math.max(0, Math.round(Number(a.q) || 0));
     };
     Object.keys(WH.map).forEach(function (key) {
@@ -1061,7 +1806,7 @@ function schLines(s) {
       cable(a, a.e);
     });
     WH.nuovi.forEach(function (a) { take('wh_' + a.id, a, a.id); cable(a, a.id); });
-    WHX.id = id; WHX.name = name; WHX.s = s; WHX.has = has; WHX.cav = cav; WHX.ed = {};
+    WHX.id = id; WHX.name = name; WHX.s = s; WHX.has = has; WHX.cav = cav; WHX.trs = trs; WHX.ed = {};
   }
   function whEd(k) {
     if (!WHX.s[k]) return null;
@@ -1190,6 +1935,34 @@ function schLines(s) {
   /* Quando ha un dubbio l'editor chiede (solo al coordinatore): una voce sua somiglia a un articolo del magazzino senza essere uguale.
      «Sì, è lo stesso» collega (da lì valgono il nome e i pezzi del magazzino); «No» non lo chiede più su questo dispositivo. */
   function whNo() { try { return JSON.parse(whStore('gs_wh_no') || '{}') || {}; } catch (e) { return {}; } }
+  // Collega in blocco le voci che il server ci ha segnalato (e quelle che somigliano a un articolo): una chiamata sola, poi si rilegge tutto
+  function whLinkAll(list) {
+    if (WHX.linking || !list.length) return;
+    WHX.linking = true;
+    var voci = list.slice(0, 60).map(function (d) { return { chiave: d.chiave, id: d.id, voce: d.voce }; });
+    try {
+      api('api_pjSync', ['[]', '[]', '', JSON.stringify(voci)]).then(function (r) {
+        if (r && typeof r === 'object') {
+          WH.map = r.mappa && typeof r.mappa === 'object' ? r.mappa : WH.map;
+          WH.nuovi = Array.isArray(r.nuovi) ? r.nuovi : WH.nuovi;
+          try {
+            whIndex(); whApplyAll();
+            if (typeof STOCK === 'object' && STOCK && whMerge(STOCK, typeof CustomCat !== 'undefined' ? CustomCat : null, { live: true }).changed) {
+              try { renderStockAll(); renderReports(); } catch (e2) { /* niente */ }
+            }
+            whRender();
+            if (typeof say === 'function') {
+              say(voci.length === 1 ? 'Collegato al magazzino: «' + voci[0].voce + '».'
+                : voci.length + ' voci collegate al magazzino: valgono i nomi e i pezzi del magazzino.');
+            }
+          } catch (e3) { /* un di più */ }
+        }
+        WHX.linking = false;
+        whMark('data-wh-sync', ++whDone);
+        whMark('data-wh-dubbi', 0);
+      }, function () { WHX.linking = false; whMark('data-wh-sync', ++whDone); });
+    } catch (e) { WHX.linking = false; }
+  }
   function whDoubtList(v) {
     var out = [], seen = {}, no = whNo();
     var add = function (chiave, voce, articolo, id) {
@@ -1202,6 +1975,8 @@ function schLines(s) {
     WH.nuovi.forEach(function (a) { if (a.u) return; var g = whGuess(a); if (g) add('k:' + g.k, g.l, a.n, a.id); });
     return out;
   }
+  /* 4.9 — «il magazzino ha ragione e l'editor usa la cosa più simile che è in magazzino»: quello che prima si chiedeva («è lo stesso?»)
+     adesso si collega da solo. Il cartellino non si apre più; i collegamenti si disfano dalla finestra «Collegamenti editor» dell'app. */
   function whDoubts(v) {
     if (window.PJ_ROLE !== 'c') return;
     if (v && Array.isArray(v.controlla)) WH.chk = v.controlla;
@@ -1209,7 +1984,9 @@ function schLines(s) {
     try { list = whDoubtList(v); } catch (e) { list = []; }
     whMark('data-wh-dubbi', list.length);
     var box = document.getElementById('whAsk');
-    if (!list.length) { if (box) box.remove(); return; }
+    if (box) box.remove();
+    if (list.length) { whLinkAll(list); return; }
+    return;
     if (!box && WHX.asked) return;                       // «Più tardi»: per questa volta non si richiede
     WHX.asked = true;
     if (!box) {
@@ -1239,7 +2016,7 @@ function schLines(s) {
           WH.map = r.mappa && typeof r.mappa === 'object' ? r.mappa : WH.map;
           WH.nuovi = Array.isArray(r.nuovi) ? r.nuovi : WH.nuovi;
           try {
-            whIndex(); whApplyAll();
+            whIndex(); whApplyAll(); whAutoTypes();
             if (typeof STOCK === 'object' && STOCK && whMerge(STOCK, typeof CustomCat !== 'undefined' ? CustomCat : null, { live: true }).changed) { try { renderStockAll(); renderReports(); } catch (e2) { /* niente */ } }
             whRender();
             if (typeof say === 'function') say('Collegato: «' + d.voce + '» è «' + d.articolo + '» del magazzino. Da adesso valgono il nome e i pezzi del magazzino.');
@@ -1523,6 +2300,84 @@ window.CAB_SRC = function (lk, PW) {
     return { txt: txt, ids: ids, quadro: nodo.id, diretto: !mezzo.length };
   } catch (e) { return vuoto; }
 };
+
+/* ---------- 4.9 — il magazzino comanda: scegliere il pezzo con cui fare la tratta ----------
+   Il menu «Tipo» del pannello dice anche quanti pezzi hai in magazzino di quel tipo e da che lunghezze (WH_SPEC_L).
+   Sotto la tratta, «Con cosa la fai»: i pezzi del magazzino che bastano da soli per quella tratta; toccandone uno la tratta si
+   fa con quello (lk.pz) e il conto dei cavi lo rispetta (WH_PICK, chiamata da cablePlan). «Lascia scegliere all'editor» torna
+   com'era. Quello che manca lo dice già la riga dell'elenco (CAB_FIX). */
+function whStock_(spec) {
+  try { return (typeof STOCK === 'object' && STOCK && STOCK.cables && STOCK.cables[spec]) || null; } catch (e) { return null; }
+}
+function whPcs_(spec) {
+  var st = whStock_(spec), out = [];
+  if (!st) return out;
+  Object.keys(st).forEach(function (len) { var q = parseInt(st[len], 10) || 0; if (+len > 0 && q > 0) out.push({ len: +len, q: q }); });
+  return out.sort(function (a, b) { return a.len - b.len; });
+}
+// l'etichetta di un tipo di cavo nel menu «Tipo»: «Ciabatta con spina CEE — ne hai 8, da 2 a 20 m»
+window.WH_SPEC_L = function (fam, sp) {
+  try {
+    if (!sp) return '';
+    if (sp.direct || sp.k === 'dev') return sp.l;
+    var p = whPcs_(sp.k);
+    if (!p.length) return sp.l + (whStock_(sp.k) || whOn_() ? ' — non ne hai' : '');
+    var tot = 0;
+    p.forEach(function (x) { tot += x.q; });
+    var da = p[0].len, a = p[p.length - 1].len;
+    return sp.l + ' — ne hai ' + tot + (da === a ? ' da ' + whNum_(da) + ' m' : ', da ' + whNum_(da) + ' a ' + whNum_(a) + ' m');
+  } catch (e) { return sp && sp.l ? sp.l : ''; }
+};
+function whOn_() { try { return !!document.documentElement.getAttribute('data-wh'); } catch (e) { return false; } }
+function whNum_(n) { return String(Math.round(n * 10) / 10).replace('.', ','); }
+function whEsc_(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+// il pezzo scelto a mano per questa tratta, se c'è ed è ancora buono
+window.WH_PICK = function (j) {
+  try {
+    if (!j || !j.lk || !j.lk.pz || j.part !== 'ext') return null;
+    var pz = j.lk.pz;
+    if (!pz || pz.spec !== j.spec || !(+pz.len > 0)) return null;
+    if (+pz.len + 0.001 < (j.need || 0)) return null;             // non ci arriva: lascio fare all'editor (e l'elenco avvisa)
+    return [+pz.len];
+  } catch (e) { return null; }
+};
+window.WH_PICK_HTML = function (lk, CP) {
+  try {
+    if (!lk || !CP) return '';
+    var mine = (CP.per[lk.id] || []).filter(function (x) { return x.part === 'ext'; })[0];
+    if (!mine || !mine.spec) return '';
+    // i metri che contano per scegliere sono quelli veri della tratta (lkNeed), non il totale dei pezzi che l'editor ha già messo insieme
+    var need = 0;
+    try { need = lkNeed(lk) || 0; } catch (e) { need = 0; }
+    need = Math.round((need || mine.need || 0) * 10) / 10;
+    var p = whPcs_(mine.spec).filter(function (x) { return x.len + 0.001 >= need; });
+    var pz = lk.pz && lk.pz.spec === mine.spec ? +lk.pz.len : 0;
+    if (!p.length && !pz) return '';
+    var h = '<div class="grp"><span class="info">Con cosa la fai (' + whNum_(need) + ' m, pezzi che hai in magazzino):</span>';
+    p.slice(0, 12).forEach(function (x) {
+      h += '<button class="sm' + (pz === x.len ? ' pri' : '') + '" data-whpz="' + x.len + '" data-whpz-lk="' + whEsc_(lk.id) + '" data-whpz-sp="' + whEsc_(mine.spec) + '">' +
+        whNum_(x.len) + ' m <span class="mono">×' + x.q + '</span></button>';
+    });
+    if (pz) h += '<button class="sm" data-whpz="" data-whpz-lk="' + whEsc_(lk.id) + '">↺ lascia scegliere all\'editor</button>';
+    else h += '<span class="info">(se non scegli, l\'editor prende il pezzo che spreca meno)</span>';
+    return h + '</div>';
+  } catch (e) { return ''; }
+};
+document.addEventListener('click', function (e) {
+  var b = e.target && e.target.closest ? e.target.closest('[data-whpz]') : null;
+  if (!b) return;
+  e.preventDefault();
+  try {
+    var id = b.getAttribute('data-whpz-lk'), v = b.getAttribute('data-whpz');
+    var lk = (typeof Lk !== 'undefined' ? Lk : []).filter(function (x) { return x.id === id; })[0];
+    if (!lk) return;
+    push();
+    if (!v) delete lk.pz; else lk.pz = { spec: b.getAttribute('data-whpz-sp'), len: +v };
+    afterEdit(true);
+    pn();
+    if (typeof say === 'function') say(v ? 'Questa tratta la fai con il pezzo da ' + whNum_(+v) + ' m.' : 'Il pezzo lo sceglie di nuovo l\'editor.');
+  } catch (err) { /* niente */ }
+});
 </script>
 </head><body>
 <title>Planimetria Evento</title>
@@ -2024,9 +2879,10 @@ body.gen-live #ms{left:calc((100vw - var(--genW))/2)}
    <div class="menu" data-m="vista"><button class="mb" aria-haspopup="true" aria-expanded="false">Vista</button>
     <div class="dd">
      <button data-click="btnFit">⤢ Adatta: inquadra tutto</button>
-     <hr><label class="field"><input id="cbLabels" type="checkbox" checked> Etichette</label>
-     <span class="dd-row"><label class="field">Testi <input id="lblSize" type="number" step="0.01" min="0.03" value="0.15"> m</label>
-      <label class="field" title="La grandezza dei testi segue la distanza fra le attrezzature"><input id="lblAuto" type="checkbox" checked> automatici</label></span>
+     <hr><button data-goto="secLegend">🗺️ Legenda dei simboli</button>
+     <span hidden><label class="field"><input id="cbLabels" type="checkbox" checked> Etichette</label>
+      <label class="field">Testi <input id="lblSize" type="number" step="0.01" min="0.03" value="0.15"> m</label>
+      <label class="field"><input id="lblAuto" type="checkbox" checked> automatici</label></span>
      <label class="field"><input id="cq" type="checkbox" checked> Distanze e ritardi delle casse</label>
      <label class="field"><input id="cbCover" type="checkbox" checked> Copertura delle casse</label>
      <label class="field"><input id="cbCableInfo" type="checkbox" checked> Lunghezze dei cavi</label>
@@ -2288,6 +3144,10 @@ body.gen-live #ms{left:calc((100vw - var(--genW))/2)}
 
 <details class="sec" id="secCables"><summary>Cavi tratta per tratta <span id="cableCount" class="chip"></span></summary>
  <div class="sec-body"><div class="tbl-wrap"><table class="sched" id="cableTable"></table></div></div>
+</details>
+
+<details class="sec" id="secLegend"><summary>Legenda dei simboli</summary>
+ <div class="sec-body"><div id="legBox"></div></div>
 </details>
 
 <details class="sec" id="secHeights"><summary>Altezze — americane, torri, elevatori, paranchi, palco</summary>
@@ -2820,9 +3680,12 @@ const ASTA_MODELS={giraffa:['K&M 210/9','Gravity MS 4322 B','Proel RSM180','Proe
 const astaL=t=>(ASTE.find(a=>a[0]===t)||['',''])[1];
 const astaTxt=p=>{p=p||{};const a=astaL(p.asta);return a?(a+(p.astaM?' · '+p.astaM:'')):''};
 function astaOpts(p){p=p||{};const cur=(p.asta||'giraffa')+(p.astaM?'|'+p.astaM:'');let h='';
-  ASTE.forEach(([t,l])=>{const ms=ASTA_MODELS[t]||[];h+=`<optgroup label="${esc(l.charAt(0).toUpperCase()+l.slice(1))}"><option value="${t}"${cur===t?' selected':''}>${esc(l)}</option>`;
-    ms.forEach(m=>{const v=t+'|'+m;h+=`<option value="${esc(v)}"${cur===v?' selected':''}>${esc(m)}</option>`});
-    if(p.asta===t&&p.astaM&&!ms.includes(p.astaM))h+=`<option value="${esc(cur)}" selected>${esc(p.astaM)}</option>`;h+='</optgroup>'});return h}
+  const WHA=typeof WH_ASTE==='function'?WH_ASTE():null;
+  ASTE.forEach(([t,l])=>{const ms=WHA?(WHA[t]||[]).map(x=>x.m+(x.s?` — ${x.q} da ${x.s}`:` — ne hai ${x.q}`)):(ASTA_MODELS[t]||[]);
+    const mk=WHA?(WHA[t]||[]).map(x=>x.m):(ASTA_MODELS[t]||[]);
+    h+=`<optgroup label="${esc(l.charAt(0).toUpperCase()+l.slice(1))}"><option value="${t}"${cur===t?' selected':''}>${esc(l)}</option>`;
+    mk.forEach((m,i)=>{const v=t+'|'+m;h+=`<option value="${esc(v)}"${cur===v?' selected':''}>${esc(ms[i])}</option>`});
+    if(p.asta===t&&p.astaM&&!mk.includes(p.astaM))h+=`<option value="${esc(cur)}" selected>${esc(p.astaM)}</option>`;h+='</optgroup>'});return h}
 function setAsta(o,v){o.p=o.p||{};const i=v.indexOf('|');if(i<0){o.p.asta=v;delete o.p.astaM}else{o.p.asta=v.slice(0,i);o.p.astaM=v.slice(i+1)}}
 const DI_MODELS=[['BSS','AR-133','attiva'],['BSS','AR-116','attiva'],['Behringer','Ultra-DI DI100','attiva'],['Behringer','Ultra-DI DI400P','passiva'],['Behringer','Ultra-DI DI20','attiva, 2 canali'],
  ['Behringer','Ultra-DI DI600P','passiva'],['Behringer','Ultra-DI DI4000','attiva, 4 canali'],['Behringer','Ultra-DI DI800','attiva, 8 canali (rack)'],
@@ -3859,7 +4722,7 @@ function cablePanel(lk){
   const L=lkLen(lk),Lr=lkNeed(lk),PW=powerCalc(),ld=PW.edge[lk.id],run=PW.runs[lk.id],CP=cablePlan(),per=(CP.per[lk.id]||[]).find(x=>x.part==='ext');
   let h=`<div class="grp"><b>Cavo ${esc(F.l)}</b><span class="chip">${esc(A?A.l:'?')} → ${esc(B?B.l:'?')}</span>
     <label class="field">Famiglia <select data-c="k">${opt_(Object.entries(FAM).map(([k,v])=>[k,v.l]),lk.k)}</select></label>
-    <label class="field">Tipo <select data-c="spec">${opt_((SPECS[lk.k]||[]).map(s=>[s.k,s.l]),sp&&sp.k)}</select></label>
+    <label class="field">Tipo <select data-c="spec">${opt_((SPECS[lk.k]||[]).map(s=>[s.k,(typeof WH_SPEC_L==='function'?WH_SPEC_L(lk.k,s):s.l)]),sp&&sp.k)}</select></label>
     <label class="field">Cavi in parallelo <input data-c="n" type="number" min="1" step="1" value="${lk.n||1}"></label>
     <label class="field">Fornito da <select data-c="prov">${opt_(Object.entries(PROV),provOf(lk))}</select></label>
     ${provOf(lk)?`<label class="field">Chi <input data-c="provN" type="text" value="${esc(lk.provN||'')}" style="width:120px"></label>`:''}
@@ -3887,6 +4750,7 @@ function cablePanel(lk){
   if(canSplit){const what=lk.k==='power'?'sdoppio':'splitter';h+='<div class="grp"><span class="info">Inserisci un '+what+' sul percorso (il cavo viene diviso in due):</span>';
     (lk.via||[]).forEach((v,i)=>h+=`<button class="sm" data-act="split" data-i="${i}">➕ ${what} al punto ${i+1}</button>`);
     h+=`<button class="sm" data-act="split" data-i="-1">➕ ${what} a metà</button></div>`}
+  if(typeof WH_PICK_HTML==='function')h+=WH_PICK_HTML(lk,CP);
   return h;
 }
 
@@ -4379,6 +5243,7 @@ function handleTap(p,target){
   const po=pickAt(p,target),gid=po?po.id:null;
   if(linking){
     if(!lkStart){if(gid){lkStart=gid;lkPts=[];$('lkStep').textContent='Tocca punti vuoti per piegare il percorso, poi l\'arrivo';drawd()}return}
+    if(gid&&gid!==lkStart&&typeof PW_NOPOWER==='function'&&PW_NOPOWER($('lkKind').value,lkStart,gid)){endModes();clearSel();drawd();pn();return}
     if(gid&&gid!==lkStart){push();const lk={id:uid(),k:$('lkKind').value,spec:$('lkSpec').value,n:1,a:lkStart,b:gid,via:lkPts};
       const was=lk.spec;lk.spec=smartSpec(lk);Lk.push(lk);const zr=routeNew(lk);endModes();clearSel();selLk=lk.id;afterEdit();pn();
       if(lk.spec!==was||zr)say((lk.spec!==was?`Tipo di cavo scelto in automatico: ${(specOf(lk.k,lk.spec)||{}).l} (puoi cambiarlo nel pannello). `:'')+zr);return}
@@ -4752,13 +5617,7 @@ function renderPower(){
   if(ads.length){h+=`<h3 style="font-size:13px;margin:16px 0 4px">🔌 Adattatori: dove vanno (${ads.length})</h3><div class="tbl-wrap"><table class="sched"><tr><th>Adattatore</th><th>Dove</th></tr>`;
     ads.forEach(({a,r})=>h+=`<tr><td style="white-space:nowrap"><span class="chip ${a.k==='err'?'err':a.k==='warn'?'warn':'ok'}">${esc(adTxt(a.plug,a.sock))}</span></td><td>${esc(adWhere(a,r,PW))}${a.msg?`<div class="info">${esc(a.msg)}</div>`:''}</td></tr>`);
     h+='</table></div><p class="hint" style="margin:4px 0 0">In pianta ogni adattatore è il rombo 🔶 sul cavo. Se non vuoi adattatori, cambia il tipo di cavo (es. cavo CEE → civile) o metti una ciabatta.</p>'}
-  const notes=[];
-  PW.issues.forEach(x=>notes.push(esc(x.msg)));
-  if(PW.unfed.length)notes.push(`<b>${PW.unfed.length===1?'1 utenza':PW.unfed.length+' utenze'} senza corrente:</b> ${PW.unfed.slice(0,8).map(o=>esc(o.l)).join(', ')}${PW.unfed.length>8?'…':''}`);
-  if(PW.noW.length)notes.push(`<b>${PW.noW.length===1?'1 apparecchio alimentato':PW.noW.length+' apparecchi alimentati'} senza potenza inserita</b> (es. ${PW.noW.slice(0,4).map(o=>esc(o.l)).join(', ')}): scrivila nel pannello per un bilancio completo.`);
-  if(PW.loops.length)notes.push(`<b>${PW.loops.length} cavi chiudono un anello</b>: in un impianto a raggiera ogni utenza ha un solo cavo di arrivo.`);
-  if(S.some(o=>(catBy(o.k)||{}).est&&PW.seen.has(o.id)))notes.push('Alcune potenze sono stime di classe (segnate "potenza stimata"): verificale sulle schede tecniche.');
-  if(notes.length)h+=`<div class="callout warn" style="margin-top:10px;display:grid;gap:4px">${notes.map(x=>`<span>${x}</span>`).join('')}</div>`;
+  if(typeof PW_NOTES==='function')h+=PW_NOTES(PW);
   h+='<p class="hint" style="margin:8px 0 0">Corrente a 230 V; sulle linee 400 V è quella della fase più carica. Le prese monofase dei quadri sono distribuite a coppie su L1, L2, L3 (cambiale dal menu se il vostro quadro è cablato diversamente). Uso: 80% giallo, oltre 100% rosso.</p>';
   box.innerHTML=h;
 }
@@ -4794,7 +5653,7 @@ function renderHeights(){const items=heightItems();
   svgEl.innerHTML=s;
 }
 
-function renderReports(){bump();renderMaterials();renderCables();renderPower();renderHeights();renderAudio();renderChannels();renderDmx();renderDocs()}
+function renderReports(){bump();renderMaterials();renderCables();renderPower();renderHeights();renderAudio();renderChannels();renderDmx();renderDocs();if(typeof LEG_RENDER==='function')LEG_RENDER()}
 $('secHeights').addEventListener('toggle',()=>{if($('secHeights').open)renderHeights()});
 
 /* ============================== CSV ============================== */
@@ -4968,6 +5827,7 @@ function cablePlan(){
   jobs.sort((a,b)=>b.need-a.need);
   jobs.forEach(j=>{const fam=j.fam||'power',jp=JOINT[fam]||3;let pcs;
     if(j.exact)pcs=[j.need];
+    else if(typeof WH_PICK==='function'&&WH_PICK(j))pcs=WH_PICK(j);
     else{const r=rem[j.spec];let cm=null;
       if(r){const av={};Object.keys(r).forEach(k=>{if(r[k]>0)av[k]=Math.floor(r[k]/j.n)});cm=boundedCable(j.need,av,jp)}
       if(!cm)cm=compose(j.need,lensOf(fam,j.spec),jp);pcs=cm?cm.pcs:null}
@@ -6363,7 +7223,7 @@ function videoPorts(){const out={},warn=[];S.forEach(o=>{const io=ioOf(o);if(!io
 function renderDmx(){const box=$('dmxBox');if(!box)return;const D=dmxPatch(),VP=videoPorts(),fxs=S.filter(dmxFix),vids=S.filter(o=>{const io=ioOf(o);return io.vin||io.vout});
   if(!fxs.length&&!vids.length){box.innerHTML='<p class="empty-note">Aggiungi luci con i cavi DMX dal mixer luci (o attrezzature video): qui compaiono universi, indirizzi DMX, catene e ingressi video.</p>';$('dmxChip').textContent='';$('dmxChip').className='chip';return}
   const warn=D.warn.concat(VP.warn),us=Object.keys(D.univ).map(Number).sort((a,b)=>a-b);let h='';
-  if(warn.length)h+=`<div class="callout warn" style="display:grid;gap:4px;margin-bottom:8px">${warn.map(w=>`<span>⚠️ ${esc(w)}</span>`).join('')}</div>`;
+  if(warn.length&&typeof DMX_NOTES==='function')h+=DMX_NOTES(warn);
   if(D.adapt)h+=`<p class="hint" style="padding:0 0 6px;margin:0">🔌 ${D.adapt} attacchi DMX hanno un connettore diverso dal cavo (3 / 5 poli): servono adattatori.</p>`;
   if(us.length){h+=`<div class="tbl-wrap"><table class="sched"><tr><th>Universo</th><th>Apparecchio</th><th class="num">Indirizzo</th><th class="num">Canali</th><th>DMX</th></tr>`;
     us.forEach(u=>{const list=S.filter(o=>D.fix[o.id]&&D.fix[o.id].u===u).sort((a,b)=>D.fix[a.id].a-D.fix[b.id].a);
@@ -8426,6 +9286,7 @@ async function pdfPlanPage(F,part,sz,meta,vb,tit,fill){const G=pdfGeom(vb,sz),pg
   let im=null,P=null;try{P=await pdfPlanSvg(part.plan,vb,cssW,cssH,true);im=await svgToForm(F.d,P.svg,vb,dw,dh,pdfLinePt(dw/cssW))}
   catch(e){console.warn('Pianta vettoriale non riuscita, uso l\'immagine',e);P=await pdfPlanSvg(part.plan,vb,cssW,cssH);im=F.d.img(await pdfRaster(P.svg,cssW,cssH,k,BG.some(L=>L.vis!==0)))}
   pzFI(p,im,dx,dy,dw,dh);pzR(p,x0,y0,w,h,null,PK.line,.5);
+  if(typeof PDF_TILEMAP==='function')PDF_TILEMAP(p,x0,y0,w,h);
   // fascia in basso
   const stripH=50,sy=y0+h+6;pzR(p,x0,sy,w,stripH,null,PK.line,.5);
   // scala grafica
@@ -8446,7 +9307,11 @@ async function pdfPlanPage(F,part,sz,meta,vb,tit,fill){const G=pdfGeom(vb,sz),pg
     pzT(p,cx0+7,yy,l,{sz:5.5,c:PK.mut});pzT(p,cx0+46,yy,pdfFit(pdfClean(v),b,7.8,cw-52),{sz:7.8,b})});
   return{pg,im,N}}
 // le tavole di un reparto: la pianta intera e, se è troppo piccola per leggerla, il dettaglio del palco
-async function pdfPlanParts(F,part,sz,meta,opt){const full=exportBox(),a=await pdfPlanPage(F,part,sz,meta,full,part.l);
+async function pdfPlanParts(F,part,sz,meta,opt){const full=exportBox();
+  if(opt.fogli>1&&typeof PDF_TILES==='function'){const T=PDF_TILES(full,opt.fogli,sz);let a0=null;
+    for(let i=0;i<T.length;i++){PDF_TILE_ON(T[i]);const r=await pdfPlanPage(F,part,sz,meta,T[i].vb,`${part.l} — foglio ${i+1} di ${T.length}`);if(!a0)a0=r}
+    PDF_TILE_ON(null);return a0}
+  const a=await pdfPlanPage(F,part,sz,meta,full,part.l);
   if(opt.det!==false){const d=pdfDetailBox(full);if(d&&a.N/pdfGeom(d,sz).N>=1.8)await pdfPlanPage(F,part,sz,meta,d,part.l+' — dettaglio palco',full)}
   return a}
 
@@ -8569,9 +9434,10 @@ function pdfDlgOpen(only){pdfOnly=only||null;renderReports();try{slDraw()}catch(
   const grp=(g,t)=>`<fieldset class="pdf-g"><legend>${t}</legend>${PDF_PARTS.filter(x=>x.g===g).map(opt).join('')}${det(g)}</fieldset>`;
   $('pdfBody').innerHTML=`<div class="pdf-grid">${grp('d','Disegni in scala')}${grp('e','Elenchi')}<div class="pdf-col">${grp('a','Altro')}${grp('p','Pagine')}</div></div>
     <div class="pdf-row"><label class="field">Formato <select id="pdfFmt"><option value="A4">A4</option><option value="A3">A3</option><option value="mix">Piante in A3, elenchi in A4</option></select></label>
+    <label class="field" title="Ogni tavola della pianta divisa su più fogli da attaccare">Pianta su <select id="pdfFogli"><option value="1">1 foglio</option><option value="2">2 fogli</option><option value="4">4 fogli</option><option value="6">6 fogli</option><option value="9">9 fogli</option></select></label>
     <label class="field"><input type="radio" name="pdfOut" value="one"${PDF_PREF.zip?'':' checked'}> Un unico PDF</label><label class="field"><input type="radio" name="pdfOut" value="zip"${PDF_PREF.zip?' checked':''}> Un PDF per parte (in uno .zip)</label>
     <span class="grow"></span><button type="button" class="sm" data-pall="1">Tutto</button><button type="button" class="sm" data-pall="0">Niente</button></div>`;
-  $('pdfFmt').value=PDF_PREF.fmt||'A4';$('pdfDlg').hidden=false;document.body.classList.add('modal-open');pdfSync();setTimeout(()=>{try{$('pdfGo').focus()}catch(_){}},30)}
+  $('pdfFmt').value=PDF_PREF.fmt||'A4';$('pdfFogli').value=String(PDF_PREF.fogli||1);$('pdfDlg').hidden=false;document.body.classList.add('modal-open');pdfSync();setTimeout(()=>{try{$('pdfGo').focus()}catch(_){}},30)}
 function pdfSel(){return new Set([...document.querySelectorAll('#pdfBody [data-pp]')].filter(x=>x.checked&&!x.disabled).map(x=>x.dataset.pp))}
 function pdfSync(){const s=pdfSel(),n=[...s].filter(x=>x!=='cover').length,zip=document.querySelector('#pdfBody input[name="pdfOut"][value="zip"]');
   const pl=[...s].filter(x=>x.startsWith('p:')).length;$('pdfGo').disabled=!n||pdfBusy;
@@ -8589,7 +9455,8 @@ $('pdfGo').onclick=async()=>{if(pdfBusy)return;const sel=pdfSel(),zip=!!document
   const fams=new Set([...document.querySelectorAll('#pdfBody [data-pf]')].filter(x=>x.checked).map(x=>x.dataset.pf));
   if(!pdfOnly)PDF_PREF.sel=[...document.querySelectorAll('#pdfBody [data-pp]')].filter(x=>x.checked||x.disabled&&(PDF_PREF.sel||[]).includes(x.dataset.pp)).map(x=>x.dataset.pp); // da un elenco: non cambio le scelte di semprePDF_PREF.fmt=fmt;PDF_PREF.zip=zip;PDF_PREF.det=det;pdfPrefSave();
   pdfBusy=true;pdfSync();$('pdfGo').disabled=true;
-  try{const r=await pdfMake(sel,{fmt,zip,det,fams:document.querySelector('#pdfBody [data-pf]')?fams:null},(i,n,l)=>{$('pdfInfo').textContent=`Preparo ${i} di ${n}: ${l}…`});
+  const fogli=Math.max(1,+($('pdfFogli')||{}).value||1);PDF_PREF.fogli=fogli;pdfPrefSave();
+  try{const r=await pdfMake(sel,{fmt,zip,det,fogli,fams:document.querySelector('#pdfBody [data-pf]')?fams:null},(i,n,l)=>{$('pdfInfo').textContent=`Preparo ${i} di ${n}: ${l}…`});
     $('pdfInfo').textContent=`Pronto: ${fx(r.blob.size/1048576,1)} MB`;await dl(r.name,r.blob)}
   catch(e){console.error(e);$('pdfInfo').textContent='PDF non riuscito: '+(e&&e.message||e)}
   finally{pdfBusy=false;$('pdfGo').disabled=false;pdfSync()}};

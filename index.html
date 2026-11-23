@@ -330,6 +330,10 @@ details.free>summary{display:flex;align-items:center;min-height:46px;cursor:poin
 .datebar .fld{flex:0 1 230px;margin-top:8px}
 .datebar .chk{margin-top:6px}
 .catsep{font:700 22px/1 var(--cond);color:var(--ink2);padding:20px 0 6px;border-bottom:3px solid var(--rule)}
+/* 5.0 - dentro un reparto, il titolino del sottogruppo del magazzino */
+.grpsep{font:600 13px/1.2 var(--font);color:var(--ink2);padding:14px 0 4px;border-bottom:1px solid var(--rule);display:flex;gap:8px;align-items:baseline}
+.grpsep .muted{font-weight:400}
+.stkgrp:first-child>.grpsep{padding-top:8px}
 .stk{background:var(--card);border-left:7px solid var(--line);border-bottom:1px solid var(--line2)}
 .stk.open{border-left-color:var(--rule)}
 .stk.off{opacity:.7}
@@ -1776,6 +1780,128 @@ const SCH_DPIN = [['xlr3', '3 poli'], ['xlr5', '5 poli'], ['xlr35', '3 e 5 poli'
 const SCH_CAT_F = ['W', 'pin', 'thru', 'cord'];
 const SCH_IO_F = ['ain', 'aout', 'vin', 'vout', 'vt', 'dmx', 'dpin', 'dthru', 'univ', 'dmxOut'];
 
+/* ---------- 5.0 — SOTTOGRUPPI DEL MAGAZZINO E CAMPI PER TIPO ----------
+   Dentro ogni reparto (audio, luci, video, generale) gli articoli si dividono in sottogruppi, scelti a mano uno per
+   uno: è il sottogruppo che dice quali dati servono davvero in scheda (un elevatore vuole altezze e portata, un
+   microfono vuole dinamico o condensatore e la figura polare) e che simbolo usare nell'editor della pianta.
+   SCH_GRP: [codice, nome, simbolo dell'editor, campi in più (separati da virgola)]. */
+const SCH_XF = {
+  peso: ['Peso di un pezzo (kg)', 'n'],
+  dimC: ['Ingombro da chiuso', 't', 'es. 110×110×180 cm'],
+  dimA: ['Ingombro da aperto / montato', 't', 'es. 210×210 cm'],
+  hmin: ['Altezza minima (m)', 'n'],
+  hmax: ['Altezza massima (m)', 'n'],
+  mict: ['Tipo di microfono', 's'],
+  pol: ['Figura polare', 's'],
+  ph48: ['Phantom 48V', 's'],
+  ang: ['Angolo del fascio', 't', 'es. 25° oppure 15-45°'],
+  ott: ['Ottica / rapporto di tiro', 't', 'es. 1,2-1,5:1'],
+  pitch: ['Passo del ledwall (mm)', 'n'],
+  poll: ['Pollici', 'n'],
+  imp: ['Impedenza (ohm)', 'n'],
+  sez: ['Sezione del cavo (mm²)', 'n'],
+  post: ['Posti (prese)', 'n']
+};
+const SCH_MICT = [['din', 'dinamico'], ['cond', 'a condensatore'], ['nastro', 'a nastro'], ['piezo', 'piezo / a contatto']];
+const SCH_POL = [['card', 'cardioide'], ['super', 'supercardioide'], ['iper', 'ipercardioide'], ['omni', 'omnidirezionale'], ['fig8', 'a otto'], ['shot', 'shotgun']];
+const SCH_PH48 = [['1', 'sì, gli serve'], ['0', 'no']];
+const SCH_GRP = {
+  audio: [
+    ['aste', 'Aste e stativi microfonici', 'gstand', 'peso,dimC,hmin,hmax'],
+    ['mic', 'Microfoni', 'mic', 'mict,pol,ph48'],
+    ['archetti', 'Archetti e lavalier', 'mic', 'mict,pol,ph48'],
+    ['radio', 'Radiomicrofoni e riceventi', 'micw', 'ain,aout'],
+    ['iem', 'In-ear e monitor personali', 'iem', 'ain'],
+    ['di', 'D.I. attive e passive', 'di', 'ain,aout,ph48'],
+    ['split', 'Splitter e ciabatte microfoniche', 'stagebox', 'ain,aout'],
+    ['dig', 'Trasporti digitali e schede mixer', 'stagebox', 'ain,aout'],
+    ['mixer', 'Mixer audio', 'mixer', 'ain,aout,peso'],
+    ['imp', 'Impianti: casse attive e passive', 'spk', 'imp,peso'],
+    ['mon', 'Satelliti, monitor e sub', 'wedge', 'imp,peso'],
+    ['finali', 'Finali di potenza', 'amp', 'imp,peso'],
+    ['cavia', 'Cavi XLR microfonici', '', 'sez'],
+    ['jack', 'Jack e adattatori audio', '', ''],
+    ['meccA', 'Meccaniche audio: supporti, flange, piedi', 'rack', 'peso,kg']
+  ],
+  luci: [
+    ['fisse', 'Luci fisse: par led, scena led, par cob, accecatori, barre', 'par', 'ang,peso'],
+    ['teste', 'Teste mobili: beam, spot, wash', 'mover', 'ang,peso'],
+    ['fumo', 'Macchine fumo, hazer, effetti', 'haze', 'peso'],
+    ['dmxspl', 'Splitter DMX', 'dmxsplit', 'dmxOut,univ'],
+    ['banchi', 'Mixer e banchi luci', 'lightdesk', 'univ,dmxOut'],
+    ['cavidmx', 'Cavi DMX 3 e 5 poli', '', ''],
+    ['adtdmx', 'Adattatori DMX 3-5 e 5-3', '', ''],
+    ['pcon', 'Cavi powercon', '', ''],
+    ['meccL', 'Meccaniche luci: ganci, staffe, sicure', 'rack', 'peso,kg']
+  ],
+  video: [
+    ['mixv', 'Mixer video', 'switcher', 'vin,vout,vt'],
+    ['tv', 'Schermi e TV', 'tv', 'poll,vin,vt'],
+    ['proj', 'Proiettori e ottiche', 'projector', 'ott,vin,vt,peso'],
+    ['led', 'Ledwall e controller', 'ledwall', 'pitch,vin,peso'],
+    ['cavieth', 'Cavi ethernet, segnale e corrente', '', 'sez'],
+    ['splv', 'Splitter e convertitori HDMI / VGA', 'splitter', 'vin,vout,vt'],
+    ['adtv', 'Adattatori video', '', ''],
+    ['meccV', 'Meccaniche video: supporti e totem', 'rack', 'peso,kg']
+  ],
+  generale: [
+    ['piantane', 'Piantane e stativi luci', 'lstand', 'peso,dimC,hmin,hmax,kg'],
+    ['elevatori', 'Elevatori e paranchi', 'lift', 'peso,dimC,dimA,hmin,hmax,kg'],
+    ['americane', 'Americane quadrate e triangolari', 'truss', 'peso,dimC,kg'],
+    ['tubi', 'Tubi, sicure, cinghie, occhielli e pin', '', 'peso,kg'],
+    ['palco', 'Palco, KDC, piedi riser e piedi bassi', 'stage', 'peso,dimC,kg'],
+    ['supporti', 'Altri supporti e legni per livellamento', '', 'peso,kg'],
+    ['passacavi', 'Passacavi', 'cableramp', 'peso,dimC'],
+    ['ceste', 'Ceste e case vuoti', 'box', 'peso,dimC'],
+    ['arredo', 'Gazebo, moquette, quinte, teli, tavoli, gonnelline', '', 'peso,dimC,dimA'],
+    ['ccee', 'Cavi di corrente con spina CEE', '', 'sez,post'],
+    ['cciv', 'Cavi di corrente con spina civile', '', 'sez,post'],
+    ['varie', 'Altro', '', '']
+  ]
+};
+/* I simboli dell'editor della pianta che si possono scegliere in scheda (gli stessi codici del suo catalogo: SCHEDA_SYM in scheda.gs) */
+const SCH_SYM = [
+  ['spk', 'Cassa'], ['sub', 'Sub'], ['wedge', 'Monitor da palco'], ['linearray', 'Line array'], ['amp', 'Finale di potenza'],
+  ['mixer', 'Mixer audio'], ['stagebox', 'Stagebox / ciabatta microfonica'], ['pmix', 'Mixer personale'], ['mic', 'Microfono'],
+  ['micw', 'Radiomicrofono'], ['iem', 'In-ear'], ['di', 'D.I.'], ['gstand', 'Asta / stativo'], ['leggio', 'Leggio'],
+  ['par', 'Faro fisso (par)'], ['mover', 'Testa mobile'], ['profile', 'Sagomatore'], ['fresnel', 'Fresnel'], ['blinder', 'Accecatore'],
+  ['strobe', 'Strobo'], ['follow', 'Seguipersona'], ['bar', 'Barra led'], ['haze', 'Macchina fumo / hazer'], ['lightdesk', 'Banco luci'],
+  ['dmxsplit', 'Splitter DMX'],
+  ['ledwall', 'Ledwall'], ['projector', 'Proiettore'], ['screen', 'Schermo / telo'], ['tv', 'TV'], ['camera', 'Telecamera'],
+  ['switcher', 'Mixer video'], ['router', 'Switch / router'],
+  ['quadro', 'Quadro elettrico'], ['splitter', 'Sdoppio'], ['strip', 'Ciabatta'], ['gen', 'Generatore'],
+  ['truss', 'Americana'], ['frame', 'Telaio di americane'], ['tower', 'Torre'], ['lift', 'Elevatore'], ['liftf', 'Elevatore a forche'],
+  ['hoist', 'Paranco'], ['lstand', 'Stativo luci'], ['cableramp', 'Passacavi'], ['box', 'Cesta / case'], ['rack', 'Rack / scatola'],
+  ['stage', 'Pedana'], ['table', 'Tavolo'], ['chair', 'Sedia'], ['keys', 'Tastiera'], ['drums', 'Batteria'], ['perc', 'Percussioni'], ['dj', 'Consolle DJ']
+];
+const SCH_GRP_DEPT = ['audio', 'luci', 'video', 'generale'];
+/* Il sottogruppo per codice: {dept, k, l, sym, campi[]} oppure null */
+function schGrp(code) {
+  const c = String(code == null ? '' : code).trim();
+  if (!c) return null;
+  for (let i = 0; i < SCH_GRP_DEPT.length; i++) {
+    const d = SCH_GRP_DEPT[i], list = SCH_GRP[d];
+    for (let j = 0; j < list.length; j++) {
+      if (list[j][0] !== c) continue;
+      return { dept: d, k: list[j][0], l: list[j][1], sym: list[j][2], campi: list[j][3] ? list[j][3].split(',') : [] };
+    }
+  }
+  return null;
+}
+function schGrpLabel(code) { const g = schGrp(code); return g ? g.l : ''; }
+/* I sottogruppi di un reparto (deptWh: audio, luci, video, comune → generale) */
+function schGrpList(dept) { return SCH_GRP[dept] || SCH_GRP.generale; }
+/* In che sezione della finestra sta un campo che il sottogruppo chiede (per aprirla già aperta) */
+const SCH_SEZ_OF = {
+  W: 'cor', pin: 'cor', thru: 'cor', cord: 'cor',
+  ain: 'seg', aout: 'seg', vin: 'seg', vout: 'seg', vt: 'seg', dmx: 'seg', dpin: 'seg', dthru: 'seg', univ: 'seg', dmxOut: 'seg',
+  kg: 'sic'
+};
+/* I campi «in più» di un sottogruppo che hanno una casella loro (gli altri stanno già in un'altra sezione) */
+function schGrpXF(code) { const g = schGrp(code); return g ? g.campi.filter(k => SCH_XF[k]) : []; }
+/* Una sezione della finestra la apro se il sottogruppo chiede qualcosa che sta lì dentro */
+function schGrpWants(code, sez) { const g = schGrp(code); return !!g && g.campi.some(k => SCH_SEZ_OF[k] === sez); }
+
 function schLabel(list, code) { for (let i = 0; i < list.length; i++) if (list[i][0] === code) return list[i][1]; return ''; }
 function schSet(v) { return v !== undefined && v !== null && v !== ''; }
 /* Una scheda senza dati (c'è solo chi l'ha toccata e quando) */
@@ -1870,6 +1996,35 @@ function schCableGuess(name) {
   if (!cavo || !(len > 0) || len > 1000) return null;
   return { cavo: cavo, len: Math.round(len * 10) / 10 };
 }
+/* 4.9 — le americane: gli stessi codici dei sistemi dell'editor (TRUSS). Nella scheda: trss (che americana è) e len (quanto è lunga). */
+const SCH_TRUSS = [['QX30', 'Litec QX30SA — quadra 30×30'], ['TX30', 'Litec TX30SA — triangolare 29 cm'],
+  ['F34', 'Global Truss F34 — quadra 29 cm'], ['F33', 'Global Truss F33 — triangolare 29 cm'], ['F32', 'Global Truss F32 — piatta 29 cm'],
+  ['F44', 'Global Truss F44 — quadra 40 cm'], ['F24', 'Global Truss F24 — quadra 22 cm'],
+  ['X30V', 'Prolyte X30V — quadra 29 cm'], ['H30V', 'Prolyte H30V — quadra 29 cm pesante']];
+
+/* Dal nome di un articolo: che americana sembra e quanto è lunga ({trss, len}), oppure null.
+   «Americana Litec QX30SA 3 m» → Litec QX30SA, 3 m. Elevatori, paranchi, cubi e angoli non sono barre con una lunghezza. */
+function schTrussGuess(name) {
+  const t = String(name == null ? '' : name).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  if (!t.trim() || /elevator|paranc|motor|cubo|angolo|corner|base|piastra|golfar|clamp|morsett/.test(t)) return null;
+  const lm = t.match(/(\d+(?:[.,]\d+)?)\s*(?:m|mt|mts|metri|metro)\b(?!m)/g);
+  const len = lm ? parseFloat(lm[lm.length - 1].replace(',', '.')) : 0;
+  let trss = '';
+  if (/\bf34\b/.test(t)) trss = 'F34';
+  else if (/\bf33\b/.test(t)) trss = 'F33';
+  else if (/\bf32\b/.test(t)) trss = 'F32';
+  else if (/\bf44\b/.test(t)) trss = 'F44';
+  else if (/\bf24\b/.test(t)) trss = 'F24';
+  else if (/x ?30 ?v|prolyte.*\bx ?30\b/.test(t)) trss = 'X30V';
+  else if (/h ?30 ?v|prolyte.*\bh ?30\b/.test(t)) trss = 'H30V';
+  else if (/tx ?30|litec.*triangol/.test(t)) trss = 'TX30';
+  else if (/qx ?30|litec/.test(t)) trss = 'QX30';
+  if (!trss && /american|truss|traliccio/.test(t) && /30 ?x ?30|quadra/.test(t)) trss = 'QX30';
+  if (!trss || !(len > 0) || len > 20) return null;
+  if (!/american|truss|traliccio|barra|trave|\bqx\b|\btx\b|\bf\d\d\b|prolyte|litec|global/.test(t)) return null;
+  return { trss: trss, len: Math.round(len * 100) / 100 };
+}
+
 function schDate(d) { const p = String(d || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : String(d || ''); }
 function schNum(n) { return String(n).replace('.', ','); }
 /* 2890.5 -> "2.890,50 €" (come fmtEur dell'app: qui serve anche dove l'app non c'è) */
@@ -1890,6 +2045,7 @@ function schLines(s) {
   const L = [];
   if (!s || typeof s !== 'object') return L;
   const d = schDerive(s), val = k => schSet(s[k]) ? s[k] : d[k], pl = (n, a, b) => n + ' ' + (n === 1 ? a : b);
+  if (s.grp && schGrpLabel(s.grp)) L.push({ k: 'grp', l: 'Che cos\'è', v: schGrpLabel(s.grp) });
   if (s.mod) L.push({ k: 'mod', l: 'Modello', v: String(s.mod) });
   const pw = [];
   if (schSet(s.W)) pw.push(schNum(s.W) + ' W');
@@ -1913,6 +2069,23 @@ function schLines(s) {
   if (s.verif) sic.push('prossima verifica ' + schDate(s.verif));
   if (s.ip) sic.push(String(s.ip));
   if (sic.length) L.push({ k: 'sicurezza', l: 'Sicurezza', v: sic.join(' · ') });
+  // 5.0 — i dati che cambiano secondo che cosa è (un elevatore, un microfono, un proiettore…)
+  const tip = [];
+  if (schSet(s.mict)) tip.push(schLabel(SCH_MICT, s.mict));
+  if (schSet(s.pol)) tip.push(schLabel(SCH_POL, s.pol));
+  if (schSet(s.ph48)) tip.push(+s.ph48 ? 'phantom 48V' : 'senza phantom');
+  if (s.ang) tip.push('fascio ' + s.ang);
+  if (s.ott) tip.push('ottica ' + s.ott);
+  if (schSet(s.pitch) && +s.pitch > 0) tip.push('passo ' + schNum(s.pitch) + ' mm');
+  if (schSet(s.poll) && +s.poll > 0) tip.push(schNum(s.poll) + '"');
+  if (schSet(s.imp) && +s.imp > 0) tip.push(schNum(s.imp) + ' ohm');
+  if (schSet(s.sez) && +s.sez > 0) tip.push('sezione ' + schNum(s.sez) + ' mm²');
+  if (schSet(s.post) && +s.post > 0) tip.push(pl(+s.post, 'posto', 'posti'));
+  if (schSet(s.peso) && +s.peso > 0) tip.push(schNum(s.peso) + ' kg l\'uno');
+  if (schSet(s.hmin) || schSet(s.hmax)) tip.push('altezza ' + (schSet(s.hmin) ? schNum(s.hmin) : '?') + '–' + (schSet(s.hmax) ? schNum(s.hmax) : '?') + ' m');
+  if (s.dimC) tip.push('chiuso ' + s.dimC);
+  if (s.dimA) tip.push('aperto ' + s.dimA);
+  if (tip.length) L.push({ k: 'tipo', l: schGrpLabel(s.grp) || 'Caratteristiche', v: tip.filter(Boolean).join(' · ') });
   if (s.acc) L.push({ k: 'acc', l: 'In dotazione', v: String(s.acc) });
   if (s.avv) L.push({ k: 'avv', l: 'Avvertenze', v: String(s.avv) });
   (Array.isArray(s.dati) ? s.dati : []).forEach(x => { if (x && x.n) L.push({ k: 'dato', l: String(x.n), v: String(x.v == null ? '' : x.v) }); });
@@ -3170,6 +3343,18 @@ function derive() {
     (S.asgByEv[a.event_id] = S.asgByEv[a.event_id] || []).push(a);
     (S.asgByTec[a.technician_id] = S.asgByTec[a.technician_id] || []).push(a);
   });
+  /* 5.0 — «Lavoro anch'io»: all'evento lavora anche il coordinatore. Non è una convocazione (non si convoca da solo):
+     è il campo `capo` dell'evento. Qui diventa una riga di squadra come le altre, così il conto delle persone, le
+     fasi, il carico e gli elenchi lo vedono senza cambiare niente altrove. */
+  S.tecById[CAPO_ID] = { id: CAPO_ID, nome: capoNome(), ruoli: ROLES.join(','), telefono: '', email: '', attivo: true, capo: 1 };
+  S.ev.forEach(e => {
+    const rl = uniq(rolesOf(e.capo)).filter(r => ROLES.indexOf(r) >= 0);
+    if (!rl.length) return;
+    const a = { id: CAPO_ID + ':' + e.id, event_id: e.id, evento: e.cliente, technician_id: CAPO_ID, tecnico: capoNome(),
+      ruoli: rl.join(','), stato: 'confermato', compenso: '', pagato: false, token: '', calendarEventId: '', capo: 1 };
+    (S.asgByEv[e.id] = S.asgByEv[e.id] || []).unshift(a);
+    (S.asgByTec[CAPO_ID] = S.asgByTec[CAPO_ID] || []).push(a);
+  });
   S.dmap = {};
   S.disp.forEach(d => {
     (S.dmap[d.technician_id] = S.dmap[d.technician_id] || {})[d.data] = { on: isTrue(d.disponibile), from: String(d.oraDa || '') };
@@ -3603,7 +3788,7 @@ function diffEvent(a, b) {
   if (String(a.noteTecnici || '') !== String(b.noteTecnici || '')) out.push('Note: ' + (b.noteTecnici || 'nessuna nota'));
   return out;
 }
-function avRecipients(e) { return (S.asgByEv[e.id] || []).filter(a => a.stato !== 'rifiutato'); }
+function avRecipients(e) { return (S.asgByEv[e.id] || []).filter(a => a.stato !== 'rifiutato' && !a.capo); }
 /* Il corpo del messaggio (uguale per tutti): a ognuno si aggiungono il saluto e il suo link personale */
 function avBase(e, kind, ctx) {
   const az = S.cfg.nome_azienda ? S.cfg.nome_azienda + ': ' : '';
@@ -3787,7 +3972,7 @@ function evPanel(e, cov) {
     ico('edit') + ' Modifica evento</button><button type="button" class="btn sm" data-act="evDup" data-id="' + esc(e.id) + '">' +
     ico('copy') + ' Duplica evento</button><button type="button" class="btn sm" data-act="evScheda" data-id="' + esc(e.id) + '">' +
     ico('hist') + ' Scheda storica</button></div>';
-  h += '<h4>Squadra</h4>' + squadraHtml(e, cancelled);
+  h += '<h4>Squadra</h4>' + squadraHtml(e, cancelled) + capoBoxHtml(e, cancelled);
   if (!cancelled) h += openRolesHtml(e, cov);
   else h += '<p class="note muted" style="margin-top:12px">Evento annullato: non si possono fare nuove convocazioni.</p>';
   h += matSectionHtml(e);
@@ -3797,11 +3982,63 @@ function evPanel(e, cov) {
   return h + '</div>';
 }
 
-function techEmail(a) { const t = S.tecById[a.technician_id]; return t ? String(t.email || '').trim() : ''; }
+function techEmail(a) { const t = S.tecById[a.technician_id]; return (!t || t.capo) ? '' : String(t.email || '').trim(); }
+
+/* ---------- 5.0 — «Lavoro anch'io»: il coordinatore che lavora all'evento come tecnico ---------- */
+const CAPO_ID = '~capo';
+function capoNome() { return String((S.cfg && S.cfg.nome_coordinatore) || '').trim() || 'Tu (coordinatore)'; }
+function capoRuoli(e) { return uniq(rolesOf(e.capo)).filter(r => ROLES.indexOf(r) >= 0); }
+/* La riga in squadra: come le altre, ma senza convocazione né conferma (te la fai da solo) */
+function capoRow(e, a, cancelled) {
+  const roles = uniq(rolesOf(a.ruoli));
+  const chips = roles.map(r => '<span class="chip r-' + r + '">' + r + '</span>').join('');
+  return '<li class="asg capo"><div class="asgh"><b>' + esc(a.tecnico) + '</b> <span class="pill ok">ci sei tu</span>' + chips + '</div>' +
+    '<p class="note muted">Lavori anche tu a questo evento: non c\'è niente da convocare né da confermare. Sei nel conto della squadra, nelle fasi e negli elenchi.</p>' +
+    (cancelled ? '' : '<div class="row"><button type="button" class="btn sm" data-act="capoOpen" data-id="' + esc(e.id) + '">' + ico('edit') + ' Cambia i miei ruoli</button>' +
+      '<button type="button" class="btn sm" data-act="capoOff" data-id="' + esc(e.id) + '" data-confirm="Non lavori più a questo evento?">Non lavoro più</button></div>') + '</li>';
+}
+/* Sotto la squadra: l'interruttore per dire che lavori anche tu */
+function capoBoxHtml(e, cancelled) {
+  if (cancelled || capoRuoli(e).length) return '';
+  return '<div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-act="capoOpen" data-id="' + esc(e.id) + '">' +
+    ico('user') + ' Lavoro anch\'io</button><span class="note muted">se a questo evento lavori anche tu come tecnico</span></div>';
+}
+function capoAskHtml(e) {
+  const cur = capoRuoli(e);
+  return '<div class="bulkask"><p>A «' + esc(e.cliente) + '» lavori anche tu: che cosa fai? (puoi segnarne più di uno)</p>' +
+    '<div class="rolepick">' + ROLES.map(r => '<label class="chk"><input type="checkbox" name="capo" value="' + r + '"' +
+      (cur.indexOf(r) >= 0 ? ' checked' : '') + '> ' + r + '</label>').join('') + '</div>' +
+    '<p class="hint">Entri in squadra come gli altri: non devi convocarti né confermare. Se togli tutte le spunte, non lavori a questo evento.</p>' +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="button" class="btn pri" data-act="capoDo" data-id="' + esc(e.id) + '">Salva</button></div></div>';
+}
+ACT.capoOpen = el => {
+  const e = S.evById[el.dataset.id];
+  if (!e) return;
+  openSheet('Lavoro anch\'io', capoAskHtml(e));
+};
+ACT.capoOff = el => capoSave(el.dataset.id, [], el);
+ACT.capoDo = el => capoSave(el.dataset.id, $$('#sheet input[name=capo]:checked').map(x => x.value), el);
+async function capoSave(id, ruoli, el) {
+  const err = el ? $('.ferr', el.closest('.bulkask') || document.body) : null;
+  if (err) err.textContent = '';
+  const r = await mutate(async () => {
+    const res = await call('api_evCapo', S.pin, id, ruoli);
+    const e = S.evById[id];
+    if (e) e.capo = res.capo || '';
+    derive();
+    closeSheet();
+    paint();
+    toast(res.capo ? 'Lavori anche tu: ' + res.capo.split(',').join(' + ') + '.' : 'Non lavori più a questo evento.', 'ok');
+  }, true);
+  if (!r.ok && err) err.textContent = r.err;
+}
 
 function squadraHtml(e, cancelled) {
   const list = S.asgByEv[e.id] || [];
   if (!list.length) return '<p class="muted">Non c\'è ancora nessuno. Scegli qui sotto, oppure tocca «Proponi squadra».</p>';
+  if (list.length === 1 && list[0].capo) return '<ul class="asgs">' + asgRow(e, list[0], cancelled) + '</ul>' +
+    '<p class="muted">Per adesso ci sei solo tu. Scegli qui sotto chi altro viene, oppure tocca «Proponi squadra».</p>';
   let h = '<ul class="asgs">' + list.map(a => asgRow(e, a, cancelled)).join('') + '</ul>';
   const todo = list.filter(a => a.stato !== 'rifiutato' && !a.calendarEventId && techEmail(a));
   if (todo.length > 1 && !cancelled) {
@@ -3817,6 +4054,7 @@ function squadraHtml(e, cancelled) {
 }
 function asgRow(e, a, cancelled) {
   const t = S.tecById[a.technician_id];
+  if (a.capo) return capoRow(e, a, cancelled);
   const roles = uniq(rolesOf(a.ruoli));
   const refused = a.stato === 'rifiutato';
   const st = t ? techStatus(t, e) : { notes: [], cls: 'ok' };
@@ -4400,7 +4638,7 @@ function caseBadText(m) {
   return 'I case dicono di avere dentro ' + inCaseRaw(m) + ' pezzi (' + holdersText(m) + '), ma di questo articolo ne hai ' + (Number(m.quantita) || 0) +
     ' in tutto. Correggi la composizione dei case o la quantità.';
 }
-function stkText(m) { return (m.nome + ' ' + (m.codice || '') + ' ' + schSearchText(m) + ' ' + (m.marca || '') + ' ' + catLabel(m.categoria) + ' ' + (m.note || '') + ' ' + (m.posizione || '') + ' ' + (isCase(m) ? 'case cesta ' + caseInside(m) : '')).toLowerCase(); }
+function stkText(m) { return (m.nome + ' ' + (m.codice || '') + ' ' + schGrpLabel((schOf(m) || {}).grp) + ' ' + schSearchText(m) + ' ' + (m.marca || '') + ' ' + catLabel(m.categoria) + ' ' + (m.note || '') + ' ' + (m.posizione || '') + ' ' + (isCase(m) ? 'case cesta ' + caseInside(m) : '')).toLowerCase(); }
 function stkCatOk(m, cat) {
   return S.stockCat === '~scorta' ? isLow(m) : S.stockCat === '~case' ? (isCase(m) && String(m.stato) !== 'dismesso') : (!S.stockCat || cat === S.stockCat);
 }
@@ -4472,6 +4710,8 @@ function stkRow(m, dn) {
         '<button type="button" class="btn sm" data-act="contDup" data-id="' + esc(m.id) + '">' + ico('copy') + ' Copia</button>' : '') +
       (!isCase(m) && !dismissed ? '<button type="button" class="btn sm" data-act="dsOpen" data-id="' + esc(m.id) + '">' + ico('box') + ' Dove sta</button>' : '') +
       '<button type="button" class="btn sm" data-act="schOpen" data-id="' + esc(m.id) + '">' + ico('list') + ' Scheda tecnica</button>' +
+      '<button type="button" class="btn sm' + ((schOf(m) || {}).grp ? '' : ' pri') + '" data-act="grpSet" data-id="' + esc(m.id) + '">' + ico('pin') + ' ' +
+      ((schOf(m) || {}).grp ? esc(schGrpLabel((schOf(m) || {}).grp)) : 'Che cos\'è') + '</button>' +
       '<button type="button" class="btn sm" data-act="matEdit" data-id="' + esc(m.id) + '">' + ico('edit') + ' Modifica</button></div></div>';
   }
   return stkShell(m, dismissed, cat, pill, bits, open, det);
@@ -4498,6 +4738,7 @@ function viewArticoli() {
     '<button class="btn" data-act="invOpen">' + ico('list') + ' Inventario</button>' +
     '<button class="btn" data-act="impOpen">' + ico('up') + ' Importa</button>' +
     '<button class="btn" data-act="stkPlan">' + ico('plan') + ' Collegamenti editor</button>' +
+    '<button class="btn" data-act="cavOpen">' + ico('link') + ' Cavi e americane</button>' +
     '<button class="btn" data-act="svcOpen">' + ico('user') + ' Altri service</button>' +
     '<button class="btn" data-act="gapOpen" data-mesi="12">' + ico('warn') + ' Cosa manca più spesso</button>' +
     '<button class="btn" data-act="selToggle" aria-pressed="' + !!S.sel + '">' + ico('check') + ' Seleziona</button></div>') +
@@ -4527,12 +4768,33 @@ function viewArticoli() {
     const n = g.items.filter(m => !stkHidden(m)).length;
     shown += n;
     return '<section class="stkcat" data-cat="' + esc(g.k) + '"' + (n ? '' : ' hidden') + '><h3 class="catsep">' +
-      esc(g.k === '~dismessi' ? 'Dismessi' : catLabel(g.k)) + '</h3>' + g.items.map(m => stkRow(m, dn)).join('') + '</section>';
+      esc(g.k === '~dismessi' ? 'Dismessi' : catLabel(g.k)) + '</h3>' + stkGrpBlocks(g.items, dn) + '</section>';
   }).join('') + '</div>';
   h += '<p class="empty" id="stock-empty"' + (shown ? ' hidden' : '') + '>Nessun articolo trovato. Prova un\'altra parola.</p>';
   if (!ro) h += selBarHtml();                 // in fondo all'elenco: resta attaccata al bordo basso dello schermo mentre si scorre
   return h;
 }
+/* 5.0 — dentro un reparto, gli articoli divisi per sottogruppo (quello scelto a mano in «Che cos'è»), nell'ordine della lista
+   dei sottogruppi; quelli che non ce l'hanno ancora stanno in fondo. Senza nessun sottogruppo l'elenco resta com'era. */
+function stkGrpRank(code) {
+  let r = 500;
+  SCH_GRP_DEPT.forEach(d => schGrpList(d).forEach((x, i) => { if (x[0] === code) r = i; }));
+  return r;
+}
+function stkGrpBlocks(items, dn) {
+  const by = {}, ord = [];
+  items.forEach(m => {
+    const k = (schOf(m) || {}).grp || '';
+    if (!by[k]) { by[k] = []; ord.push(k); }
+    by[k].push(m);
+  });
+  if (!ord.filter(k => k).length) return items.map(m => stkRow(m, dn)).join('');
+  ord.sort((a, b) => (a ? stkGrpRank(a) : 9999) - (b ? stkGrpRank(b) : 9999));
+  return ord.map(k => '<div class="stkgrp" data-grp="' + esc(k) + '"><h4 class="grpsep">' +
+    esc(k ? schGrpLabel(k) : 'Da sistemare: non hai detto che cosa sono') + ' <span class="muted">' + by[k].length + '</span></h4>' +
+    by[k].map(m => stkRow(m, dn)).join('') + '</div>').join('');
+}
+
 /* Filtra la lista mentre si scrive, senza ridisegnare la pagina (altrimenti la tastiera si chiude a ogni lettera) */
 function stockFilter() {
   const words = S.stockQ.trim().toLowerCase().split(/\s+/).filter(Boolean);
@@ -4545,6 +4807,7 @@ function stockFilter() {
       a.hidden = !ok;
       if (ok) any++;
     });
+    $$('.stkgrp', sec).forEach(gb => { gb.hidden = !$$('.stk:not([hidden])', gb).length; });
     sec.hidden = !any;
     shown += any;
   });
@@ -10335,6 +10598,22 @@ function schDatoRowHtml(r) {
     '<input type="text" name="da_v" value="' + esc(r.v == null ? '' : r.v) + '" maxlength="120" placeholder="valore (es. 8 ohm)" aria-label="Valore" autocomplete="off">' +
     '<button type="button" class="btn sm ic" data-act="schDel" aria-label="Togli questo dato">' + ico('trash') + '</button></div>';
 }
+/* 5.0 — i campi che servono per quel tipo di attrezzatura: cambiano con «Che cos'è» (il sottogruppo del magazzino) */
+function schTipoHtml(code, s) {
+  const g = schGrp(code);
+  if (!g) return '<p class="hint">Scegli <b>Che cos\'è</b> qui sopra: ti chiedo solo i dati che servono per quel tipo di attrezzatura, e l\'editor sa che simbolo darti.</p>';
+  const ks = schGrpXF(code);
+  if (!ks.length) return '<p class="hint">Per ' + esc(g.l.toLowerCase()) + ' bastano i dati delle altre sezioni.</p>';
+  return '<div class="grid2">' + ks.map(k => {
+    const F = SCH_XF[k], v = s[k] === undefined || s[k] === null ? '' : String(s[k]);
+    if (F[1] === 's') {
+      const L = k === 'mict' ? SCH_MICT : k === 'pol' ? SCH_POL : SCH_PH48;
+      return '<label class="fld"><span>' + esc(F[0]) + '</span><select name="' + k + '">' + schOpts(L, v, '— non indicato —') + '</select></label>';
+    }
+    return '<label class="fld"><span>' + esc(F[0]) + '</span><input type="text"' + (F[1] === 'n' ? ' inputmode="decimal"' : '') +
+      ' name="' + k + '" value="' + esc(F[1] === 'n' ? v.replace('.', ',') : v) + '"' + (F[2] ? ' placeholder="' + esc(F[2]) + '"' : '') + ' autocomplete="off"></label>';
+  }).join('') + '</div>';
+}
 function schFormHtml(m) {
   const s = schOf(m) || {}, v = k => (s[k] === undefined || s[k] === null) ? '' : String(s[k]).replace('.', k === 'man' || k === 'verif' ? '.' : ',');
   const has = ks => ks.some(k => s[k] !== undefined && s[k] !== null && s[k] !== '');
@@ -10343,21 +10622,30 @@ function schFormHtml(m) {
   const txt = (k, label, max, ph) => '<label class="fld"><span>' + label + '</span><input type="text" name="' + k + '" value="' + esc(s[k] || '') + '" maxlength="' + max + '"' +
     (ph ? ' placeholder="' + esc(ph) + '"' : '') + ' autocomplete="off"></label>';
   const sel = (k, label, list, none) => '<label class="fld"><span>' + label + '</span><select name="' + k + '">' + schOpts(list, s[k], none) + '</select></label>';
-  const sec = (title, open, body) => '<details class="free schsec"' + (open ? ' open' : '') + '><summary>' + title + '</summary>' + body + '</details>';
+  const sec = (title, open, body, key) => '<details class="free schsec"' + (open ? ' open' : '') + (key ? ' data-sez="' + key + '"' : '') + '><summary>' + title + '</summary>' + body + '</details>';
   const io = Array.isArray(s.io) ? s.io : [], dati = Array.isArray(s.dati) ? s.dati : [];
   const g = !s.cavo ? schCableGuess(m.nome) : null;
   const dept = deptWh(m.categoria);
   let h = '<form data-submit="schForm" novalidate><input type="hidden" name="id" value="' + esc(m.id) + '">' +
     '<p class="hint">Tutto facoltativo: compila solo quello che serve. L\'editor della pianta legge questi dati da qui' + (S.mode === 'coord' ? ' e non li cambia' : '') + '.</p>';
-  h += sec('Corrente', has(['W', 'pin', 'thru', 'cord']),
+  // 5.0 — che cos'è: il sottogruppo del magazzino. Decide i campi di questa finestra e il simbolo nell'editor.
+  const gsym = (schGrp(s.grp) || {}).sym || '';
+  h += sec('Che cos\'è' + (s.grp ? ': ' + esc(schGrpLabel(s.grp)) : ''), true,
+    '<div class="grid2">' +
+    '<label class="fld"><span>Sottogruppo del magazzino</span><select name="grp" data-chg="schGrp">' +
+    schOpts(schGrpList(dept).map(x => [x[0], x[1]]), s.grp, '— da scegliere —') + '</select></label>' +
+    '<label class="fld"><span>Simbolo nella pianta</span><select name="sym">' +
+    schOpts(SCH_SYM, s.sym, gsym ? '— come il sottogruppo (' + schLabel(SCH_SYM, gsym) + ') —' : '— lo indovina dal nome —') + '</select></label></div>' +
+    '<div class="schtipo">' + schTipoHtml(s.grp, s) + '</div>');
+  h += sec('Corrente', has(['W', 'pin', 'thru', 'cord']) || schGrpWants(s.grp, 'cor'),
     '<div class="grid2">' + num('W', 'Potenza (W)') + num('cord', 'Cavo in dotazione (m)') +
-    sel('pin', 'Spina / presa', SCH_CONN, '— non indicata —') + sel('thru', 'Uscita passante', SCH_CONN.map(x => x[0] === 'none' ? ['none', 'nessuna'] : x), '— non indicata —') + '</div>');
-  h += sec('Segnali: audio, video, DMX', has(['ain', 'aout', 'vin', 'vout', 'vt', 'dmx', 'dpin', 'dthru', 'univ', 'dmxOut']),
+    sel('pin', 'Spina / presa', SCH_CONN, '— non indicata —') + sel('thru', 'Uscita passante', SCH_CONN.map(x => x[0] === 'none' ? ['none', 'nessuna'] : x), '— non indicata —') + '</div>', 'cor');
+  h += sec('Segnali: audio, video, DMX', has(['ain', 'aout', 'vin', 'vout', 'vt', 'dmx', 'dpin', 'dthru', 'univ', 'dmxOut']) || schGrpWants(s.grp, 'seg'),
     '<div class="grid2">' + num('ain', 'Ingressi audio') + num('aout', 'Uscite audio') + num('vin', 'Ingressi video') + num('vout', 'Uscite video') +
     txt('vt', 'Connettori video', 60, 'es. HDMI + SDI') + num('dmx', 'Canali DMX (il modo che usate)') +
     sel('dpin', 'Prese DMX', SCH_DPIN, '— non indicate —') + sel('dthru', 'Uscita DMX', [['1', 'sì: entrata e uscita'], ['0', 'no: solo entrata']], '— non indicata —') +
     num('univ', 'Universi DMX (mixer luci)') + num('dmxOut', 'Uscite DMX (splitter)') + '</div>' +
-    '<p class="hint">Sono i numeri che l\'editor usa per il patch e per i cavi. Ingressi e uscite, se li lasci vuoti, li conto dalle prese che scrivi qui sotto.</p>');
+    '<p class="hint">Sono i numeri che l\'editor usa per il patch e per i cavi. Ingressi e uscite, se li lasci vuoti, li conto dalle prese che scrivi qui sotto.</p>', 'seg');
   h += sec('Prese, una per una' + (io.length ? ' (' + io.length + ')' : ''), io.length > 0,
     '<div class="schrows" data-k="io">' + io.map(schIoRowHtml).join('') + '</div>' +
     '<button type="button" class="btn sm" data-act="schAdd" data-k="io">' + ico('plus') + ' Aggiungi una presa</button>' +
@@ -10367,11 +10655,11 @@ function schFormHtml(m) {
       '<button type="button" class="btn sm pri" data-act="schGuess" data-cavo="' + esc(g.cavo) + '" data-len="' + esc(schNum(g.len)) + '">Usa</button></p>' : '') +
     '<div class="grid2">' + sel('cavo', 'Che cavo è', SCH_CAVO, '— non è un cavo —') + num('len', 'Lunghezza (m)') + '</div>' +
     '<p class="hint">Così l\'editor sa quali lunghezze hai e quante, anche se il nome dell\'articolo è scritto a modo tuo.</p>');
-  h += sec('Sicurezza', has(['kg', 'verif', 'ip']),
+  h += sec('Sicurezza', has(['kg', 'verif', 'ip']) || schGrpWants(s.grp, 'sic'),
     '<div class="grid2">' + num('kg', 'Portata massima (kg)') +
     '<label class="fld"><span>Prossima verifica</span><input type="date" name="verif" value="' + esc(s.verif || '') + '"></label>' +
     txt('ip', 'Grado IP', 10, 'es. IP65') + '</div>' +
-    '<p class="hint">Per americane, elevatori e paranchi: quando la verifica è scaduta lo segno sull\'articolo. Il grado IP dice se si può usare all\'aperto.</p>');
+    '<p class="hint">Per americane, elevatori e paranchi: quando la verifica è scaduta lo segno sull\'articolo. Il grado IP dice se si può usare all\'aperto.</p>', 'sic');
   h += sec('In dotazione e avvertenze', has(['acc', 'avv']),
     '<label class="fld"><span>Accessori in dotazione</span><textarea name="acc" maxlength="300" rows="2" placeholder="es. staffa, cavo di sicurezza, telecomando">' + esc(s.acc || '') + '</textarea></label>' +
     '<label class="fld"><span>Avvertenze d\'uso</span><textarea name="avv" maxlength="300" rows="2" placeholder="es. non usare sotto la pioggia">' + esc(s.avv || '') + '</textarea></label>');
@@ -10398,7 +10686,7 @@ function schFormHtml(m) {
 function schRead(form) {
   const f = new FormData(form), g = k => String(f.get(k) == null ? '' : f.get(k)).trim(), o = {};
   ['mod', 'serie', 'anno', 'forn', 'val', 'W', 'pin', 'thru', 'cord', 'ain', 'aout', 'vin', 'vout', 'vt', 'dmx', 'dpin', 'dthru', 'univ', 'dmxOut', 'cavo', 'len',
-    'kg', 'verif', 'ip', 'acc', 'avv', 'man'].forEach(k => { const x = g(k); if (x !== '') o[k] = x; });
+    'kg', 'verif', 'ip', 'acc', 'avv', 'man', 'grp', 'sym'].concat(Object.keys(SCH_XF)).forEach(k => { const x = g(k); if (x !== '') o[k] = x; });
   if (f.has('ver')) o.ver = 1;
   const n = f.getAll('io_n'), t = f.getAll('io_t'), d = f.getAll('io_d'), q = f.getAll('io_q');
   o.io = n.map((x, i) => ({ n: String(x).trim(), t: String(t[i] || ''), d: String(d[i] || 'in'), q: String(q[i] || '').trim() })).filter(r => r.n || r.t);
@@ -10439,6 +10727,19 @@ ACT.schGuess = el => {
   if (p) p.remove();
 };
 CHG.schIo = el => schPh(el.closest('form'));
+/* 5.0 — cambiando «Che cos'è» cambiano i campi chiesti (e il simbolo proposto): quello che è già scritto resta */
+CHG.schGrp = el => {
+  const form = el.closest('form'), box = $('.schtipo', form);
+  if (!box) return;
+  const cur = schRead(form), g = schGrp(el.value);
+  box.innerHTML = schTipoHtml(el.value, cur);
+  const sy = $('[name=sym]', form), op = sy ? sy.options[0] : null;
+  if (op) op.textContent = g && g.sym ? '— come il sottogruppo (' + schLabel(SCH_SYM, g.sym) + ') —' : '— lo indovina dal nome —';
+  const d = el.closest('details');
+  if (d) { const sm = $('summary', d); if (sm) sm.textContent = 'Che cos\'è' + (g ? ': ' + g.l : ''); }
+  // le sezioni dove stanno gli altri dati di quel tipo (corrente, segnali, sicurezza) si aprono da sole
+  ['cor', 'seg', 'sic'].forEach(k => { const sz = $('[data-sez=' + k + ']', form); if (sz && schGrpWants(el.value, k)) sz.open = true; });
+};
 INP.schIo = el => schPh(el.closest('form'));
 SUB.schForm = async form => {
   const id = String(new FormData(form).get('id') || ''), err = $('.ferr', form);
@@ -10478,6 +10779,7 @@ function selBarHtml() {
   const n = selCount();
   return '<div class="selbar" role="region" aria-label="Articoli scelti"><b id="selN">' + (n ? plural(n, 'scelto', 'scelti') : 'Tocca gli articoli da scegliere') + '</b>' +
     '<span class="row"><button type="button" class="btn sm" data-act="selAll">Tutti quelli in elenco</button>' +
+    '<button type="button" class="btn sm" data-act="selGrp"' + (n ? '' : ' disabled') + '>Che cos\'è…</button>' +
     '<button type="button" class="btn sm danger" data-act="selGo" data-az="elimina"' + (n ? '' : ' disabled') + '>' + ico('trash') + ' Elimina</button>' +
     '<button type="button" class="btn sm" data-act="selGo" data-az="dismetti"' + (n ? '' : ' disabled') + '>Segna dismessi</button>' +
     '<button type="button" class="btn sm" data-act="selToggle">Fine</button></span></div>';
@@ -10539,6 +10841,47 @@ ACT.bulkDo = async el => {
   if (!r.ok && err) err.textContent = r.err;
 };
 
+/* ---------- 5.0 — «Che cos'è»: il sottogruppo del magazzino, su uno o su tanti articoli insieme ---------- */
+function grpAskHtml(ids) {
+  const n = ids.length, one = n === 1 ? S.matById[ids[0]] : null;
+  // i sottogruppi che si possono dare: quelli del reparto degli articoli scelti (se sono di reparti diversi, tutti)
+  const dept = {};
+  ids.forEach(id => { const m = S.matById[id]; if (m) dept[deptWh(m.categoria)] = true; });
+  const ds = Object.keys(dept), uno = ds.length === 1 ? ds[0] : '';
+  const list = uno ? schGrpList(uno) : SCH_GRP_DEPT.reduce((a, d) => a.concat(schGrpList(d)), []);
+  const cur = one ? (schOf(one) || {}).grp || '' : '';
+  return '<div class="bulkask"><p>' + (one ? 'Che cos\'è «' + esc(one.nome) + '»?' : 'Che cosa sono questi ' + n + ' articoli?') +
+    ' Il sottogruppo serve a trovarli in fretta in magazzino, a chiedere in scheda solo i dati che servono per quel tipo, e a dare il simbolo giusto nella pianta.</p>' +
+    '<label class="fld"><span>Sottogruppo</span><select id="grpPick">' + schOpts(list.map(x => [x[0], x[1]]), cur, '— togli il sottogruppo —') + '</select></label>' +
+    '<p class="hint">Scrive solo questo nella scheda tecnica: il resto resta com\'è, i pezzi non si toccano.</p>' +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="button" class="btn pri" data-act="grpDo">Salva' + (n > 1 ? ' (' + n + ')' : '') + '</button></div></div>';
+}
+function grpAsk(ids) {
+  if (S.mode !== 'coord' || !ids.length) return;
+  S.bulk = { ids: ids, az: 'grp' };
+  openSheet('Che cos\'è', grpAskHtml(ids));
+}
+ACT.selGrp = () => grpAsk(Object.keys(S.sel || {}).filter(id => S.matById[id]));
+ACT.grpSet = el => { if (S.matById[el.dataset.id]) grpAsk([el.dataset.id]); };
+ACT.grpDo = async el => {
+  const b = S.bulk, pick = $('#grpPick');
+  if (!b || !b.ids.length || !pick) return;
+  const err = $('.ferr', el.closest('.bulkask'));
+  if (err) err.textContent = '';
+  const r = await mutate(async () => {
+    const res = await call('api_schedeGrp', S.pin, b.ids, pick.value);
+    await coordLoad();
+    S.bulk = null;
+    closeSheet();
+    paint();
+    const sal = res.saltati || [];
+    toast((res.fatti === 1 ? 'Sistemato 1 articolo' : 'Sistemati ' + res.fatti + ' articoli') +
+      (pick.value ? ': ' + schGrpLabel(pick.value) + '.' : ', sottogruppo tolto.') + (sal.length ? ' ' + sal.length + ' saltati.' : ''), 'ok');
+  }, true);
+  if (!r.ok && err) err.textContent = r.err;
+};
+
 /* ---------- dal link dell'editor («Apri la scheda nel magazzino»): …/#scheda=ID ---------- */
 function schDeep() {
   const x = /^#scheda=([\w-]+)$/.exec(window.location.hash || '');
@@ -10550,6 +10893,139 @@ function schDeep() {
   paint();
   ACT.schOpen({ dataset: { id: m.id } });
 }
+/* =====================================================================
+   4.9 — CAVI E AMERICANE PER L'EDITOR: il magazzino dice che cavo è e quanto è lungo
+   L'editor della pianta non scrive più le scorte: legge dal magazzino. Per farlo deve sapere, per ogni articolo, se è un cavo (o
+   un'americana) e quanti metri. Qui lo riconosco dal nome — «Prolunga CEE 16A 22 m» → prolunga CEE 16A da 22 m — e scrivo i due
+   campi nella scheda tecnica, senza toccare né i pezzi né il resto della scheda.
+   Il riconoscimento è in schcom.js (schCableGuess, schTrussGuess), comune con l'editor; il server è api_schedeCavi (scheda.gs).
+   ===================================================================== */
+const CAV_WORDS = /cavo|cavi|prolung|ciabatt|multipres|ruzzol|american|truss|traliccio|xlr|dmx|speakon|multicore|frusta|jack|hdmi|sdi|bnc|fibra|ethercon|powercon|\bcee\b/i;
+let CAV = null;           // {rows: [...], q: ''} mentre la finestra è aperta
+
+/* Che cosa dice adesso la scheda di un articolo: {cavo, trss, len} oppure null */
+function cavNow(m) {
+  const s = schOf(m);
+  if (!s || (!s.cavo && !s.trss)) return null;
+  return { cavo: s.cavo || '', trss: s.trss || '', len: s.len === undefined || s.len === null ? '' : s.len };
+}
+
+/* La proposta per un articolo, dal suo nome */
+function cavGuess(m) {
+  const g = schCableGuess(m.nome);
+  if (g) return { cavo: g.cavo, trss: '', len: g.len };
+  const t = schTrussGuess(m.nome);
+  return t ? { cavo: '', trss: t.trss, len: t.len } : null;
+}
+
+/* Le righe della finestra: tutti gli articoli che sono (o sembrano) cavi o americane */
+function cavRows() {
+  const out = [];
+  (S.mat || []).forEach(m => {
+    if (String(m.stato || '') === 'dismesso') return;
+    const now = cavNow(m), g = cavGuess(m);
+    if (!now && !g && !CAV_WORDS.test(String(m.nome || ''))) return;
+    out.push({
+      id: m.id, nome: String(m.nome || ''), q: Math.max(0, Number(m.quantita) || 0), now: now, g: g,
+      stato: now ? 'ok' : g ? 'prop' : 'no',
+      cavo: (g && g.cavo) || (now && now.cavo) || '', trss: (g && g.trss) || (now && now.trss) || '',
+      len: (g && g.len) || (now && now.len) || '', on: !now && !!g,
+    });
+  });
+  return out.sort((a, b) => (a.stato === b.stato ? cmpName(a.nome, b.nome) : a.stato === 'prop' ? -1 : b.stato === 'prop' ? 1 : a.stato === 'no' ? -1 : 1));
+}
+
+function cavTypeOpts(r) {
+  let h = '<option value="">— non è un cavo né un\'americana —</option><optgroup label="Cavi">';
+  SCH_CAVO.forEach(x => { h += '<option value="c:' + x[0] + '"' + (r.cavo === x[0] ? ' selected' : '') + '>' + esc(x[1]) + '</option>'; });
+  h += '</optgroup><optgroup label="Americane">';
+  SCH_TRUSS.forEach(x => { h += '<option value="t:' + x[0] + '"' + (r.trss === x[0] ? ' selected' : '') + '>' + esc(x[1]) + '</option>'; });
+  return h + '</optgroup>';
+}
+
+function cavRowHtml(r, i) {
+  const what = r.cavo ? schLabel(SCH_CAVO, r.cavo) : r.trss ? schLabel(SCH_TRUSS, r.trss) : '';
+  return '<li class="cavr' + (r.stato === 'ok' ? ' done' : '') + '">' +
+    '<label class="row between"><span><b>' + esc(r.nome) + '</b> <span class="muted">· ' + plural(r.q, 'pezzo', 'pezzi') + '</span>' +
+    (r.stato === 'ok' ? '<small class="cs">nella scheda c\'è già: ' + esc(what || '—') + (r.len ? ' · ' + schNum(r.len) + ' m' : '') + '</small>' :
+      r.stato === 'no' ? '<small class="cs">dal nome non capisco che cavo è: scegli tu, o lascia stare</small>' :
+        '<small class="cs">dal nome: ' + esc(what) + ' · ' + schNum(r.len) + ' m</small>') + '</span>' +
+    '<input type="checkbox" data-chg="cavOn" data-i="' + i + '"' + (r.on ? ' checked' : '') + '></label>' +
+    '<div class="row cavf">' +
+    '<select name="t' + i + '" data-chg="cavT" data-i="' + i + '">' + cavTypeOpts(r) + '</select>' +
+    '<label class="fld sm"><span>metri</span><input type="text" inputmode="decimal" name="l' + i + '" value="' + esc(r.len === '' ? '' : schNum(r.len)) + '" size="5" data-inp="cavL" data-i="' + i + '"></label>' +
+    '</div></li>';
+}
+
+function cavHtml() {
+  const rows = CAV.rows, q = (CAV.q || '').trim().toLowerCase();
+  const show = q ? rows.filter(r => r.nome.toLowerCase().indexOf(q) >= 0) : rows;
+  const prop = rows.filter(r => r.stato === 'prop').length, ok = rows.filter(r => r.stato === 'ok').length, no = rows.filter(r => r.stato === 'no').length;
+  let h = '<form data-submit="cavForm" novalidate>' +
+    '<p class="hint">L\'editor della pianta prende i cavi e le americane da qui: per ognuno gli serve sapere <b>che cavo è</b> (o che americana) e <b>quanti metri</b>. ' +
+    'Li riconosco dal nome dell\'articolo: controlla e conferma. I pezzi non si toccano — quelli restano quelli del magazzino.</p>' +
+    '<p class="row">' + (prop ? '<span class="pill warn">' + prop + ' da scrivere</span>' : '') +
+    (ok ? '<span class="pill ok">' + ok + ' già a posto</span>' : '') +
+    (no ? '<span class="pill">' + no + ' da guardare</span>' : '') + '</p>';
+  if (!rows.length) return h + '<p class="empty">Nel magazzino non ci sono cavi né americane da riconoscere.</p></form>';
+  if (rows.length > 12) h += '<input type="search" data-inp="cavQ" placeholder="Cerca un articolo" value="' + esc(CAV.q || '') + '" style="width:100%;margin:0 0 8px">';
+  h += '<ul class="cavl">' + show.map(r => cavRowHtml(r, rows.indexOf(r))).join('') + '</ul>';
+  if (!show.length) h += '<p class="empty">Nessun articolo con questo nome.</p>';
+  h += '<div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Chiudi</button>' +
+    '<button type="submit" class="btn pri">Scrivi nelle schede</button></div></form>';
+  return h;
+}
+
+ACT.cavOpen = () => {
+  if (S.mode !== 'coord') return;
+  CAV = { rows: cavRows(), q: '' };
+  openSheet('Cavi e americane per l\'editor', cavHtml(), { noFocus: true });
+  S.onClose = () => { CAV = null; };
+};
+/* La ricerca ridisegna solo l'elenco: quello che hai scelto resta in CAV.rows, anche per le righe che la ricerca nasconde */
+INP.cavQ = el => {
+  if (!CAV) return;
+  CAV.q = el.value;
+  const ul = $('.cavl');
+  if (!ul) return;
+  const d = document.createElement('div');
+  d.innerHTML = cavHtml();
+  const fresh = d.querySelector('.cavl');
+  if (fresh) ul.parentNode.replaceChild(fresh, ul);
+};
+CHG.cavOn = el => { const r = CAV && CAV.rows[+el.dataset.i]; if (r) r.on = !!el.checked; };
+CHG.cavT = el => {
+  const r = CAV && CAV.rows[+el.dataset.i];
+  if (!r) return;
+  const v = String(el.value || '');
+  r.cavo = v.indexOf('c:') === 0 ? v.slice(2) : '';
+  r.trss = v.indexOf('t:') === 0 ? v.slice(2) : '';
+  const box = el.closest('li');
+  const cb = box && box.querySelector('input[type=checkbox]');
+  if (cb) { cb.checked = !!(r.cavo || r.trss) || !!r.now; r.on = cb.checked; }
+};
+INP.cavL = el => { const r = CAV && CAV.rows[+el.dataset.i]; if (r) r.len = el.value; };
+
+SUB.cavForm = async () => {
+  if (!CAV) return;
+  const righe = [];
+  CAV.rows.forEach(r => {
+    if (!r.on) return;
+    if (!r.cavo && !r.trss) { if (r.now) righe.push({ id: r.id, vuota: 1 }); return; }
+    righe.push({ id: r.id, cavo: r.cavo, trss: r.trss, len: String(r.len === '' || r.len === undefined ? '' : r.len).replace(',', '.') });
+  });
+  if (!righe.length) { toast('Non hai scelto niente da scrivere.', 'warn'); return; }
+  await mutate(async () => {
+    const res = await call('api_schedeCavi', S.pin, righe);
+    await coordLoad();
+    CAV = null;
+    closeSheet();
+    paint();
+    const sal = (res.saltati || []).length;
+    toast('Schede scritte: ' + (res.fatti || 0) + '. Adesso l\'editor sa che cavi sono e quanto sono lunghi.' +
+      (sal ? ' ' + plural(sal, 'articolo saltato', 'articoli saltati') + ': ' + esc((res.saltati || []).slice(0, 3).map(x => x.nome + ' (' + x.motivo + ')').join('; ')) : ''), sal ? 'warn' : 'ok');
+  });
+};
 /* ====================================================================================================================
    4.8 — ALTRI SERVICE (scheda Magazzino › «Altri service»)
    La rubrica dei service con cui lavoriamo e, per ognuno, quello che ha: serve a sapere chi ce l'ha quando a noi manca
