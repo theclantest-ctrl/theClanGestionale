@@ -106,7 +106,9 @@ const SCH_XF = {
   poll: ['Pollici', 'n'],
   imp: ['Impedenza (ohm)', 'n'],
   sez: ['Sezione del cavo (mm²)', 'n'],
-  post: ['Posti (prese)', 'n']
+  post: ['Posti (prese)', 'n'],
+  rxn: ['Ricevitori (o trasmettitori) nel rack', 'n'],
+  rxin: ['Cosa c\'è già dentro il rack', 't', 'es. 2 palmari + 2 archetti con bodypack']
 };
 const SCH_MICT = [['din', 'dinamico'], ['cond', 'a condensatore'], ['nastro', 'a nastro'], ['piezo', 'piezo / a contatto']];
 const SCH_POL = [['card', 'cardioide'], ['super', 'supercardioide'], ['iper', 'ipercardioide'], ['omni', 'omnidirezionale'], ['fig8', 'a otto'], ['shot', 'shotgun']];
@@ -116,8 +118,8 @@ const SCH_GRP = {
     ['aste', 'Aste e stativi microfonici', 'gstand', 'peso,dimC,hmin,hmax'],
     ['mic', 'Microfoni', 'mic', 'mict,pol,ph48'],
     ['archetti', 'Archetti e lavalier', 'mic', 'mict,pol,ph48'],
-    ['radio', 'Radiomicrofoni e riceventi', 'micw', 'ain,aout'],
-    ['iem', 'In-ear e monitor personali', 'iem', 'ain'],
+    ['radio', 'Radiomicrofoni e riceventi', 'micw', 'ain,aout,rxn,rxin'],
+    ['iem', 'In-ear e monitor personali', 'iem', 'ain,rxn,rxin'],
     ['di', 'D.I. attive e passive', 'di', 'ain,aout,ph48'],
     ['split', 'Splitter e ciabatte microfoniche', 'stagebox', 'ain,aout'],
     ['dig', 'Trasporti digitali e schede mixer', 'stagebox', 'ain,aout'],
@@ -181,22 +183,65 @@ const SCH_SYM = [
   ['stage', 'Pedana'], ['table', 'Tavolo'], ['chair', 'Sedia'], ['keys', 'Tastiera'], ['drums', 'Batteria'], ['perc', 'Percussioni'], ['dj', 'Consolle DJ']
 ];
 const SCH_GRP_DEPT = ['audio', 'luci', 'video', 'generale'];
-/* Il sottogruppo per codice: {dept, k, l, sym, campi[]} oppure null */
+const SCH_DEPT_L = { audio: 'Audio', luci: 'Luci', video: 'Video', generale: 'Generale' };
+
+/* 5.1 — l'albero dei gruppi è quello che si è fatto lui (impostazione `gruppi`), se c'è; se no quello di serie.
+   Un nodo: {k, l, sym, campi, n:[figli]}; i figli stanno dentro il loro sottogruppo, quanti livelli servono.
+   Il codice (k) non cambia mai quando si rinomina: gli articoli restano attaccati al loro gruppo. */
+let SCH_TREE = null;
+function schTreeDefault() {
+  return {
+    v: 1, n: SCH_GRP_DEPT.map(d => ({
+      k: d, l: SCH_DEPT_L[d],
+      n: (SCH_GRP[d] || []).map(x => { const o = { k: x[0], l: x[1] }; if (x[2]) o.sym = x[2]; if (x[3]) o.campi = x[3]; return o; }),
+    })),
+  };
+}
+function SCH_GRP_SET(json) {
+  const t = String(json == null ? '' : json).trim();
+  if (!t) { SCH_TREE = null; return; }
+  try { const o = JSON.parse(t); SCH_TREE = (o && Array.isArray(o.n)) ? o : null; } catch (e) { SCH_TREE = null; }
+}
+function schTree() { return SCH_TREE || schTreeDefault(); }
+/* I nodi di un reparto, come albero (per la finestra dei gruppi) */
+function schGrpNodes(dept) {
+  const r = schTree().n.filter(x => x.k === (SCH_GRP[dept] ? dept : 'generale'))[0];
+  return r ? (r.n || []) : [];
+}
+/* Il sottogruppo per codice: {dept, k, l, sym, campi[], deep} oppure null. Simbolo e campi, se il nodo non li ha,
+   li prende dal gruppo che lo contiene. */
 function schGrp(code) {
   const c = String(code == null ? '' : code).trim();
   if (!c) return null;
-  for (let i = 0; i < SCH_GRP_DEPT.length; i++) {
-    const d = SCH_GRP_DEPT[i], list = SCH_GRP[d];
-    for (let j = 0; j < list.length; j++) {
-      if (list[j][0] !== c) continue;
-      return { dept: d, k: list[j][0], l: list[j][1], sym: list[j][2], campi: list[j][3] ? list[j][3].split(',') : [] };
-    }
-  }
-  return null;
+  let found = null;
+  schTree().n.forEach(r => {
+    const walk = (list, deep, sym, campi) => {
+      (list || []).forEach(nd => {
+        if (found || !nd) return;
+        const sy = nd.sym || sym, cp = nd.campi || campi;
+        if (String(nd.k) === c) {
+          found = { dept: r.k, k: c, l: String(nd.l || c), sym: sy || '', campi: cp ? String(cp).split(',') : [], deep: deep };
+          return;
+        }
+        walk(nd.n, deep + 1, sy, cp);
+      });
+    };
+    walk(r.n, 1, '', '');
+  });
+  return found;
 }
 function schGrpLabel(code) { const g = schGrp(code); return g ? g.l : ''; }
-/* I sottogruppi di un reparto (deptWh: audio, luci, video, comune → generale) */
-function schGrpList(dept) { return SCH_GRP[dept] || SCH_GRP.generale; }
+/* I sottogruppi di un reparto per un menu a tendina: [codice, nome], con i figli rientrati (deptWh: comune → generale) */
+function schGrpList(dept) {
+  const out = [];
+  const walk = (list, deep) => (list || []).forEach(nd => {
+    if (!nd || !nd.k) return;
+    out.push([nd.k, (deep ? '\u00a0\u00a0'.repeat(deep) + '└ ' : '') + String(nd.l || nd.k)]);
+    walk(nd.n, deep + 1);
+  });
+  walk(schGrpNodes(SCH_GRP[dept] ? dept : 'generale'), 0);
+  return out;
+}
 /* In che sezione della finestra sta un campo che il sottogruppo chiede (per aprirla già aperta) */
 const SCH_SEZ_OF = {
   W: 'cor', pin: 'cor', thru: 'cor', cord: 'cor',
@@ -512,6 +557,33 @@ function schLines(s) {
     return h + '</div>';
   };
 
+  /* ---------- 5.1 — nel bilancio elettrico: chi c'è davvero su quella linea, e dov'è in pianta ----------
+     Al posto di «e altri 29» l'elenco si apre e li mostra tutti; il pulsante «in pianta» accende le attrezzature di
+     quella linea e il percorso dei cavi di corrente che le alimentano, dal quadro fino a loro. */
+  window.PW_FEED = function (PW, e, o, dev) {
+    try {
+      var ids = {}, set = {}, lks = [];
+      if (o) { ids[o.id] = 1; set[o.id] = 1; }
+      (dev || []).forEach(function (d) { ids[d.id] = 1; });
+      var walk = function (i) {
+        (PW.kids[i] || []).forEach(function (k) { if (!set[k]) { set[k] = 1; ids[k] = 1; walk(k); } });
+      };
+      if (o) walk(o.id);
+      Object.keys(PW.edge).forEach(function (lkid) { if (set[PW.edge[lkid].to]) lks.push(lkid); });
+      var h = '';
+      if (dev && dev.length > 1) {
+        h += '<details class="pwall"><summary>' + dev.length + ' apparecchi: ' +
+          esc_(dev.slice(0, 4).map(function (d) { return d.l; }).join(', ')) + (dev.length > 4 ? '…' : '') + '</summary>' +
+          '<div class="info">' + dev.map(function (d) { return esc_(d.l); }).join(' · ') + '</div></details>';
+      } else if (dev && dev.length === 1 && o && dev[0].id !== o.id) {
+        h += '<div class="info">' + esc_(dev[0].l) + '</div>';
+      }
+      h += '<div><button type="button" class="sm pwsee" data-see="' + Object.keys(ids).concat(lks).join(',') +
+        '" data-see-l="' + esc_((o && o.l) || 'Linea') + '">👁️ in pianta: pezzi e giro del cavo</button></div>';
+      return h;
+    } catch (err) { return ''; }
+  };
+
   /* ---------- gli avvisi di «Luci e video»: stesso trattamento, perché e dove ----------
      Qui gli avvisi arrivano come frasi («Barra led 3: non ha l'uscita DMX (thru) — …»): i pezzi che riguardano si
      trovano dal nome che c'è scritto dentro. Le luci in catena (una che alimenta la successiva) sono normali e non
@@ -572,7 +644,90 @@ function schLines(s) {
     } catch (e) { return '<svg class="legsym" width="34" height="34"></svg>'; }
   }
 
+  /* 5.1 — la legenda è una finestrella: la sposti dove vuoi, la allarghi, la chiudi e la riapri da «Vista».
+     Dove la metti e quanto è grande se lo ricorda questo computer. Dentro c'è anche l'interruttore dei nomi sul
+     disegno, che di suo stanno spenti (la pianta resta pulita: simboli, cavi e quote). */
+  var LEGK = 'ed50.leg';
+  function legState() {
+    try { return JSON.parse(localStorage.getItem(LEGK) || '{}') || {}; } catch (e) { return {}; }
+  }
+  function legSave(s) { try { localStorage.setItem(LEGK, JSON.stringify(s)); } catch (e) { /* niente */ } }
+  function legClamp(w, st) {
+    var W = window.innerWidth, H = window.innerHeight;
+    st.w = Math.max(200, Math.min(st.w || 300, Math.max(200, W - 20)));
+    st.h = Math.max(140, Math.min(st.h || 360, Math.max(140, H - 80)));
+    st.x = Math.max(4, Math.min(st.x === undefined ? W - st.w - 16 : st.x, Math.max(4, W - st.w - 4)));
+    st.y = Math.max(56, Math.min(st.y === undefined ? 120 : st.y, Math.max(56, H - 80)));
+    w.style.left = st.x + 'px'; w.style.top = st.y + 'px'; w.style.width = st.w + 'px'; w.style.height = st.h + 'px';
+    return st;
+  }
+  function legWin() {
+    var w = document.getElementById('legWin');
+    if (w) return w;
+    w = document.createElement('div');
+    w.id = 'legWin';
+    w.hidden = true;
+    w.innerHTML =
+      '<div class="legh"><b>Legenda</b>' +
+      '<label class="legn" title="Rimette i nomi delle attrezzature sul disegno e nella stampa"><input type="checkbox" id="legNames"> nomi sul disegno</label>' +
+      '<button type="button" class="legx" title="Chiudi">✕</button></div>' +
+      '<div id="legBox"></div><div class="legg" title="Trascina per ridimensionare"></div>';
+    document.body.appendChild(w);
+    var st = legClamp(w, legState());
+    // spostare: si trascina la barra in alto
+    var drag = null;
+    w.querySelector('.legh').addEventListener('pointerdown', function (e) {
+      if (e.target.closest('.legx') || e.target.closest('.legn')) return;
+      drag = { x: e.clientX - st.x, y: e.clientY - st.y };
+      this.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    w.querySelector('.legh').addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      st.x = e.clientX - drag.x; st.y = e.clientY - drag.y;
+      legClamp(w, st);
+    });
+    w.querySelector('.legh').addEventListener('pointerup', function () { if (drag) { drag = null; legSave(st); } });
+    // ridimensionare: l'angolo in basso a destra
+    var res = null;
+    w.querySelector('.legg').addEventListener('pointerdown', function (e) {
+      res = { x: e.clientX, y: e.clientY, w: st.w, h: st.h };
+      this.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    w.querySelector('.legg').addEventListener('pointermove', function (e) {
+      if (!res) return;
+      st.w = res.w + (e.clientX - res.x); st.h = res.h + (e.clientY - res.y);
+      legClamp(w, st);
+    });
+    w.querySelector('.legg').addEventListener('pointerup', function () { if (res) { res = null; legSave(st); } });
+    w.querySelector('.legx').addEventListener('click', function () { LEG_OPEN(false); });
+    w.querySelector('#legNames').addEventListener('change', function () {
+      try {
+        var cb = document.getElementById('cbLabels');
+        if (cb) { cb.checked = this.checked; drawd(); }
+      } catch (e) { /* niente */ }
+    });
+    window.addEventListener('resize', function () { if (!w.hidden) legClamp(w, st); });
+    w._st = st;
+    return w;
+  }
+  window.LEG_OPEN = function (on) {
+    var w = legWin(), st = w._st;
+    if (on === undefined) on = w.hidden;
+    w.hidden = !on;
+    if (on) {
+      legClamp(w, st);
+      try { w.querySelector('#legNames').checked = !!(document.getElementById('cbLabels') || {}).checked; } catch (e) { /* niente */ }
+      LEG_RENDER();
+    }
+    st.open = !!on;
+    legSave(st);
+  };
+
   window.LEG_RENDER = function () {
+    var win = document.getElementById('legWin');
+    if (win && win.hidden) return;
     var box = document.getElementById('legBox');
     if (!box) return;
     try {
@@ -671,6 +826,210 @@ function schLines(s) {
     } catch (e) { /* la mappina è un di più */ }
   };
 
+  /* ================================================================================================================
+     5.1 — I RACK DEI RADIOMICROFONI
+     Un radiomicrofono non è un pezzo solo: è un ricevitore dentro a un rack (singolo, doppio o da quattro) più quello
+     che tiene in mano o addosso chi parla (palmare, oppure il bodypack con l'archetto, il lavalier o un ingresso di
+     linea; per gli in-ear è il contrario: nel rack ci sono i trasmettitori e addosso il ricevitore a cintura).
+     Qui si dice, per ogni radio messo in pianta, in quale rack sta e com'è fatto. Si può scegliere un rack che hai
+     già fatto in magazzino (quelli con scritto quanti ricevitori ci stanno dentro, nella loro scheda tecnica) oppure
+     comporlo pezzo per pezzo. L'elenco materiale conta il rack una volta sola per ogni gruppo, i canali che usi e i
+     pezzi che vanno addosso a chi parla, e avvisa se i canali sono più di quelli che il rack ha.
+     ================================================================================================================ */
+  var RX_TX = [
+    ['palm', 'radiomicrofono palmare'],
+    ['arch', 'archetto + bodypack'],
+    ['lav', 'lavalier (a spillo) + bodypack'],
+    ['line', 'ingresso di linea + bodypack'],
+    ['iem', 'in-ear: ricevitore a cintura']
+  ];
+  var RX_PEZZI = {
+    palm: ['Radiomicrofono palmare'],
+    arch: ['Bodypack (trasmettitore da cintura)', 'Archetto'],
+    lav: ['Bodypack (trasmettitore da cintura)', 'Lavalier (microfono a spillo)'],
+    line: ['Bodypack (trasmettitore da cintura)', 'Cavetto di linea per bodypack'],
+    iem: ['Ricevitore in-ear a cintura', 'Auricolari in-ear']
+  };
+  var RX_LET = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+  var RX_CAT = 'Audio — radio e in-ear';
+
+  /* È un radio (o un in-ear)? */
+  function rxIs(o) {
+    if (!o) return false;
+    if (o.sym === 'iem') return true;
+    return o.sym === 'micw' || o.sym === 'michs' || /^mic_(w|hs|lav)$/.test(String(o.k || ''));
+  }
+  /* Com'è fatto questo radio, coi valori di partenza al posto di quelli che non ha ancora scelto */
+  function rxOf(o) {
+    var p = (o && o.p) || {};
+    var tx = p.rxtx;
+    if (!tx) {
+      if (o.sym === 'iem') tx = 'iem';
+      else if (o.k === 'mic_lav' || /lavalier|spillo/i.test(String(o.l || ''))) tx = 'lav';
+      else if (o.k === 'mic_hs' || o.sym === 'michs') tx = 'arch';
+      else tx = 'palm';
+    }
+    var n = Math.round(Number(p.rxn) || 0);
+    if (!(n > 0)) n = 2;                                 // di solito i rack sono doppi: è il valore di partenza
+    return {
+      rx: p.rx === '' ? '' : String(p.rx || 'A'),
+      n: n,
+      tx: tx,
+      wh: String(p.rxwh || ''),
+      full: !!p.rxfull
+    };
+  }
+  /* I gruppi (i rack) che ci sono adesso in pianta: {A: {ids, n, wh, full, iem}} */
+  function rxGroups() {
+    var g = {};
+    try {
+      S.forEach(function (o) {
+        if (!rxIs(o) || provOf(o)) return;
+        var r = rxOf(o);
+        if (!r.rx) return;
+        var k = g[r.rx] = g[r.rx] || { ids: [], n: r.n, wh: r.wh, full: r.full, iem: true };
+        k.ids.push(o.id);
+        if (r.n > k.n) k.n = r.n;
+        if (r.wh && !k.wh) k.wh = r.wh;
+        if (r.full) k.full = true;
+        if (r.tx !== 'iem') k.iem = false;
+      });
+    } catch (e) { /* niente */ }
+    return g;
+  }
+  window.RX_GROUPS = rxGroups;
+  window.RX_IS = rxIs;
+  /* I rack e i pezzi che hai in magazzino (shim.js); da solo l'editor non ne sa niente */
+  function rxWh() {
+    try { return (typeof WH_RADIO === 'function') ? WH_RADIO() : null; } catch (e) { return null; }
+  }
+  /* I pezzi del magazzino che vanno con questo trasmettitore (null = per questo non c'è niente da cercare) */
+  function rxAv(W, tx) {
+    if (tx === 'palm') return W.palm;
+    if (tx === 'arch') return W.arch;
+    if (tx === 'lav') return W.lav;
+    if (tx === 'iem') return W.iem;
+    return null;
+  }
+  function rxHave(list) {
+    if (!list || !list.length) return '';
+    return list.slice(0, 2).map(function (x) { return x.n + (x.q > 1 ? ' ×' + x.q : ''); }).join(', ');
+  }
+
+  /* ---------- il pannello ---------- */
+  window.RX_PANEL = function (o) {
+    if (!rxIs(o)) return '';
+    var r = rxOf(o), G = rxGroups(), W = rxWh(), racks = (W && W.rack) || [];
+    var usati = r.rx && G[r.rx] ? G[r.rx].ids.length : 0;
+    var lett = RX_LET.slice(0, Math.max(2, Object.keys(G).length + 1));
+    var h = '<div class="grp" style="grid-column:1/-1"><b>📻 Il rack di questo radio</b>';
+    h += '<label class="field">Rack <select data-rx="1">' +
+      '<option value=""' + (r.rx ? '' : ' selected') + '>nessun rack: solo questo pezzo</option>' +
+      lett.map(function (L) {
+        var n = G[L] ? G[L].ids.length : 0;
+        return '<option value="' + L + '"' + (r.rx === L ? ' selected' : '') + '>rack ' + L + (n ? ' (' + n + (n === 1 ? ' canale' : ' canali') + ')' : ' (nuovo)') + '</option>';
+      }).join('') + '</select></label>';
+    if (r.rx) {
+      h += '<label class="field">Ricevitori nel rack <select data-rxn="1">' +
+        [1, 2, 4, 6, 8].map(function (n) {
+          return '<option value="' + n + '"' + (r.n === n ? ' selected' : '') + '>' + n + (n === 1 ? ' canale' : ' canali') + '</option>';
+        }).join('') + '</select></label>';
+      if (racks.length) {
+        h += '<label class="field">Rack dal magazzino <select data-rxwh="1"><option value=""' + (r.wh ? '' : ' selected') + '>— lo compongo io pezzo per pezzo —</option>' +
+          racks.map(function (x) {
+            var l = x.n + (x.rxn ? ' · ' + x.rxn + (x.rxn === 1 ? ' canale' : ' canali') : '') + (x.q > 1 ? ' (ne hai ' + x.q + ')' : '');
+            return '<option value="' + esc_(x.n) + '"' + (r.wh === x.n ? ' selected' : '') + '>' + esc_(l) + '</option>';
+          }).join('') + '</select></label>';
+      }
+      if (r.wh) {
+        var rk = racks.filter(function (x) { return x.n === r.wh; })[0];
+        h += '<label class="field"><input type="checkbox" data-rxfull="1"' + (r.full ? ' checked' : '') +
+          '> i trasmettitori sono già dentro al rack</label>';
+        if (rk && rk['in']) h += '<span class="info">Dentro c\'è: ' + esc_(rk['in']) + '</span>';
+      }
+    }
+    h += '<label class="field">' + (r.tx === 'iem' ? 'Addosso a chi suona' : 'In mano o addosso') +
+      ' <select data-rxtx="1">' + RX_TX.map(function (x) {
+        return '<option value="' + x[0] + '"' + (r.tx === x[0] ? ' selected' : '') + '>' + x[1] + '</option>';
+      }).join('') + '</select></label>';
+    if (r.rx && usati > (G[r.rx] ? G[r.rx].n : r.n)) {
+      h += '<span class="info" style="color:var(--danger);font-weight:600">⚠️ nel rack ' + r.rx + ' ci sono ' + usati +
+        ' canali ma il rack ne ha ' + G[r.rx].n + ': metti un rack più grande, o sposta qualcuno in un altro rack.</span>';
+    }
+    var pz = RX_PEZZI[r.tx] || [], av = W ? rxAv(W, r.tx) : null, hv = av ? rxHave(av) : '';
+    h += '<span class="info">' +
+      (hv ? 'In magazzino: ' + esc_(hv) + '. ' : (av && av.length === 0 ? 'In magazzino questo pezzo non lo trovo: guarda il nome o il sottogruppo in Magazzino. ' : '')) +
+      'Nell\'elenco materiale finiscono: ' + esc_(pz.join(' + ')) + '.</span>';
+    return h + '</div>';
+  };
+
+  /* Cambio una cosa del rack. `rxn`, il rack del magazzino e la spunta valgono per tutto il gruppo. */
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (!t || !t.dataset) return;
+    var d = t.dataset;
+    // 5.1 — palco appoggiato a terra: l'altezza va a zero da sola, così anche le visuali e quello che gli sta sopra lo sanno
+    if (d.p === 'alz' && t.value === 'niente') {
+      try {
+        var st = S.filter(function (x) { return x.id === sel; })[0];
+        if (st && st.sym === 'stage') { st.p = st.p || {}; st.p.hcm = 0; }
+      } catch (err) { /* niente */ }
+      return;
+    }
+    if (!(d.rx || d.rxn || d.rxtx || d.rxwh || d.rxfull)) return;
+    var o = null;
+    try { o = S.filter(function (x) { return x.id === sel; })[0]; } catch (err) { o = null; }
+    if (!o || !rxIs(o)) return;
+    try { push(); } catch (err) { /* niente */ }
+    o.p = o.p || {};
+    var r = rxOf(o);
+    var tutti = function (fn) {
+      try {
+        S.forEach(function (x) { if (rxIs(x) && String((x.p || {}).rx || 'A') === r.rx) { x.p = x.p || {}; fn(x); } });
+      } catch (err) { /* niente */ }
+    };
+    if (d.rx) { if (t.value) o.p.rx = t.value; else o.p.rx = ''; }
+    else if (d.rxn) { var n = Math.max(1, Math.round(Number(t.value) || 2)); tutti(function (x) { x.p.rxn = n; }); }
+    else if (d.rxtx) o.p.rxtx = t.value;
+    else if (d.rxwh) { var v = t.value; tutti(function (x) { if (v) { x.p.rxwh = v; x.p.rxfull = true; } else { delete x.p.rxwh; delete x.p.rxfull; } }); }
+    else if (d.rxfull) { var on = !!t.checked; tutti(function (x) { if (on) x.p.rxfull = true; else delete x.p.rxfull; }); }
+    try { afterEdit(); } catch (err) { /* niente */ }
+    try { pn(); } catch (err) { /* niente */ }
+  });
+
+  /* ---------- l'elenco materiale ---------- */
+  window.RX_BOM = function (o, add) {
+    if (!rxIs(o)) return;
+    var r = rxOf(o), W = rxWh();
+    var pezzi = RX_PEZZI[r.tx] || [];
+    var mod = String(((o.p || {}).model) || '');
+    var nota = function (list, pri) {
+      var h = rxHave(list), t = (pri && mod) ? mod : '';
+      if (h) t += (t ? ' · ' : '') + 'in magazzino: ' + h;
+      return t;
+    };
+    var av = W ? rxAv(W, r.tx) : null;
+    if (!r.rx) {                                           // nessun rack: solo i pezzi che gli vanno addosso
+      pezzi.forEach(function (x, i) { add(RX_CAT, x, 1, nota(i === 0 ? av : (W ? W.body : null), i === 0)); });
+      return;
+    }
+    var G = rxGroups(), g = G[r.rx];
+    if (!g) return;
+    if (g.ids[0] === o.id) {                               // il rack si conta una volta sola, sul primo canale del gruppo
+      var ch = g.ids.length, cap = g.n;
+      var nome = g.wh ? g.wh : (g.iem ? 'Rack in-ear da ' + cap + (cap === 1 ? ' canale' : ' canali') : 'Rack radio da ' + cap + (cap === 1 ? ' canale' : ' canali'));
+      var nt = 'rack ' + r.rx + ': ' + ch + (ch === 1 ? ' canale usato' : ' canali usati');
+      if (ch > cap) nt = '⚠️ rack ' + r.rx + ': ' + ch + ' canali usati ma il rack ne ha ' + cap + ': serve un rack più grande';
+      add(RX_CAT, nome, 1, nt, null, g.ids);
+      if (!g.wh) {
+        add(RX_CAT, g.iem ? 'Trasmettitore in-ear (canale del rack)' : 'Ricevitore radio (canale del rack)', ch,
+          W ? nota(W.rx) : '', null, g.ids);
+      }
+    }
+    if (g.full) return;                                    // i trasmettitori stanno già dentro al rack che hai
+    pezzi.forEach(function (x, i) { add(RX_CAT, x, 1, nota(i === 0 ? av : (W ? W.body : null), i === 0)); });
+  };
+
   /* ---------- i pulsanti degli avvisi ---------- */
   function fixUnfed() {
     try {
@@ -703,9 +1062,10 @@ function schLines(s) {
   }
 
   document.addEventListener('click', function (e) {
-    var b = e.target && e.target.closest ? e.target.closest('[data-see],[data-wfix]') : null;
+    var b = e.target && e.target.closest ? e.target.closest('[data-see],[data-wfix],[data-leg]') : null;
     if (!b) return;
     e.preventDefault();
+    if (b.hasAttribute('data-leg')) { try { closeMenus(); } catch (err) { /* niente */ } LEG_OPEN(true); return; }
     if (b.hasAttribute('data-see')) {
       try { highlightIds(b.getAttribute('data-see').split(','), b.getAttribute('data-see-l') || 'In pianta'); } catch (err) { /* niente */ }
       return;
@@ -727,6 +1087,19 @@ function schLines(s) {
       '.wnotes .wwho{opacity:.9}' +
       '.wnotes .wwhy{font-size:11.5px;line-height:1.35;opacity:.85}' +
       '.wnotes .wbtn{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}' +
+      '#legWin{position:fixed;z-index:60;display:flex;flex-direction:column;background:var(--panel,#fff);color:var(--ink,#14181d);' +
+      'border:1px solid var(--line,#d8dde4);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.18);overflow:hidden}' +
+      '#legWin .legh{display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--panel2,#f5f7fa);' +
+      'border-bottom:1px solid var(--line,#d8dde4);cursor:move;touch-action:none;user-select:none;font-size:12.5px}' +
+      '#legWin .legh b{flex:0 0 auto}' +
+      '#legWin .legn{flex:1 1 auto;display:flex;align-items:center;gap:4px;font-size:11.5px;opacity:.85;cursor:pointer}' +
+      '#legWin .legx{flex:0 0 auto;border:0;background:transparent;font-size:14px;line-height:1;cursor:pointer;padding:2px 4px;color:inherit}' +
+      '#legWin #legBox{flex:1 1 auto;overflow:auto;padding:8px 10px}' +
+      '#legWin .legg{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize;touch-action:none;' +
+      'background:linear-gradient(135deg,transparent 50%,var(--line,#d8dde4) 50%)}' +
+      '.pwall summary{cursor:pointer;font-size:11.5px;opacity:.85}' +
+      '.pwall[open] summary{margin-bottom:2px}' +
+      '.pwsee{margin-top:3px}' +
       '#legBox .legfam+.legfam{margin-top:10px}' +
       '#legBox .legtit{font-size:12px;font-weight:600;opacity:.75;margin:0 0 4px}' +
       '#legBox .leggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:4px}' +
@@ -737,7 +1110,12 @@ function schLines(s) {
       '#legBox .legl{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
     (document.head || document.documentElement).appendChild(s);
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', stile); else stile();
+  // se la legenda era aperta, si riapre dov'era (e con la misura che le avevi dato)
+  function boot() {
+    stile();
+    setTimeout(function () { try { if (legState().open) LEG_OPEN(true); } catch (e) { /* niente */ } }, 600);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
 
 /* Adattatore dell'editor «Planimetria Evento» al gestionale.
@@ -1314,6 +1692,7 @@ function schLines(s) {
       WH.map = v.mappa && typeof v.mappa === 'object' ? v.mappa : {};
       WH.nuovi = Array.isArray(v.nuovi) ? v.nuovi : [];
       WH.svc = Array.isArray(v.svc) ? v.svc : [];                                // 5.0: le aste e le piantane degli altri service
+      try { if (typeof SCH_GRP_SET === 'function') SCH_GRP_SET(v.grp || ''); } catch (e) { /* niente */ }   // 5.1: i gruppi come se li è fatti lui
       whIndex();
       if (data && typeof data === 'object') {
         var st = data.stock = (data.stock && typeof data.stock === 'object') ? data.stock : {};
@@ -1669,6 +2048,42 @@ function schLines(s) {
       out[whAstaTipo_(x.n)].push({ m: String(x.n), q: Math.max(0, Math.round(Number(x.q) || 0)), s: String(x.s || '') });
       n++;
     });
+    return n ? out : null;
+  };
+
+  /* 5.1 — i rack dei radiomicrofoni e i pezzi che ci vanno dentro, letti dal magazzino.
+     Un rack è un articolo che nella sua scheda tecnica dice quanti ricevitori ci stanno dentro (campo «Ricevitori nel
+     rack»), o che si chiama «rack» e sta nei sottogruppi dei radio o degli in-ear. I pezzi sciolti (palmari, bodypack,
+     archetti, lavalier, in-ear, ricevitori) si riconoscono dal nome: servono solo a dire «questo ce l'hai». */
+  function whRadioList_() {
+    var all = [];
+    WH.nuovi.forEach(function (a) { if (a && !a.u) all.push(a); });
+    Object.keys(WH.map || {}).forEach(function (k) { if (WH.map[k]) all.push(WH.map[k]); });
+    return all;
+  }
+  window.WH_RADIO = function () {
+    if (!WH.on) return null;
+    var out = { rack: [], rx: [], palm: [], arch: [], lav: [], iem: [], body: [] }, n = 0;
+    whRadioList_().forEach(function (a) {
+      var nome = String(a.n || ''), s = a.s || {}, g = String(s.grp || '');
+      var q = Math.max(0, Math.round(Number(a.q) || 0));
+      if (!nome || !q) return;
+      var rxn = Math.max(0, Math.round(Number(s.rxn) || 0));
+      if (rxn > 0 || (/\brack\b/i.test(nome) && (g === 'radio' || g === 'iem'))) {
+        out.rack.push({ n: nome, q: q, rxn: rxn, 'in': String(s.rxin || '') });
+        n++;
+        return;
+      }
+      if (g && g !== 'radio' && g !== 'iem' && g !== 'archetti' && g !== 'mic') return;   // ha un sottogruppo che non c'entra
+      var put = function (k) { out[k].push({ n: nome, q: q }); n++; };
+      if (/body ?pack|belt ?pack|trasmettitore da cintura|\bbp\b/i.test(nome)) put('body');
+      else if (/archett|headset|\bhs\b|\bhsp\b/i.test(nome)) put('arch');
+      else if (/lavalier|\blav\b|spillo|\bme ?2\b|\bmx153\b/i.test(nome)) put('lav');
+      else if (/in.?ear|\biem\b|auricolar/i.test(nome)) put('iem');
+      else if (/palmar|handheld|\bhh\b|gelato|radio.*(sm58|beta ?58|e835|nd76)/i.test(nome)) put('palm');
+      else if (/ricevit|receiver|\brx\b|\bew ?[0-9]+ ?r\b/i.test(nome)) put('rx');
+    });
+    out.rack.sort(function (a, b) { return (b.rxn || 0) - (a.rxn || 0) || String(a.n).localeCompare(String(b.n), 'it'); });
     return n ? out : null;
   };
 
@@ -2879,8 +3294,8 @@ body.gen-live #ms{left:calc((100vw - var(--genW))/2)}
    <div class="menu" data-m="vista"><button class="mb" aria-haspopup="true" aria-expanded="false">Vista</button>
     <div class="dd">
      <button data-click="btnFit">⤢ Adatta: inquadra tutto</button>
-     <hr><button data-goto="secLegend">🗺️ Legenda dei simboli</button>
-     <span hidden><label class="field"><input id="cbLabels" type="checkbox" checked> Etichette</label>
+     <hr><button data-leg="1">🗺️ Legenda dei simboli</button>
+     <span hidden><label class="field"><input id="cbLabels" type="checkbox"> Etichette</label>
       <label class="field">Testi <input id="lblSize" type="number" step="0.01" min="0.03" value="0.15"> m</label>
       <label class="field"><input id="lblAuto" type="checkbox" checked> automatici</label></span>
      <label class="field"><input id="cq" type="checkbox" checked> Distanze e ritardi delle casse</label>
@@ -3144,10 +3559,6 @@ body.gen-live #ms{left:calc((100vw - var(--genW))/2)}
 
 <details class="sec" id="secCables"><summary>Cavi tratta per tratta <span id="cableCount" class="chip"></span></summary>
  <div class="sec-body"><div class="tbl-wrap"><table class="sched" id="cableTable"></table></div></div>
-</details>
-
-<details class="sec" id="secLegend"><summary>Legenda dei simboli</summary>
- <div class="sec-body"><div id="legBox"></div></div>
 </details>
 
 <details class="sec" id="secHeights"><summary>Altezze — americane, torri, elevatori, paranchi, palco</summary>
@@ -4503,7 +4914,7 @@ function ob(o,hl,opt){
   if(hl)s+=SR(-o.w/2-5*P,-o.h/2-5*P,o.w+10*P,o.h+10*P,'none','#e0007a',1.6,' stroke-dasharray="5 3"');
   if(o.lock&&(G2.edLock||hl))s+=`<g pointer-events="none">${SC(-o.w/2,-o.h/2,8*P,'#fff','#6D4C41',1.2)}${ST(-o.w/2,-o.h/2+4*P,'🔒',10*P,'#6D4C41','middle',400)}</g>`;
   s+='</g>';
-  if(opt.labels&&o.sym==='note')s+=labelOf(o,a,opt); // le altre etichette si dispongono tutte insieme, senza sovrapporsi (p19)
+  if(o.sym==='note')s+=labelOf(o,a,opt); // le altre etichette si dispongono tutte insieme, senza sovrapporsi (p19)
   return s+'</g>';
 }
 
@@ -4673,8 +5084,10 @@ function pn(){
       +sP('deck','Pedana',Object.keys(DECKS).map(k=>[k,k.replace('x',' × ')+' m']),p.deck)
       +sP('ori','Orientamento',[[0,'lato lungo in larghezza'],[1,'lato lungo in profondità']],p.ori?1:0)
       +`<label class="field">Altezza <input data-p="hcm" type="number" step="10" value="${p.hcm}" list="legsList"> cm</label><datalist id="legsList">${LEGS.map(v=>`<option value="${v}">`).join('')}</datalist>`
+      +sP('alz','Come si rialza',[['gambe','gambe: 4 per pedana'],['riser','riser / cavalletti'],['niente','appoggiato a terra']],p.alz||'gambe')
+      +((p.alz||'gambe')==='riser'?`<label class="field">Riser per pedana <input data-p="rpd" type="number" min="1" max="6" step="1" value="${p.rpd||1}"></label>`:'')
       +cP('rb','parapetto retro',p.rb)+cP('rl','parapetto sx',p.rl)+cP('rr','parapetto dx',p.rr)+cP('skirt','balza',p.skirt)
-      +`<span class="info">${nd} pedane da ${fx(dw,1)} × ${fx(dd,1)} m · ${nd*4} gambe da ${p.hcm} cm · fronte palco = lato in basso (spessore)</span>`;break}
+      +`<span class="info">${nd} pedane da ${fx(dw,1)} × ${fx(dd,1)} m · ${(p.alz||'gambe')==='riser'?`${nd*Math.max(1,p.rpd|0||1)} riser da ${p.hcm} cm`:(p.alz==='niente'?'appoggiate a terra':`${nd*4} gambe da ${p.hcm} cm`)} · fronte palco = lato in basso (spessore)</span>`;break}
     case 'stairs':{const s=stairsGeo(p);g+=iP('hcm','Altezza palco',p.hcm,5,'cm')+`<button class="sm" data-act="stairsFromStage">= palco</button>`
       +iP('wid','Larghezza',p.wid,.05,'m')+iP('rise','Alzata max',p.rise,1,'cm')+iP('tread','Pedata',p.tread,.01,'m')+cP('rail','corrimano',p.rail||p.hcm>60)
       +`<span class="info">${s.steps} gradin${s.steps===1?'o':'i'} + piano palco · alzata reale ${fx(s.riseCm,1)} cm · ingombro ${fx(o.w,2)}×${fx(s.depth,2)} m${p.hcm>60?' · sopra 60 cm i produttori prevedono il corrimano':''}</span>`;break}
@@ -4700,10 +5113,11 @@ function pn(){
     case 'mic':case 'micw':case 'michs':case 'micclip':{const kind=MIC_KIND_OF[o.k]||(catBy(o.k)||{}).mk||'';
       g+=`<label class="field">Modello <select data-pm="model">${micOpts(kind,p.model||'')}</select></label>`;
       if(p.model!=null&&!MIC_MODELS.some(([b,m])=>b+' '+m===p.model))g+=`<label class="field">Scrivi il modello <input data-p="model" type="text" value="${esc(p.model||'')}" placeholder="marca e modello" style="width:170px"></label>`;
-      g+=`<label class="field">Asta <select data-pasta="1">${astaOpts(p)}</select></label>`+micTipBox(o);break}
+      g+=`<label class="field">Asta <select data-pasta="1">${astaOpts(p)}</select></label>`
+        +(typeof RX_PANEL==='function'?RX_PANEL(o):'')+micTipBox(o);break}
     case 'di':g+=`<label class="field">Modello <select data-pm="model">${diOpts(p.model||'')}</select></label>`;
       if(p.model!=null&&!DI_MODELS.some(([b,m])=>b+' '+m===p.model))g+=`<label class="field">Scrivi il modello <input data-p="model" type="text" value="${esc(p.model||'')}" style="width:150px"></label>`;g+=micTipBox(o);break;
-    case 'iem':case 'pmix':case 'monxlr':g+=monPanel(o);break;
+    case 'iem':case 'pmix':case 'monxlr':g+=monPanel(o)+(o.sym==='iem'&&typeof RX_PANEL==='function'?RX_PANEL(o):'');break;
   }
   if(g)h+=`<div class="grp">${g}</div>`;
   if(isSub(o))h+=subOnePanel(o);else if(isSpk(o))h+=laIs(o)?arrayPanel(o):speakerPanel(o);
@@ -5496,7 +5910,10 @@ function materials(){
       case 'tower':add('Americane e strutture',`Torre ground support ${p.sys}, H ${fx(p.alt,1)} m${p.baseT==='piastra'?' · piastra di base':p.baseT==='x'?' · base a X con i piedi':''}${p.top?' · piastra in cima':''}`,1,p.top?'tratti e piastre; i fari '+(p.mount==='appoggiate'?'appoggiati sulla piastra vanno fissati':'si attaccano con i morsetti')+' e messi in sicura':'base, tratti, sleeve block e top secondo il sistema');break;
       case 'lift':case 'liftf':LC[o.k]=LC[o.k]||{l:`${c.l||o.l} · H max ${fx(p.altMax,2)} m · ${p.port} kg`,q:0,ids:[]};LC[o.k].q++;LC[o.k].ids.push(o.id);break;
       case 'hoist':add('Americane e strutture',`Paranco a catena ${p.wll} kg ${p.cls}`,1);break;
-      case 'stage':{const nd=(p.nx|0)*(p.ny|0);add('Palco e spazi',`Pedana ${String(p.deck).replace('x','×')} m`,nd);add('Palco e spazi',`Gamba ${p.hcm} cm`,nd*4,'4 per pedana');
+      case 'stage':{const nd=(p.nx|0)*(p.ny|0);add('Palco e spazi',`Pedana ${String(p.deck).replace('x','×')} m`,nd);
+        const alz=p.alz||'gambe',rpd=Math.max(1,p.rpd|0||1);
+        if(alz==='gambe')add('Palco e spazi',`Gamba ${p.hcm} cm`,nd*4,'4 per pedana');
+        else if(alz==='riser')add('Palco e spazi',`Riser / cavalletto h ${p.hcm} cm`,nd*rpd,rpd===1?'uno per pedana':rpd+' per pedana');
         const rl=(p.rb?o.w:0)+(p.rl?o.h:0)+(p.rr?o.h:0);if(rl>0){const n2=Math.floor(rl/2+1e-6),n1=Math.ceil(rl-n2*2-1e-6);add('Palco e spazi','Parapetto 2 m',n2);add('Palco e spazi','Parapetto 1 m',n1)}
         if(p.skirt)add('Palco e spazi','Balza (fronte + lati), metri',f(o.w+2*o.h));break}
       case 'stairs':{const g=stairsGeo(p);add('Palco e spazi',`Scaletta h ${p.hcm} cm · ${g.steps} gradini · largh. ${fx(p.wid,2)} m${p.rail||p.hcm>60?' · corrimano':''}`,1);break}
@@ -5510,7 +5927,9 @@ function materials(){
       case 'strip':if(!fed.has(o.id)){const pl=pinOf(o),cl=cordOf(o);add('Elettrico e distribuzione',`Ciabatta ${p.posti||5} posti, spina ${connS(pl)}${cl!=null?', cavo '+fx(cl,cl%1?1:0)+' m':''}`,1)}break;
       default:{const cl=(CATS.find(x=>x[0]===c.cat)||[0,'Altro'])[1];
         if(laIs(o)){laBom(o,spkGeo(o)).forEach(r=>add(r.cat,r.item,r.q,r.note,r.k||null));break}
-        if(/^mic/.test(o.k)||o.sym==='mic'||o.sym==='micw'||o.sym==='michs'||o.sym==='micclip'){add('Audio — microfoni e DI',p.model||c.l,1);
+        if(typeof RX_IS==='function'&&RX_IS(o)){RX_BOM(o,add);
+          const a2=astaTxt(p);if(a2&&p.asta!=='nessuna'&&o.sym!=='iem')add('Audio — microfoni e DI',a2.charAt(0).toUpperCase()+a2.slice(1),1)}
+        else if(/^mic/.test(o.k)||o.sym==='mic'||o.sym==='micw'||o.sym==='michs'||o.sym==='micclip'){add('Audio — microfoni e DI',p.model||c.l,1);
           const a=astaTxt(p);if(a&&p.asta!=='nessuna')add('Audio — microfoni e DI',a.charAt(0).toUpperCase()+a.slice(1),1)}
         else if(o.sym==='di')add('Audio — microfoni e DI','DI '+(p.model||''),1);
         else add(cl,c.l||o.l,1,'',o.k);
@@ -5604,7 +6023,7 @@ function renderPower(){
       else if(slot&&slot.ph)sl+=` · ${slot.ph==='3F'?'3 fasi':slot.ph}`;
       if(slot&&slot.mcb)sl+=`<div class="info">${esc(slot.mcb)}</div>`;
       const ad=e&&e.run?e.run.ads.filter(a=>a.where==='src'):[];
-      return`<tr><td class="mono" style="white-space:nowrap">${sl}</td><td>${o?esc(o.l):'<span class="info">libera</span>'}${dev.length&&o&&roleOf(o)!=='load'?`<div class="info">${names}</div>`:''}${ad.map(a=>`<div><span class="chip ${a.k==='err'?'err':'warn'}">🔌 adattatore ${esc(adTxt(a.plug,a.sock))}</span></div>`).join('')}</td>`
+      return`<tr><td class="mono" style="white-space:nowrap">${sl}</td><td>${o?esc(o.l):'<span class="info">libera</span>'}${o&&typeof PW_FEED==='function'?PW_FEED(PW,e,o,dev):''}${ad.map(a=>`<div><span class="chip ${a.k==='err'?'err':'warn'}">🔌 adattatore ${esc(adTxt(a.plug,a.sock))}</span></div>`).join('')}</td>`
         +(e?`<td class="num mono">${fx(e.W,0)} W</td><td class="num mono">${fx(e.A,1)} A</td><td class="num">${pctChip(e.A,e.rate)}</td>`:'<td></td><td></td><td></td>')+'</tr>'};
     if(ol.list){ol.list.forEach(sl=>{const e=edges.find(x=>x.slot&&x.slot.i===sl.i);h+=rowFor(sl,e)});edges.filter(e=>!e.slot||!e.slot.i).forEach(e=>h+=rowFor(e.slot,e))}
     else edges.forEach(e=>h+=rowFor(e.slot,e));

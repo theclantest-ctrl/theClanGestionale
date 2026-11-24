@@ -150,6 +150,10 @@ button.chip{cursor:pointer;min-height:34px}
 
 /* elenco eventi */
 .toolbar{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:14px 0 2px}
+/* 5.1 - la barra degli eventi resta in vista mentre si scorre, appoggiata sotto le schede */
+.toolbar.sticky{position:sticky;top:var(--stickh,56px);z-index:22;padding:10px 0 8px}
+/* lo sfondo arriva fino al bordo della pagina (il margine della .wrap) senza allargarla: niente -50vw, che fa comparire la barra di scorrimento */
+.toolbar.sticky::before{content:'';position:absolute;inset:0 calc(-1 * var(--gut, 16px));background:var(--bg);border-bottom:1px solid var(--line);z-index:-1}
 .day{margin-top:2px}
 .dayh{display:flex;align-items:baseline;gap:12px;padding:20px 0 8px;border-bottom:3px solid var(--rule)}
 .dnum{font:700 46px/.85 var(--cond)}
@@ -334,6 +338,28 @@ details.free>summary{display:flex;align-items:center;min-height:46px;cursor:poin
 .grpsep{font:600 13px/1.2 var(--font);color:var(--ink2);padding:14px 0 4px;border-bottom:1px solid var(--rule);display:flex;gap:8px;align-items:baseline}
 .grpsep .muted{font-weight:400}
 .stkgrp:first-child>.grpsep{padding-top:8px}
+/* 5.1 — la finestra dei gruppi del magazzino */
+.grped .gdept{margin-bottom:6px}
+.grped .grpsep{align-items:center}
+.grow{display:flex;gap:6px;align-items:center;padding:3px 0;flex-wrap:wrap}
+.grow .gnm{flex:1 1 150px;min-width:120px;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.grow .gsy{flex:0 1 150px;font:inherit;padding:6px 4px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.grow .gq{flex:0 0 auto;font-size:12px}
+.grow .gbs{display:flex;gap:2px;margin-left:auto}
+.grow .gb{min-width:30px;height:30px;padding:0 4px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:600 14px/1 var(--font);cursor:pointer}
+.grow .gb:disabled{opacity:.3;cursor:default}
+.grow .gb:hover:not(:disabled){background:rgba(127,127,127,.16)}
+.empty.sm{padding:6px 0;font-size:13px}
+/* 5.1 — l'ordine dei tecnici: trascinare, i tasti su e giù, il segno dei secondari */
+.tordf{max-width:260px}
+.tordb{display:flex;gap:2px;margin-left:auto}
+.tordb .gb{min-width:30px;height:30px;padding:0 4px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:600 14px/1 var(--font);cursor:pointer}
+.tordb .gb:hover{background:rgba(127,127,127,.16)}
+.tgrab{cursor:grab;color:var(--ink2);font-size:16px;letter-spacing:-2px;padding-right:2px}
+.tsep{display:flex;align-items:center;gap:8px;margin:10px 0;padding:8px 10px;border:1px dashed var(--line);border-radius:10px;background:var(--card);font:600 13px/1.2 var(--font);color:var(--ink2)}
+.tdragging{opacity:.5}
+.tdropA{box-shadow:0 -3px 0 0 var(--focus)}
+.tdropB{box-shadow:0 3px 0 0 var(--focus)}
 .stk{background:var(--card);border-left:7px solid var(--line);border-bottom:1px solid var(--line2)}
 .stk.open{border-left-color:var(--rule)}
 .stk.off{opacity:.7}
@@ -1602,8 +1628,16 @@ function paint(html) {
   const ob = $('#offbar');
   if (ob) ob.innerHTML = offBannerHtml();
   if (y) window.scrollTo(0, y);
+  stickH();
   if (typeof S.afterPaint === 'function') S.afterPaint();
 }
+
+/* 5.1 — quanto è alta la barra delle schede: le barre che restano in vista (la toolbar degli eventi) si appoggiano lì sotto */
+function stickH() {
+  const s = $('.stick');
+  document.documentElement.style.setProperty('--stickh', (s ? Math.round(s.getBoundingClientRect().height) : 56) + 'px');
+}
+window.addEventListener('resize', stickH);
 
 /* Pulsanti "a due tocchi": il primo cambia il testo, il secondo conferma */
 let armedEl = null, armedHtml = '', armedT = 0;
@@ -1800,7 +1834,9 @@ const SCH_XF = {
   poll: ['Pollici', 'n'],
   imp: ['Impedenza (ohm)', 'n'],
   sez: ['Sezione del cavo (mm²)', 'n'],
-  post: ['Posti (prese)', 'n']
+  post: ['Posti (prese)', 'n'],
+  rxn: ['Ricevitori (o trasmettitori) nel rack', 'n'],
+  rxin: ['Cosa c\'è già dentro il rack', 't', 'es. 2 palmari + 2 archetti con bodypack']
 };
 const SCH_MICT = [['din', 'dinamico'], ['cond', 'a condensatore'], ['nastro', 'a nastro'], ['piezo', 'piezo / a contatto']];
 const SCH_POL = [['card', 'cardioide'], ['super', 'supercardioide'], ['iper', 'ipercardioide'], ['omni', 'omnidirezionale'], ['fig8', 'a otto'], ['shot', 'shotgun']];
@@ -1810,8 +1846,8 @@ const SCH_GRP = {
     ['aste', 'Aste e stativi microfonici', 'gstand', 'peso,dimC,hmin,hmax'],
     ['mic', 'Microfoni', 'mic', 'mict,pol,ph48'],
     ['archetti', 'Archetti e lavalier', 'mic', 'mict,pol,ph48'],
-    ['radio', 'Radiomicrofoni e riceventi', 'micw', 'ain,aout'],
-    ['iem', 'In-ear e monitor personali', 'iem', 'ain'],
+    ['radio', 'Radiomicrofoni e riceventi', 'micw', 'ain,aout,rxn,rxin'],
+    ['iem', 'In-ear e monitor personali', 'iem', 'ain,rxn,rxin'],
     ['di', 'D.I. attive e passive', 'di', 'ain,aout,ph48'],
     ['split', 'Splitter e ciabatte microfoniche', 'stagebox', 'ain,aout'],
     ['dig', 'Trasporti digitali e schede mixer', 'stagebox', 'ain,aout'],
@@ -1875,22 +1911,65 @@ const SCH_SYM = [
   ['stage', 'Pedana'], ['table', 'Tavolo'], ['chair', 'Sedia'], ['keys', 'Tastiera'], ['drums', 'Batteria'], ['perc', 'Percussioni'], ['dj', 'Consolle DJ']
 ];
 const SCH_GRP_DEPT = ['audio', 'luci', 'video', 'generale'];
-/* Il sottogruppo per codice: {dept, k, l, sym, campi[]} oppure null */
+const SCH_DEPT_L = { audio: 'Audio', luci: 'Luci', video: 'Video', generale: 'Generale' };
+
+/* 5.1 — l'albero dei gruppi è quello che si è fatto lui (impostazione `gruppi`), se c'è; se no quello di serie.
+   Un nodo: {k, l, sym, campi, n:[figli]}; i figli stanno dentro il loro sottogruppo, quanti livelli servono.
+   Il codice (k) non cambia mai quando si rinomina: gli articoli restano attaccati al loro gruppo. */
+let SCH_TREE = null;
+function schTreeDefault() {
+  return {
+    v: 1, n: SCH_GRP_DEPT.map(d => ({
+      k: d, l: SCH_DEPT_L[d],
+      n: (SCH_GRP[d] || []).map(x => { const o = { k: x[0], l: x[1] }; if (x[2]) o.sym = x[2]; if (x[3]) o.campi = x[3]; return o; }),
+    })),
+  };
+}
+function SCH_GRP_SET(json) {
+  const t = String(json == null ? '' : json).trim();
+  if (!t) { SCH_TREE = null; return; }
+  try { const o = JSON.parse(t); SCH_TREE = (o && Array.isArray(o.n)) ? o : null; } catch (e) { SCH_TREE = null; }
+}
+function schTree() { return SCH_TREE || schTreeDefault(); }
+/* I nodi di un reparto, come albero (per la finestra dei gruppi) */
+function schGrpNodes(dept) {
+  const r = schTree().n.filter(x => x.k === (SCH_GRP[dept] ? dept : 'generale'))[0];
+  return r ? (r.n || []) : [];
+}
+/* Il sottogruppo per codice: {dept, k, l, sym, campi[], deep} oppure null. Simbolo e campi, se il nodo non li ha,
+   li prende dal gruppo che lo contiene. */
 function schGrp(code) {
   const c = String(code == null ? '' : code).trim();
   if (!c) return null;
-  for (let i = 0; i < SCH_GRP_DEPT.length; i++) {
-    const d = SCH_GRP_DEPT[i], list = SCH_GRP[d];
-    for (let j = 0; j < list.length; j++) {
-      if (list[j][0] !== c) continue;
-      return { dept: d, k: list[j][0], l: list[j][1], sym: list[j][2], campi: list[j][3] ? list[j][3].split(',') : [] };
-    }
-  }
-  return null;
+  let found = null;
+  schTree().n.forEach(r => {
+    const walk = (list, deep, sym, campi) => {
+      (list || []).forEach(nd => {
+        if (found || !nd) return;
+        const sy = nd.sym || sym, cp = nd.campi || campi;
+        if (String(nd.k) === c) {
+          found = { dept: r.k, k: c, l: String(nd.l || c), sym: sy || '', campi: cp ? String(cp).split(',') : [], deep: deep };
+          return;
+        }
+        walk(nd.n, deep + 1, sy, cp);
+      });
+    };
+    walk(r.n, 1, '', '');
+  });
+  return found;
 }
 function schGrpLabel(code) { const g = schGrp(code); return g ? g.l : ''; }
-/* I sottogruppi di un reparto (deptWh: audio, luci, video, comune → generale) */
-function schGrpList(dept) { return SCH_GRP[dept] || SCH_GRP.generale; }
+/* I sottogruppi di un reparto per un menu a tendina: [codice, nome], con i figli rientrati (deptWh: comune → generale) */
+function schGrpList(dept) {
+  const out = [];
+  const walk = (list, deep) => (list || []).forEach(nd => {
+    if (!nd || !nd.k) return;
+    out.push([nd.k, (deep ? '\u00a0\u00a0'.repeat(deep) + '└ ' : '') + String(nd.l || nd.k)]);
+    walk(nd.n, deep + 1);
+  });
+  walk(schGrpNodes(SCH_GRP[dept] ? dept : 'generale'), 0);
+  return out;
+}
 /* In che sezione della finestra sta un campo che il sottogruppo chiede (per aprirla già aperta) */
 const SCH_SEZ_OF = {
   W: 'cor', pin: 'cor', thru: 'cor', cord: 'cor',
@@ -3218,7 +3297,7 @@ function expFormHtml(evId, x) {
     let opts = '';
     const sel = t => (v.technician_id === t && v.pagatoDa !== 'azienda' ? ' selected' : '');
     team.forEach(a => { ids[a.technician_id] = true; opts += '<option value="' + esc(a.technician_id) + '"' + sel(a.technician_id) + '>' + esc(a.tecnico) + ' (ha anticipato lui)</option>'; });
-    const others = S.tec.filter(t => !ids[t.id] && (isActive(t) || v.technician_id === t.id)).sort(byName);
+    const others = tecSort(S.tec.filter(t => !ids[t.id] && (isActive(t) || v.technician_id === t.id)));
     if (others.length) {
       opts += '<optgroup label="Altri tecnici">' + others.map(t => '<option value="' + esc(t.id) + '"' + sel(t.id) + '>' + esc(t.nome) + ' (ha anticipato lui)</option>').join('') + '</optgroup>';
     }
@@ -3333,6 +3412,7 @@ Object.assign(S, {
 });
 
 function derive() {
+  SCH_GRP_SET((S.cfg || {}).gruppi);          // 5.1 — i gruppi del magazzino come se li è fatti lui (se non li ha fatti, quelli di serie)
   // Valori scritti a mano nel foglio possono essere fuori standard: li riporto a quelli noti
   S.ev.forEach(e => { e.stato = String(e.stato || '').trim().toLowerCase(); if (STAGES.indexOf(e.stato) < 0) e.stato = 'richiesta'; });
   S.asg.forEach(a => { const s = String(a.stato || '').trim().toLowerCase(); a.stato = ASG_STATES.indexOf(s) >= 0 ? s : 'in attesa'; });
@@ -3473,12 +3553,12 @@ function computeProposal(e) {
   const cov = coverage(e);
   const slots = cov.open.slice();
   const assigned = new Set((S.asgByEv[e.id] || []).map(a => a.technician_id));
-  const rank = c => (c.st.avail === 'yes' ? 0 : 1);
+  const rank = c => (c.st.avail === 'yes' ? 0 : 1), tc = tecCmp();
   const cands = S.tec
     .filter(t => isActive(t) && !assigned.has(t.id))
     .map(t => ({ t: t, st: techStatus(t, e), roles: uniq(rolesOf(t.ruoli)) }))
     .filter(c => c.st.cls !== 'bad')
-    .sort((a, b) => rank(a) - rank(b) || a.roles.length - b.roles.length || byName(a.t, b.t));
+    .sort((a, b) => rank(a) - rank(b) || a.roles.length - b.roles.length || tc(a.t, b.t));
   const slotOf = slots.map(() => -1), candOf = cands.map(() => -1);
   function aug(s, seen, maxRank) {
     for (let c = 0; c < cands.length; c++) {
@@ -3506,7 +3586,7 @@ function computeProposal(e) {
   });
   const picks = Object.keys(roleMap).map(Number).map(i => ({
     t: cands[i].t, st: cands[i].st, roles: roleMap[i], dbl: roleMap[i].length > 1,
-  })).sort((a, b) => ROLES.indexOf(a.roles[0]) - ROLES.indexOf(b.roles[0]) || byName(a.t, b.t));
+  })).sort((a, b) => ROLES.indexOf(a.roles[0]) - ROLES.indexOf(b.roles[0]) || tc(a.t, b.t));
   /* Ruoli ancora scoperti: chi è già in squadra e sa fare anche quel ruolo può prenderlo (al massimo due ruoli a testa) */
   const adds = [], still = [];
   const members = (S.asgByEv[e.id] || []).filter(a => a.stato !== 'rifiutato').map(a => ({
@@ -3889,11 +3969,23 @@ function viewEventi() {
   const up = S.ev.filter(isUpcoming).sort(cmpEv);
   const past = S.ev.filter(e => !isUpcoming(e)).sort((a, b) => cmpEv(b, a));
   const hasCal = S.asg.some(a => a.calendarEventId);
-  let h = '<div class="toolbar"><button class="btn pri" data-act="newEv">' + ico('plus') + ' Nuovo evento</button>' +
+  /* 5.1 — la barra resta in vista mentre si scorre (sotto le schede) e ha la ricerca per data */
+  let h = '<div class="toolbar sticky"><button class="btn pri" data-act="newEv">' + ico('plus') + ' Nuovo evento</button>' +
     (hasCal ? '<button class="btn sm" data-act="syncCal">' + ico('cal') + ' Leggi le risposte da Calendar</button>' : '') + luEntryHtml() + arEntryHtml() +
+    '<label class="dgo"><span>Cerca il giorno</span><input type="date" data-chg="evDay" value="' + esc(S.evDay || '') + '"></label>' +
     '<label class="chk"><input type="checkbox" data-chg="showPast"' + (S.showPast ? ' checked' : '') +
     '> Mostra passati e annullati</label></div>';
   h += arBannerHtml();
+  // 5.1 — cercando una data si vedono solo gli eventi di quel giorno (anche passati o annullati), o che non ce ne sono
+  if (S.evDay) {
+    const day = S.ev.filter(e => e.data === S.evDay).sort(cmpEv);
+    h += '<div class="row" style="margin:12px 0 0"><span class="pill">' + esc(fmtDMY(S.evDay)) + ': ' +
+      (day.length === 1 ? '1 evento' : day.length + ' eventi') + '</span>' +
+      '<button class="btn sm" data-act="evDayClear">Torna a tutti gli eventi</button></div>';
+    h += day.length ? groupByDay(day)
+      : '<p class="empty">Nessun evento il ' + esc(fmtDMY(S.evDay)) + '. Tocca «Nuovo evento» per metterne uno.</p>';
+    return h;
+  }
   h += todoBoxHtml();
   if (!up.length && !(S.showPast && past.length)) {
     h += '<p class="empty">Nessun evento in programma. Tocca «Nuovo evento» per aggiungere il primo.</p>';
@@ -3902,6 +3994,8 @@ function viewEventi() {
   if (S.showPast && past.length) h += '<h2 class="monthsep" style="margin-top:28px">Passati e annullati</h2>' + groupByDay(past);
   return h;
 }
+CHG.evDay = el => { S.evDay = el.value || ''; paint(); };
+ACT.evDayClear = () => { S.evDay = ''; paint(); };
 function slotHtml(s) {
   const r = s.role;
   if (!s.a) return '<span class="slot open r-' + r + '"><span class="sr">' + r + '</span><span class="sn">libero</span></span>';
@@ -4143,10 +4237,10 @@ function propHtml() {
   return h;
 }
 function candidatesHtml(e, cov) {
-  const assigned = new Set((S.asgByEv[e.id] || []).map(a => a.technician_id));
+  const assigned = new Set((S.asgByEv[e.id] || []).map(a => a.technician_id)), tc = tecCmp();
   const rows = S.tec.filter(t => isActive(t) && !assigned.has(t.id)).map(t => ({
     t: t, can: uniq(rolesOf(t.ruoli)).filter(r => cov.open.indexOf(r) >= 0), st: techStatus(t, e),
-  })).filter(c => c.can.length).sort((a, b) => byName(a.t, b.t));
+  })).filter(c => c.can.length).sort((a, b) => tc(a.t, b.t));
   if (!rows.length) {
     return '<p class="note muted" style="margin-top:12px">' + ((S.asgByEv[e.id] || []).length ? 'Nessun altro tecnico attivo' : 'Nessun tecnico attivo') +
       ' ha le mansioni che mancano. Controlla le mansioni nella scheda Tecnici.</p>';
@@ -4407,7 +4501,7 @@ function dispNavFit() {
 S.afterPaint = dispNavFit;
 
 function viewDisp() {
-  const techs = S.tec.filter(isActive).sort(byName);
+  const techs = tecSort(S.tec.filter(isActive));
   if (!techs.length) return '<p class="empty">Nessun tecnico attivo. Aggiungili dalla scheda Tecnici.</p>';
   const R = dispRange();
   const days = [];
@@ -4573,18 +4667,32 @@ ACT.cell = el => {
 
 /* ---------- scheda Tecnici ---------- */
 function viewTecnici() {
-  const list = S.tec.slice().sort((a, b) => (isActive(b) - isActive(a)) || byName(a, b));
+  const mio = tordMode() === 'mio', ord = tecCmp();
+  // 5.1 — nell'ordine suo l'elenco è esattamente quello che ha messo lui (col segno dei secondari); negli altri modi
+  // chi non è più in squadra resta in fondo.
+  const list = mio ? tordIds()
+    : S.tec.slice().sort((a, b) => (isActive(b) - isActive(a)) || ord(a, b)).map(t => t.id);
   let h = '';
   if (!S.url || /\/dev$/.test(S.url)) {
     h += '<p class="banner">I link personali dei tecnici funzionano solo se apri l\'app dal link che finisce con <b>/exec</b> (Esegui il deployment > Gestisci i deployment). Ora stai usando una versione di prova. Se usi la pagina su GitHub, scrivi il suo indirizzo nella riga <b>url_pagina</b> della scheda Config.</p>';
   }
   h += '<div class="toolbar"><button class="btn pri" data-act="techNew">' + ico('plus') + ' Nuovo tecnico</button>' +
+    (mio && tordSaved().length ? '<button class="btn" data-act="tordReset">' + ico('refresh') + ' Torna all\'ordine per nome</button>' : '') +
     '<span class="muted">' + S.tec.filter(isActive).length + ' in squadra</span></div>';
+  h += '<div class="datebar">' + tordBarHtml() + (mio ? '<span class="note muted">Trascina le schede per metterle in fila, o usa ↑ ↓. Il segno «da qui i secondari» si sposta come gli altri.</span>' : '') + '</div>';
   h += rimbBoxHtml();
   h += whLinkBoxHtml();                                  // il link del computer in magazzino (wh.js)
-  if (!list.length) return h + '<p class="empty">Nessun tecnico. Aggiungi il primo: bastano il nome e una mansione.</p>';
+  if (!S.tec.length) return h + '<p class="empty">Nessun tecnico. Aggiungi il primo: bastano il nome e una mansione.</p>';
   const end = addDays(S.oggi, 13);
-  return h + list.map(t => {
+  return h + list.map(id => {
+    if (id === TORD_SEP) {
+      return '<div class="tsep" data-tdrag="' + TORD_SEP + '" draggable="true"><span class="tgrab" aria-hidden="true">⠿</span>' +
+        '<b>Da qui i secondari</b><span class="tordb">' +
+        '<button type="button" class="gb" data-act="tordUp" data-t="' + TORD_SEP + '" title="Su" aria-label="Sposta il segno su">↑</button>' +
+        '<button type="button" class="gb" data-act="tordDown" data-t="' + TORD_SEP + '" title="Giù" aria-label="Sposta il segno giù">↓</button></span></div>';
+    }
+    const t = S.tecById[id];
+    if (!t || id === CAPO_ID) return '';
     const roles = uniq(rolesOf(t.ruoli));
     const answered = Object.keys(S.dmap[t.id] || {}).filter(d => d >= S.oggi && d <= end).length;
     const link = personalUrl(t);
@@ -4597,13 +4705,21 @@ function viewTecnici() {
     else if (t.cvLink) info.push('<div>' + esc(t.cvLink) + '</div>');
     if (t.note) info.push('<div>' + esc(t.note) + '</div>');
     info.push('<div>' + (isActive(t) ? 'Ha risposto per ' + answered + ' dei prossimi 14 giorni' : 'Non in squadra') + '</div>');
+    // 5.1 — nei modi «chi lavora di più» e «chi non chiami da più tempo» si vede anche il perché di quell'ordine
+    if (tordMode() === 'carico') info.push('<div>Chiamato ' + plural(tecCarico(t), 'volta', 'volte') + '</div>');
+    if (tordMode() === 'ultimo') { const u = tecUltimo(t); info.push('<div>' + (u ? 'Ultimo evento: ' + fmtShort(u) : 'Non l\'hai mai chiamato') + '</div>'); }
     const due = tecDueHtml(t);
     if (due) info.push(due);
-    return '<article class="tec' + (isActive(t) ? '' : ' inactive') + '" id="tec-' + esc(t.id) + '">' +
-      '<div class="asgtop"><span class="tname">' + esc(t.nome) + '</span>' +
+    return '<article class="tec' + (isActive(t) ? '' : ' inactive') + '" id="tec-' + esc(t.id) + '"' +
+      (mio ? ' data-tdrag="' + esc(t.id) + '" draggable="true"' : '') + '>' +
+      '<div class="asgtop">' + (mio ? '<span class="tgrab" aria-hidden="true">⠿</span>' : '') +
+      '<span class="tname">' + esc(t.nome) + '</span>' +
       roles.map(r => '<span class="chip r-' + r + '">' + r + '</span>').join('') +
       (isTrue(t.responsabile) ? '<span class="pill ok">responsabile tecnico</span>' : '') +
-      (isActive(t) ? '' : '<span class="pill muted">non in squadra</span>') + '</div>' +
+      (isActive(t) ? '' : '<span class="pill muted">non in squadra</span>') +
+      (mio ? '<span class="tordb">' +
+        '<button type="button" class="gb" data-act="tordUp" data-t="' + esc(t.id) + '" title="Su" aria-label="Sposta su ' + esc(t.nome) + '">↑</button>' +
+        '<button type="button" class="gb" data-act="tordDown" data-t="' + esc(t.id) + '" title="Giù" aria-label="Sposta giù ' + esc(t.nome) + '">↓</button></span>' : '') + '</div>' +
       '<div class="tinfo">' + info.join('') + '</div><div class="tact">' +
       (wa ? '<a class="btn sm" href="' + esc(wa) + '" target="_blank" rel="noopener">' + ico('chat') + ' Manda il link su WhatsApp</a>'
         : (link ? '<span class="note muted">Manca il telefono per WhatsApp</span>' : '')) +
@@ -4737,6 +4853,7 @@ function viewArticoli() {
   let h = '<div class="toolbar">' + (ro ? '' : '<div class="row"><button class="btn pri" data-act="matNew">' + ico('plus') + ' Nuovo articolo</button>' +
     '<button class="btn" data-act="invOpen">' + ico('list') + ' Inventario</button>' +
     '<button class="btn" data-act="impOpen">' + ico('up') + ' Importa</button>' +
+    '<button class="btn" data-act="grpOpen">' + ico('list') + ' Gruppi</button>' +
     '<button class="btn" data-act="stkPlan">' + ico('plan') + ' Collegamenti editor</button>' +
     '<button class="btn" data-act="cavOpen">' + ico('link') + ' Cavi e americane</button>' +
     '<button class="btn" data-act="svcOpen">' + ico('user') + ' Altri service</button>' +
@@ -8659,9 +8776,11 @@ ACT.techMonth = el => {
 ACT.respond = el => {
   const tok = el.dataset.token, v = el.dataset.v;
   mutate(async () => {
-    await call('api_respond', tok, v);
+    const r = await call('api_respond', tok, v);
     const m = T.mie.find(x => x.assegnazione.token === tok);
     if (m) m.assegnazione.stato = v;
+    // 5.1 — confermando sei libero quel giorno: l'elenco «Quando sei libero» lo dice subito
+    if (r && r.disp) T.disp[r.disp.data] = { on: !!r.disp.on, from: String(r.disp.from || '') };
     paint();
     toast(v === 'confermato' ? 'Confermato, grazie!' : 'Ricevuto: ho segnato che non puoi.', 'ok');
   });
@@ -8707,8 +8826,9 @@ function confirmView() {
 ACT.cRespond = el => {
   const v = el.dataset.v;
   mutate(async () => {
-    await call('api_respond', S.token, v);
+    const r = await call('api_respond', S.token, v);
     C.data.stato = v;
+    if (r && r.disp) C.data.disp = { on: !!r.disp.on, from: String(r.disp.from || '') };
     paint();
     toast(v === 'confermato' ? 'Confermato, grazie!' : 'Ricevuto: ho segnato che non puoi.', 'ok');
   });
@@ -10893,6 +11013,361 @@ function schDeep() {
   paint();
   ACT.schOpen({ dataset: { id: m.id } });
 }
+
+/* ---------- 5.1 — i gruppi del magazzino, come li vuole lui ----------
+   I quattro reparti (Audio, Luci, Video, Generale) restano fissi: sono legati ai ruoli e ai permessi.
+   Dentro a ognuno i gruppi se li fa, li rinomina, li sposta e li annida lui, quanti livelli vuole (fino a 4).
+   Il codice del gruppo non cambia mai: così gli articoli restano attaccati al loro gruppo anche se cambia nome. */
+const GRP_LIV = 4;                          // quanti livelli di gruppi si possono fare (come GRP_DEEP sul server)
+function grpFind(code) {
+  let r = null;
+  const walk = (list, deep, dept, par) => (list || []).forEach((nd, i) => {
+    if (r || !nd) return;
+    if (!nd.n) nd.n = [];
+    if (String(nd.k) === String(code)) { r = { nd: nd, list: list, i: i, deep: deep, dept: dept, par: par }; return; }
+    walk(nd.n, deep + 1, dept, nd);
+  });
+  S.grpEd.tree.n.forEach(rt => { if (!rt.n) rt.n = []; walk(rt.n, 1, rt.k, null); });
+  return r;
+}
+/* Quanti articoli stanno in ogni gruppo, e quanti in tutto il suo ramo */
+function grpCount() {
+  const c = {};
+  S.mat.forEach(m => { const k = (schOf(m) || {}).grp; if (k) c[k] = (c[k] || 0) + 1; });
+  return c;
+}
+function grpSub(nd, c) { return (c[nd.k] || 0) + (nd.n || []).reduce((s, x) => s + grpSub(x, c), 0); }
+function grpDeep(nd) { return 1 + (nd.n || []).reduce((d, x) => Math.max(d, grpDeep(x)), 0); }
+function grpNewCode() {
+  let n = 0;
+  const walk = list => (list || []).forEach(nd => { const m = /^g(\d+)$/.exec(String(nd.k)); if (m) n = Math.max(n, +m[1]); walk(nd.n); });
+  S.grpEd.tree.n.forEach(rt => walk(rt.n));
+  return 'g' + (n + 1);
+}
+/* Tutti i gruppi che restano, per il menu «dove sposto i suoi articoli» */
+function grpFlat(skip) {
+  const out = [];
+  S.grpEd.tree.n.forEach(rt => {
+    const walk = (list, deep) => (list || []).forEach(nd => {
+      if (nd.k === skip) return;
+      out.push([nd.k, SCH_DEPT_L[rt.k] + ' › ' + ' '.repeat(deep * 2) + String(nd.l || nd.k)]);
+      walk(nd.n, deep + 1);
+    });
+    walk(rt.n, 0);
+  });
+  return out;
+}
+function grpBtn(act, k, lab, txt, off) {
+  return '<button type="button" class="gb" data-act="' + act + '" data-k="' + esc(k) + '" title="' + esc(lab) +
+    '" aria-label="' + esc(lab) + '"' + (off ? ' disabled' : '') + '>' + txt + '</button>';
+}
+function grpTreeHtml() {
+  const c = grpCount();
+  const row = (nd, deep, list, i) => {
+    const n = grpSub(nd, c), last = i === list.length - 1;
+    return '<div class="grow" data-k="' + esc(nd.k) + '" style="margin-left:' + (deep * 20) + 'px">' +
+      '<input type="text" class="gnm" maxlength="60" value="' + esc(nd.l || '') + '" data-inp="grpNome" data-k="' + esc(nd.k) + '" aria-label="Nome del gruppo">' +
+      '<select class="gsy" data-chg="grpSym" data-k="' + esc(nd.k) + '" aria-label="Simbolo nella pianta">' +
+      schOpts(SCH_SYM, nd.sym || '', '— nessun simbolo —') + '</select>' +
+      '<span class="gq muted">' + (n ? n + (n === 1 ? ' articolo' : ' articoli') : '') + '</span>' +
+      '<span class="gbs">' + grpBtn('grpUp', nd.k, 'Su', '↑', i === 0) + grpBtn('grpDown', nd.k, 'Giù', '↓', last) +
+      grpBtn('grpIn', nd.k, 'Mettilo dentro a quello sopra', '→', i === 0 || deep + 1 + grpDeep(nd) > GRP_LIV) +
+      grpBtn('grpOut', nd.k, 'Portalo fuori', '←', deep === 0) +
+      grpBtn('grpAdd', nd.k, 'Aggiungi un sottogruppo qui dentro', '+', deep + 2 > GRP_LIV) +
+      grpBtn('grpDel', nd.k, 'Togli questo gruppo', '🗑', false) + '</span></div>' +
+      (nd.n || []).map((x, j) => row(x, deep + 1, nd.n, j)).join('');
+  };
+  return S.grpEd.tree.n.map(rt => '<div class="gdept"><h4 class="grpsep">' + esc(SCH_DEPT_L[rt.k] || rt.k) +
+    ' <button type="button" class="btn sm" data-act="grpAddTop" data-d="' + esc(rt.k) + '">+ gruppo</button></h4>' +
+    ((rt.n || []).length ? (rt.n || []).map((x, j) => row(x, 0, rt.n, j)).join('')
+      : '<p class="empty sm">Nessun gruppo qui. Tocca «+ gruppo».</p>') + '</div>').join('');
+}
+function grpEditHtml() {
+  const mv = (S.grpEd.mv || []).length;
+  return '<div class="grped"><p class="hint">I quattro reparti non si toccano: sono legati ai ruoli e ai permessi. ' +
+    'Dentro a ognuno i gruppi te li fai tu: scrivi il nome, scegli il simbolo che avranno nella pianta, spostali su e giù, ' +
+    'mettili dentro a un altro con «→» (fino a 4 livelli). Cambiare nome a un gruppo non stacca gli articoli che ci stanno dentro.</p>' +
+    '<div id="grpTree">' + grpTreeHtml() + '</div>' +
+    (mv ? '<p class="hint">' + plural(mv, 'gruppo tolto', 'gruppi tolti') + ': gli articoli li sposto come hai detto quando salvi.</p>' : '') +
+    '<p class="ferr" role="alert"></p><div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="button" class="btn pri" data-act="grpTreeSave">Salva i gruppi</button></div></div>';
+}
+function grpOpen() { openSheet('Gruppi del magazzino', grpEditHtml(), { noFocus: true }); }
+function grpRepaint() {
+  const box = $('#grpTree');
+  if (box) box.innerHTML = grpTreeHtml(); else grpOpen();
+}
+ACT.grpOpen = () => {
+  if (!schCanEdit()) return;
+  S.grpEd = { tree: JSON.parse(JSON.stringify(schTree())), mv: [] };
+  grpOpen();
+};
+INP.grpNome = el => { const f = grpFind(el.dataset.k); if (f) f.nd.l = el.value; };
+CHG.grpSym = el => { const f = grpFind(el.dataset.k); if (f) { if (el.value) f.nd.sym = el.value; else delete f.nd.sym; } };
+ACT.grpUp = el => { const f = grpFind(el.dataset.k); if (f && f.i > 0) { f.list.splice(f.i, 1); f.list.splice(f.i - 1, 0, f.nd); grpRepaint(); } };
+ACT.grpDown = el => { const f = grpFind(el.dataset.k); if (f && f.i < f.list.length - 1) { f.list.splice(f.i, 1); f.list.splice(f.i + 1, 0, f.nd); grpRepaint(); } };
+ACT.grpIn = el => {
+  const f = grpFind(el.dataset.k);
+  if (!f || f.i === 0) return;
+  const sopra = f.list[f.i - 1];
+  if (f.deep + grpDeep(f.nd) > GRP_LIV) { toast('Più di quattro livelli di gruppi non si può.'); return; }
+  f.list.splice(f.i, 1); (sopra.n = sopra.n || []).push(f.nd); grpRepaint();
+};
+ACT.grpOut = el => {
+  const f = grpFind(el.dataset.k);
+  if (!f || !f.par) return;
+  const p = grpFind(f.par.k);
+  f.list.splice(f.i, 1); p.list.splice(p.i + 1, 0, f.nd); grpRepaint();
+};
+function grpAddNode(list) {
+  const k = grpNewCode();
+  list.push({ k: k, l: 'Gruppo nuovo', n: [] });
+  grpRepaint();
+  const inp = $('.gnm[data-k="' + k + '"]');
+  if (inp) { inp.focus(); inp.select(); }
+}
+ACT.grpAdd = el => {
+  const f = grpFind(el.dataset.k);
+  if (!f) return;
+  if (f.deep >= GRP_LIV) { toast('Più di quattro livelli di gruppi non si può.'); return; }
+  grpAddNode(f.nd.n = f.nd.n || []);
+};
+ACT.grpAddTop = el => {
+  const rt = S.grpEd.tree.n.filter(x => x.k === el.dataset.d)[0];
+  if (rt) grpAddNode(rt.n = rt.n || []);
+};
+/* Togliere un gruppo: se ci sono articoli dentro, prima mi dice dove li sposto */
+function grpDelHtml(code) {
+  const f = grpFind(code), n = grpSub(f.nd, grpCount());
+  return '<div class="bulkask"><p>Togliere «' + esc(f.nd.l) + '»' + ((f.nd.n || []).length ? ' e i suoi sottogruppi' : '') +
+    '. Ci sono dentro ' + plural(n, 'articolo', 'articoli') + ': dove li metto?</p>' +
+    '<label class="fld"><span>Sposta gli articoli in</span><select id="grpTo">' +
+    schOpts(grpFlat(code), '', '— lasciali senza gruppo —') + '</select></label>' +
+    '<p class="hint">Gli articoli non si toccano: cambia solo il gruppo nella loro scheda tecnica.</p>' +
+    '<div class="sheetfoot"><button type="button" class="btn" data-act="grpBack">Annulla</button>' +
+    '<button type="button" class="btn danger" data-act="grpDelDo" data-k="' + esc(code) + '">Togli il gruppo</button></div></div>';
+}
+ACT.grpBack = () => grpOpen();
+ACT.grpDel = el => {
+  const f = grpFind(el.dataset.k);
+  if (!f) return;
+  if (grpSub(f.nd, grpCount()) > 0) { openSheet('Togliere un gruppo', grpDelHtml(el.dataset.k), { noFocus: true }); return; }
+  grpDelDo(el.dataset.k, '');
+};
+ACT.grpDelDo = el => {
+  const to = ($('#grpTo') || {}).value || '';
+  grpDelDo(el.dataset.k, to);
+  grpOpen();
+};
+function grpDelDo(code, to) {
+  const f = grpFind(code);
+  if (!f) return;
+  const codes = [];
+  const walk = nd => { codes.push(nd.k); (nd.n || []).forEach(walk); };
+  walk(f.nd);
+  f.list.splice(f.i, 1);
+  S.grpEd.mv = (S.grpEd.mv || []).filter(m => codes.indexOf(m.da) < 0).concat(codes.map(k => ({ da: k, a: to })));
+  grpRepaint();
+}
+ACT.grpTreeSave = async () => {
+  const err = $('#sheet .ferr');
+  if (err) err.textContent = '';
+  const out = await mutate(async () => {
+    const r = await call('api_grpSave', S.pin, S.grpEd.tree, S.grpEd.mv || []);
+    const mvMap = {};
+    (S.grpEd.mv || []).forEach(m => { mvMap[m.da] = m.a || ''; });
+    S.mat.forEach(m => {
+      const s = schOf(m);
+      if (!s || !s.grp || mvMap[s.grp] === undefined) return;
+      if (mvMap[s.grp]) s.grp = mvMap[s.grp]; else delete s.grp;
+    });
+    S.cfg = S.cfg || {}; S.cfg.gruppi = r.gruppi;
+    SCH_GRP_SET(r.gruppi);
+    derive(); closeSheet(); paint();
+    toast('Gruppi salvati.' + (r.mossi ? ' Ho spostato ' + plural(r.mossi, 'articolo', 'articoli') + '.' : ''), 'ok');
+  }, true);
+  if (!out.ok && err) err.textContent = out.err;
+};
+/* ===========================================================================
+   5.1 — L'ordine dei tecnici
+   I tecnici si possono mettere in fila in cinque modi: per nome (come prima), per mansione, chi lavora di più,
+   chi non chiami da più tempo, e «il mio ordine» — quello che fa lui trascinando le schede (o con i tasti ↑ ↓,
+   che funzionano anche sul telefono). Nel suo ordine c'è anche un segno «da qui i secondari»: lo sposta dove vuole.
+   Il modo scelto resta su questo dispositivo; l'ordine suo sta nel Foglio (riga `ordine_tecnici` di Config), così
+   lo ritrova su tutti i dispositivi, e vale in tutta l'app: elenco dei tecnici, griglia delle disponibilità,
+   chi proporre per un evento e chi aggiungere a mano.
+   =========================================================================== */
+const TORD = [
+  ['nome', 'Nome, dalla A alla Z'],
+  ['mio', 'Il mio ordine'],
+  ['ruolo', 'Mansione'],
+  ['carico', 'Chi lavora di più'],
+  ['ultimo', 'Chi non chiami da più tempo'],
+];
+const TORD_SEP = '~sep';
+
+function tordMode() {
+  const m = store.get('tord');
+  return TORD.some(x => x[0] === m) ? m : 'nome';
+}
+/* L'ordine suo come sta nel Foglio: gli id in fila, col segno dei secondari dove l'ha messo */
+function tordSaved() {
+  return String((S.cfg || {}).ordine_tecnici || '').split(',').map(s => s.trim()).filter(s => s);
+}
+/* L'ordine suo completo: prima quelli che ha messo in fila, poi i tecnici nuovi (in ordine di nome) e in fondo il segno,
+   se non l'ha ancora spostato. Così basta che trascini una volta e l'elenco è già tutto suo. */
+function tordIds() {
+  const saved = tordSaved(), seen = {};
+  let sep = false;
+  const out = [];
+  saved.forEach(x => {
+    if (x === TORD_SEP) { if (!sep) { sep = true; out.push(x); } return; }
+    if (seen[x] || !S.tecById[x] || x === CAPO_ID) return;
+    seen[x] = true; out.push(x);
+  });
+  S.tec.filter(t => !seen[t.id]).sort(byName).map(t => t.id).forEach(id => out.push(id));
+  if (!sep) out.push(TORD_SEP);
+  return out;
+}
+/* {id: posizione} nel suo ordine */
+function tordPos() {
+  const out = {};
+  let i = 0;
+  tordIds().forEach(x => { if (x !== TORD_SEP) out[x] = i++; });
+  return out;
+}
+/* Quante volte l'ho chiamato: le convocazioni che non ha rifiutato, per eventi non annullati */
+function tecCarico(t) {
+  return (S.asgByTec[t.id] || []).filter(a => {
+    const e = S.evById[a.event_id];
+    return a.stato !== 'rifiutato' && e && e.stato !== 'annullato';
+  }).length;
+}
+/* L'ultimo evento a cui l'ho chiamato (la data), '' se non l'ho mai chiamato */
+function tecUltimo(t) {
+  let d = '';
+  (S.asgByTec[t.id] || []).forEach(a => {
+    const e = S.evById[a.event_id];
+    if (a.stato === 'rifiutato' || !e || e.stato === 'annullato') return;
+    if (String(e.data) > d) d = String(e.data);
+  });
+  return d;
+}
+function tecRuoloPos(t) {
+  const r = uniq(rolesOf(t.ruoli));
+  return r.length ? ROLES.indexOf(r[0]) : 99;
+}
+/* Il confronto per il modo scelto. A parità vale sempre il nome, così l'ordine non balla. */
+function tecCmp() {
+  const m = tordMode();
+  if (m === 'mio') {
+    const P = tordPos(), n = (t) => (P[t.id] === undefined ? 9999 : P[t.id]);
+    return (a, b) => n(a) - n(b) || byName(a, b);
+  }
+  if (m === 'ruolo') return (a, b) => tecRuoloPos(a) - tecRuoloPos(b) || byName(a, b);
+  if (m === 'carico') return (a, b) => tecCarico(b) - tecCarico(a) || byName(a, b);
+  if (m === 'ultimo') return (a, b) => String(tecUltimo(a)).localeCompare(String(tecUltimo(b))) || byName(a, b);
+  return byName;
+}
+function tecSort(list) { return list.slice().sort(tecCmp()); }
+/* La barra per scegliere il modo */
+function tordBarHtml() {
+  return '<label class="fld tordf"><span>Ordine dei tecnici</span><select data-chg="tord">' +
+    TORD.map(x => '<option value="' + x[0] + '"' + (tordMode() === x[0] ? ' selected' : '') + '>' + esc(x[1]) + '</option>').join('') +
+    '</select></label>';
+}
+CHG.tord = el => { tordFlush(); store.set('tord', el.value); paint(); };
+
+/* Salvo l'ordine nel Foglio, ma non a ogni tocco: aspetto che abbia finito di spostare (è una riga sola di Config) */
+let tordT = null;
+function tordSave(ids) {
+  S.cfg = S.cfg || {};
+  S.cfg.ordine_tecnici = ids.join(',');
+  paint();
+  if (tordT) clearTimeout(tordT);
+  tordT = setTimeout(() => {
+    tordT = null;
+    call('api_tecOrdine', S.pin, String(S.cfg.ordine_tecnici || '').split(','))
+      .then(r => { if (r && r.ordine !== undefined) S.cfg.ordine_tecnici = r.ordine; })
+      .catch(e => toast(e.message, 'err'));
+  }, 700);
+}
+/* Se sta per chiudere la pagina o cambia scheda mentre il salvataggio è ancora in attesa, lo faccio partire subito */
+function tordFlush() {
+  if (!tordT) return;
+  clearTimeout(tordT); tordT = null;
+  try {
+    call('api_tecOrdine', S.pin, String((S.cfg || {}).ordine_tecnici || '').split(',')).catch(() => { /* niente */ });
+  } catch (e) { /* niente */ }
+}
+window.addEventListener('pagehide', tordFlush);
+
+/* Sposto una scheda: `what` va prima (o dopo) di `before` */
+function tordMove(what, before, after) {
+  const ids = tordIds(), i = ids.indexOf(what);
+  if (i < 0) return;
+  ids.splice(i, 1);
+  let j = before === null ? ids.length : ids.indexOf(before);
+  if (j < 0) j = ids.length; else if (after) j += 1;
+  ids.splice(j, 0, what);
+  tordSave(ids);
+}
+ACT.tordUp = el => {
+  const ids = tordIds(), i = ids.indexOf(el.dataset.t);
+  if (i > 0) { ids.splice(i, 1); ids.splice(i - 1, 0, el.dataset.t); tordSave(ids); }
+};
+ACT.tordDown = el => {
+  const ids = tordIds(), i = ids.indexOf(el.dataset.t);
+  if (i >= 0 && i < ids.length - 1) { ids.splice(i, 1); ids.splice(i + 1, 0, el.dataset.t); tordSave(ids); }
+};
+ACT.tordReset = () => {
+  openSheet('L\'ordine tuo', '<div class="bulkask"><p>Butto via l\'ordine che hai fatto tu e rimetto i tecnici in ordine di nome. ' +
+    'I tecnici non si toccano: cambia solo come li vedi.</p>' +
+    '<div class="sheetfoot"><button type="button" class="btn" data-act="closeSheet">Annulla</button>' +
+    '<button type="button" class="btn danger" data-act="tordResetDo">Torna all\'ordine per nome</button></div></div>', { noFocus: true });
+};
+ACT.tordResetDo = () => {
+  closeSheet();
+  tordSave([]);
+  toast('Ordine tuo cancellato: i tecnici tornano in ordine di nome.', 'ok');
+};
+
+/* Trascinare: vale sul computer. Sul telefono ci sono i tasti ↑ ↓, che fanno la stessa cosa. */
+function tordDragId(ev) {
+  const el = ev.target && ev.target.closest ? ev.target.closest('[data-tdrag]') : null;
+  return el ? el : null;
+}
+document.addEventListener('dragstart', ev => {
+  const el = tordDragId(ev);
+  if (!el) return;
+  S.tdrag = el.dataset.tdrag;
+  try { ev.dataTransfer.effectAllowed = 'move'; ev.dataTransfer.setData('text/plain', S.tdrag); } catch (e) { /* niente */ }
+  el.classList.add('tdragging');
+});
+document.addEventListener('dragover', ev => {
+  if (!S.tdrag) return;
+  const el = tordDragId(ev);
+  if (!el || el.dataset.tdrag === S.tdrag) return;
+  ev.preventDefault();
+  const r = el.getBoundingClientRect(), sotto = ev.clientY > r.top + r.height / 2;
+  document.querySelectorAll('.tdropA,.tdropB').forEach(x => x.classList.remove('tdropA', 'tdropB'));
+  el.classList.add(sotto ? 'tdropB' : 'tdropA');
+});
+document.addEventListener('drop', ev => {
+  if (!S.tdrag) return;
+  const el = tordDragId(ev);
+  ev.preventDefault();
+  const what = S.tdrag;
+  S.tdrag = '';
+  document.querySelectorAll('.tdropA,.tdropB,.tdragging').forEach(x => x.classList.remove('tdropA', 'tdropB', 'tdragging'));
+  if (!el || el.dataset.tdrag === what) return;
+  const r = el.getBoundingClientRect();
+  tordMove(what, el.dataset.tdrag, ev.clientY > r.top + r.height / 2);
+});
+document.addEventListener('dragend', () => {
+  S.tdrag = '';
+  document.querySelectorAll('.tdropA,.tdropB,.tdragging').forEach(x => x.classList.remove('tdropA', 'tdropB', 'tdragging'));
+});
 /* =====================================================================
    4.9 — CAVI E AMERICANE PER L'EDITOR: il magazzino dice che cavo è e quanto è lungo
    L'editor della pianta non scrive più le scorte: legge dal magazzino. Per farlo deve sapere, per ogni articolo, se è un cavo (o
