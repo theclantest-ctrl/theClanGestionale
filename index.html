@@ -5922,8 +5922,10 @@ function vanRowHtml(e, v, vans, lines, locked) {
   let opts = '<option value="">Nessuno</option>';
   squad.forEach(a => {
     const other = driving[a.technician_id];
+    // 5.1 — il coordinatore si distingue, se no con un tecnico che ha il suo stesso nome il menu ha due voci uguali
+    const nome = a.capo && !/coordinatore/i.test(a.tecnico) ? a.tecnico + ' (coordinatore)' : a.tecnico;
     opts += '<option value="' + esc(a.technician_id) + '"' + (fe.autista_id === a.technician_id ? ' selected' : '') + (other ? ' disabled' : '') + '>' +
-      esc(a.tecnico) + (other ? ' (guida ' + esc(other) + ')' : '') + '</option>';
+      esc(nome) + (other ? ' (guida ' + esc(other) + ')' : '') + '</option>';
   });
   const clashes = vanClashes(v.id, e);
   return '<li class="van" data-van="' + esc(v.id) + '"><div class="vtop"><span class="vname">' + ico('truck') + '<b>' + esc(v.nome) + '</b>' +
