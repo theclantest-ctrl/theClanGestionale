@@ -129,6 +129,7 @@ const SCH_GRP = {
     ['finali', 'Finali di potenza', 'amp', 'imp,peso'],
     ['cavia', 'Cavi XLR microfonici', '', 'sez'],
     ['jack', 'Jack e adattatori audio', '', ''],
+    ['suppA', 'Piantane e stativi per casse', 'gstand', 'peso,dimC,hmin,hmax,kg'],
     ['meccA', 'Meccaniche audio: supporti, flange, piedi', 'rack', 'peso,kg']
   ],
   luci: [
@@ -1693,6 +1694,7 @@ function schLines(s) {
       WH.nuovi = Array.isArray(v.nuovi) ? v.nuovi : [];
       WH.svc = Array.isArray(v.svc) ? v.svc : [];                                // 5.0: le aste e le piantane degli altri service
       try { if (typeof SCH_GRP_SET === 'function') SCH_GRP_SET(v.grp || ''); } catch (e) { /* niente */ }   // 5.1: i gruppi come se li è fatti lui
+      try { if (typeof WH_SUP === 'function') WH_SUP(); } catch (e) { /* niente */ }                        // 5.2: le piantane delle casse dal magazzino
       whIndex();
       if (data && typeof data === 'object') {
         var st = data.stock = (data.stock && typeof data.stock === 'object') ? data.stock : {};
@@ -1786,6 +1788,7 @@ function schLines(s) {
           whBlurFields();
           whApplyAll();
           whAutoTypes();
+          try { if (typeof WH_SUP === 'function') WH_SUP(); } catch (e2) { /* niente */ }   // 5.2: i supporti seguono il magazzino
           if (seq === WH.seq && typeof STOCK === 'object' && STOCK) {          // se nel frattempo è partito un altro invio, vale la risposta di quello
             var m = whMerge(STOCK, typeof CustomCat !== 'undefined' ? CustomCat : null, { live: true, pushed: pushed });
             if (m.changed) { try { renderStockAll(); renderReports(); if (typeof sel !== 'undefined' && sel && typeof pn === 'function') pn(); } catch (e) { /* niente */ } }
@@ -2024,9 +2027,11 @@ function schLines(s) {
     var out = { giraffa: [], corta: [], dritta: [], tavolo: [], clip: [] }, n = 0;
     var mine = function (a) {
       var g = a && a.s && a.s.grp ? String(a.s.grp) : '';
-      if (g === 'aste' || g === 'piantane') return true;
-      if (g) return false;                                                       // ha già un sottogruppo suo: non è un'asta
-      return /\b(asta|aste|astina|stativ|piantan|treppied|giraffa)\b/i.test(String(a && a.n || ''));
+      if (g === 'aste') return true;
+      if (g) return false;                       // ha un sottogruppo suo che non c'entra (le piantane delle casse stanno in «suppA»)
+      // 5.2 — attenzione al \b dopo la radice: «piantan\b» non combacia con «piantana», e così piantane, stativi e
+      // treppiedi non si vedevano. Le radici vogliono il confine solo davanti.
+      return /\b(asta|aste|astina|stativ|piantan|treppied|giraffa|cavallett|tripod)/i.test(String(a && a.n || ''));
     };
     WH.nuovi.forEach(function (a) {
       if (!a || a.u || !mine(a)) return;
@@ -2044,12 +2049,152 @@ function schLines(s) {
       n++;
     });
     (WH.svc || []).forEach(function (x) {
-      if (!x || !x.n) return;
+      if (!x || !x.n || (x.t && x.t !== 'asta')) return;
+      if (whSupOnly_(x.n)) return;                                               // è un supporto da cassa: sta nell'altro menu
       out[whAstaTipo_(x.n)].push({ m: String(x.n), q: Math.max(0, Math.round(Number(x.q) || 0)), s: String(x.s || '') });
       n++;
     });
     return n ? out : null;
   };
+
+  /* 5.2 — un supporto che regge una cassa, non un microfono: non va nel menu «Asta» del microfono */
+  function whSupOnly_(nome) {
+    return /\b(cass|diffusor|sub|top|speaker|monitor)/i.test(String(nome || '')) || /\b(tubo|palo|spigot|distanziale)/i.test(String(nome || ''));
+  }
+  /* 5.2 — un'asta che regge un microfono, non una cassa */
+  function whAstaOnly_(nome) {
+    return /\b(giraffa|astina|boom|microfon|mic\b|da ?tavolo|desk|clip|morsett|pinza)/i.test(String(nome || ''));
+  }
+
+  /* ================================================================================================================
+     5.2 — IL MAGAZZINO COMANDA ANCHE DENTRO I PANNELLI
+     Due menu che prima erano elenchi fissi dell'editor adesso li riempie il magazzino:
+     - «Modello» del microfono (WH_MIC): prima i microfoni che ha lui, poi quelli degli altri service, in fondo le
+       marche che l'editor conosce, per quello che non ha (da noleggiare o da comprare).
+     - «Supporto» della cassa (WH_SUP): le sue piantane, stativi, tubi e pali (altezza e portata dalla scheda tecnica),
+       quelli degli altri service, e «c'è già sul posto» per balaustre, tavoli e colonne, che non consuma magazzino.
+     ================================================================================================================ */
+  function whMicMine_(a) {
+    var g = a && a.s && a.s.grp ? String(a.s.grp) : '';
+    if (g === 'mic' || g === 'archetti' || g === 'radio') return true;
+    if (g === 'aste' || g === 'piantane' || g === 'meccA') return false;
+    var sym = a && a.s && a.s.sym ? String(a.s.sym) : '';
+    if (sym === 'mic' || sym === 'micw' || sym === 'michs' || sym === 'micclip') return true;
+    if (g) return false;                                                         // ha un sottogruppo suo che non c'entra
+    var n = String(a && a.n || '');
+    if (whSupOnly_(n) || /\b(asta|aste|astina|stativ|piantan|treppied|cavallett)/i.test(n)) return false;
+    return /\b(microfon|radiomicrofon|archett|lavalier|sm ?5[78]|beta ?5[2478]|e ?6 ?0 ?[49]|e ?90[46]|md ?421|re ?20|c ?414|km ?18[45]|at ?40|nt ?[0-9]|overhead|panoramic)/i.test(n);
+  }
+  /* I microfoni che hai: [{m: nome, q: quanti, k: la voce dell'editor a cui è legato, s: service}] */
+  window.WH_MIC = function () {
+    if (!WH.on) return null;
+    var out = [], n = 0, visti = {};
+    var put = function (a, k) {
+      var nome = String(a.n || ''), q = Math.max(0, Math.round(Number(a.q) || 0));
+      if (!nome || !q || visti[nome]) return;
+      visti[nome] = 1; out.push({ m: nome, q: q, k: k || '', s: '' }); n++;
+    };
+    WH.nuovi.forEach(function (a) { if (a && !a.u && whMicMine_(a)) put(a, 'wh_' + a.id); });
+    Object.keys(WH.map || {}).forEach(function (k) {
+      var a = WH.map[k];
+      if (a && whMicMine_(a)) put(a, String(k).indexOf('k:') === 0 ? String(k).slice(2) : '');
+    });
+    (WH.svc || []).forEach(function (x) {
+      if (!x || !x.n || x.t !== 'mic' || visti[x.n]) return;
+      visti[x.n] = 1;
+      out.push({ m: String(x.n), q: Math.max(0, Math.round(Number(x.q) || 0)), k: '', s: String(x.s || '') });
+      n++;
+    });
+    return n ? out : null;
+  };
+
+  /* I supporti da cassa che hai, letti dal magazzino e dagli altri service */
+  function whSupMine_(a) {
+    var g = a && a.s && a.s.grp ? String(a.s.grp) : '';
+    if (g === 'suppA') return true;                                              // «Piantane e stativi per casse»
+    if (g === 'meccA') return /\b(piantan|stativ|treppied|cavallett|tripod|tubo|palo|spigot|distanziale)/i.test(String(a && a.n || ''));
+    if (g) return false;                                                         // un altro sottogruppo suo: non è un supporto da cassa
+    var n = String(a && a.n || '');
+    if (whAstaOnly_(n)) return false;
+    return /\b(piantan|stativ|treppied|cavallett|tripod|tubo|palo|spigot|distanziale)/i.test(n);
+  }
+  /* L'altezza e la portata dalla scheda tecnica, se le ha scritte */
+  function whSupDim_(a) {
+    var sc = (a && a.s) || {}, mi = Number(sc.hmin), ma = Number(sc.hmax), kg = Number(sc.kg || sc.portata);
+    var o = { min: mi > 0 ? mi : 0, max: ma > 0 ? ma : 0, kg: kg > 0 ? kg : 0 };
+    if (o.max && !o.min) o.min = o.max;
+    if (o.min && !o.max) o.max = o.min;
+    return o;
+  }
+  window.WH_SUP = function () {
+    if (typeof SUPPORTS === 'undefined') return 0;
+    var mio = [], altrui = [], n = 0, visti = {};
+    var put = function (dove, k, nome, q, dim, svc) {
+      if (!nome || visti[nome]) return;
+      visti[nome] = 1;
+      var tubo = /\b(tubo|palo|spigot|distanziale)/i.test(nome);
+      var min = dim.min || (tubo ? 0.66 : 1.1), max = dim.max || (tubo ? 0.91 : 2.0);
+      var lab = nome + (dim.min || dim.max ? ' (' + fx(min, 2) + (max !== min ? '–' + fx(max, 2) : '') + ' m' + (dim.kg ? ' · ' + dim.kg + ' kg' : '') + ')' : '') +
+        (svc ? ' — ' + q + ' da ' + svc : ' — ne hai ' + q);
+      dove.push([k, { l: lab, t: tubo ? 'pole' : 'stand', min: min, max: max, kg: dim.kg || 0, wh: 1, nome: nome }]);
+      n++;
+    };
+    if (WH.on) {
+      WH.nuovi.forEach(function (a) {
+        if (!a || a.u || !whSupMine_(a)) return;
+        var q = Math.max(0, Math.round(Number(a.q) || 0));
+        if (q) put(mio, 'wh_' + a.id, String(a.n), q, whSupDim_(a), '');
+      });
+      Object.keys(WH.map || {}).forEach(function (k) {
+        var a = WH.map[k];
+        if (!a || !whSupMine_(a)) return;
+        var q = Math.max(0, Math.round(Number(a.q) || 0));
+        if (q) put(mio, 'wh_' + (a.id || String(k).replace(/[^a-z0-9]/gi, '')), String(a.n), q, whSupDim_(a), '');
+      });
+      (WH.svc || []).forEach(function (x) {
+        if (!x || !x.n || (x.t && x.t !== 'asta') || whAstaOnly_(x.n)) return;
+        if (!/\b(piantan|stativ|treppied|cavallett|tripod|tubo|palo)/i.test(String(x.n))) return;
+        put(altrui, 'svc_' + String(x.n).replace(/[^a-z0-9]/gi, '').slice(0, 24), String(x.n),
+          Math.max(0, Math.round(Number(x.q) || 0)), { min: 0, max: 0, kg: 0 }, String(x.s || ''));
+      });
+    }
+    whSupOrder_(mio, altrui);
+    return n;
+  };
+  /* Rimette in fila il menu: a terra, i tuoi, quelli degli altri service, «c'è già sul posto», poi quelli che
+     l'editor conosce ma tu non hai, e in fondo sub e appeso. L'ordine delle chiavi è l'ordine del menu. */
+  function whSupOrder_(mio, altrui) {
+    if (!SUP_BASE) { SUP_BASE = {}; Object.keys(SUPPORTS).forEach(function (k) { SUP_BASE[k] = SUPPORTS[k]; }); }
+    var fissi = SUP_BASE, ordine = [];
+    var add = function (k, v) { ordine.push([k, v]); };
+    add('floor', fissi.floor); add('stagef', fissi.stagef);
+    mio.forEach(function (x) { add(x[0], x[1]); });
+    altrui.forEach(function (x) { add(x[0], x[1]); });
+    add('loco', { l: 'C\'è già sul posto (balaustra, tavolo, colonna…)', t: 'stand', min: 0.3, max: 3, loco: 1 });
+    Object.keys(fissi).forEach(function (k) {
+      if (k === 'floor' || k === 'stagef' || k === 'onsub' || k === 'onsub_l' || k === 'fly') return;
+      var v = fissi[k];
+      add(k, (mio.length && !/non in magazzino/.test(v.l)) ? Object.assign({}, v, { l: v.l + ' — non in magazzino' }) : v);
+    });
+    add('onsub', fissi.onsub); add('onsub_l', fissi.onsub_l); add('fly', fissi.fly);
+    Object.keys(SUPPORTS).forEach(function (k) { delete SUPPORTS[k]; });
+    ordine.forEach(function (x) { if (x[1]) SUPPORTS[x[0]] = x[1]; });
+    whSupKeep_();
+  }
+  var SUP_BASE = null;
+  /* Una pianta salvata deve reggersi da sola: se usa un supporto del magazzino che adesso non c'è (editor aperto da
+     solo, articolo tolto), lo rimetto com'era usando quello che la pianta si è scritta addosso. */
+  function whSupKeep_() {
+    try {
+      (typeof S !== 'undefined' ? S : []).forEach(function (o) {
+        var p = o && o.p;
+        if (!p || !p.sup || SUPPORTS[p.sup] || !p.supL) return;
+        SUPPORTS[p.sup] = { l: String(p.supL), t: p.supT === 'pole' ? 'pole' : 'stand',
+          min: Number(p.supMin) || 1.1, max: Number(p.supMax) || 2, kg: Number(p.supKg) || 0, wh: 1, nome: String(p.supL) };
+      });
+    } catch (e) { /* niente */ }
+  }
+  window.WH_SUP_KEEP = whSupKeep_;
 
   /* 5.1 — i rack dei radiomicrofoni e i pezzi che ci vanno dentro, letti dal magazzino.
      Un rack è un articolo che nella sua scheda tecnica dice quanti ricevitori ci stanno dentro (campo «Ricevitori nel
@@ -4084,7 +4229,14 @@ function micOpts(kind,cur){const wl=MIC_WL.includes(kind),brands={},rest={};
   let h='';Object.keys(brands).forEach(b=>{h+=`<optgroup label="${esc(b)}">`+brands[b].map(v=>`<option${v===cur?' selected':''}>${esc(v)}</option>`).join('')+'</optgroup>'});
   Object.keys(rest).forEach(b=>{h+=`<optgroup label="${esc(b)} — altri usi">`+rest[b].map(v=>`<option${v===cur?' selected':''}>${esc(v)}</option>`).join('')+'</optgroup>'});
   const known=MIC_MODELS.some(([b,m])=>b+' '+m===cur);
-  h+=`<optgroup label="Altro"><option value="__altro"${cur&&!known?' selected':''}>${cur&&!known?esc(cur):'Altro modello…'}</option></optgroup>`;return h}
+  const WHM=typeof WH_MIC==='function'?WH_MIC():null;
+  if(WHM&&WHM.length){let t='',a='';
+    WHM.forEach(x=>{const lab=esc(x.m)+(x.s?` — ${x.q} da ${esc(x.s)}`:` — ne hai ${x.q}`);
+      const op=`<option value="${esc(x.m)}"${x.m===cur?' selected':''}>${lab}</option>`;if(x.s)a+=op;else t+=op});
+    let w='';if(t)w+=`<optgroup label="Dal tuo magazzino">${t}</optgroup>`;
+    if(a)w+=`<optgroup label="Dagli altri service">${a}</optgroup>`;
+    h=w+h.replace(/<optgroup label="([^"]*)">/g,(m0,l)=>`<optgroup label="${l} — non in magazzino">`)}
+  h+=`<optgroup label="Altro"><option value="__altro"${cur&&!known&&!(WHM||[]).some(x=>x.m===cur)?' selected':''}>${cur&&!known?esc(cur):'Altro modello…'}</option></optgroup>`;return h}
 const ASTE=[['giraffa','asta a giraffa'],['corta','asta corta (cassa, ampli)'],['dritta','asta dritta'],['tavolo','asta da tavolo'],['clip','clip / morsetto'],['nessuna','nessuna asta']];
 // modelli di asta per tipo (si sceglie il tipo generico o un modello preciso)
 const ASTA_MODELS={giraffa:['K&M 210/9','Gravity MS 4322 B','Proel RSM180','Proel RSM195'],corta:['K&M 259','K&M 25900 (molto bassa)','Gravity MS 2322 B'],dritta:['K&M 26010 (base tonda)','Gravity MS 23 (base tonda)'],tavolo:['K&M 23200'],clip:[],nessuna:[]};
@@ -5035,6 +5187,7 @@ const PARAM={stage:1,stairs:1,cableramp:1,barrier:1,seats:1,ledwall:1,screen:1,t
 const REGEN={mics:1,hand:1,kick:1,snare:1,hh:1,rack:1,floor:1,ride:1,crash:1,china:1,splash:1,con:1,out:1,n:1,kModel:1,eModel:1,sez:1,rows:1,sp:1,rp:1,mode:1,amb:1,disp:1,nArea:1,nRavv:1};
 
 function pn(){
+  try{if(typeof WH_SUP_KEEP==='function')WH_SUP_KEEP()}catch(err){}   // 5.2: i supporti suoi anche senza magazzino
   bump();const e=$('pn');
   if(selDm){const dm=DM.find(x=>x.id===selDm);if(dm){e.innerHTML=`<div class="grp"><b>📏 Quota</b><span class="chip mono">${fx(Math.hypot(dm.x2-dm.x1,dm.y2-dm.y1),2)} m</span>
     <span class="info">Trascina i punti per correggerla.</span><button class="sm danger" data-act="dmDel">Elimina quota</button></div>`;return}selDm=null}
@@ -5112,7 +5265,7 @@ function pn(){
     case 'gen':g+=iP('kva','Potenza',p.kva,5,'kVA')+sP('spec','Presa di uscita',[['CEE 32A 400V 5p','CEE 32A 400V 5p'],['CEE 63A 400V 5p','CEE 63A 400V 5p'],['CEE 125A 400V 5p','CEE 125A 400V 5p']],p.spec||'CEE 63A 400V 5p');break;
     case 'mic':case 'micw':case 'michs':case 'micclip':{const kind=MIC_KIND_OF[o.k]||(catBy(o.k)||{}).mk||'';
       g+=`<label class="field">Modello <select data-pm="model">${micOpts(kind,p.model||'')}</select></label>`;
-      if(p.model!=null&&!MIC_MODELS.some(([b,m])=>b+' '+m===p.model))g+=`<label class="field">Scrivi il modello <input data-p="model" type="text" value="${esc(p.model||'')}" placeholder="marca e modello" style="width:170px"></label>`;
+      if(p.model!=null&&!MIC_MODELS.some(([b,m])=>b+' '+m===p.model)&&!((typeof WH_MIC==='function'?WH_MIC():null)||[]).some(x=>x.m===p.model))g+=`<label class="field">Scrivi il modello <input data-p="model" type="text" value="${esc(p.model||'')}" placeholder="marca e modello" style="width:170px"></label>`;
       g+=`<label class="field">Asta <select data-pasta="1">${astaOpts(p)}</select></label>`
         +(typeof RX_PANEL==='function'?RX_PANEL(o):'')+micTipBox(o);break}
     case 'di':g+=`<label class="field">Modello <select data-pm="model">${diOpts(p.model||'')}</select></label>`;
@@ -5184,6 +5337,7 @@ function speakerPanel(o){const g=spkGeo(o),p=o.p||{},d=g.d,use=g.use;
   if(use!=='wedge'&&o.sym!=='sub'){h+=sP('sup','Supporto',Object.entries(SUPPORTS).map(([k,v])=>[k,v.l]),p.sup||'floor');
     const sup=g.sup,ov=supOver(o);if(ov)h+=`<span class="chip err">⚠️ la cassa pesa ${fx(ov.kg,1)} kg: oltre i ${ov.max} kg del supporto</span>`;
     if(sup.t==='stand'||sup.t==='pole'){if(sup.min!==sup.max)h+=iP('hs',sup.t==='pole'?'Lunghezza palo':'Altezza piantana',clamp(+p.hs||sup.max,sup.min,sup.max),.05,'m',` min="${sup.min}" max="${sup.max}"`)}
+    if(sup.loco)h+=`<label class="field">Cos'è <input data-p="supNote" type="text" value="${esc(p.supNote||'')}" placeholder="balaustra, tavolo, colonna…" style="width:170px"></label><span class="info">Non lo portiamo noi: non entra nell'elenco del carico.</span>`;
     if(sup.t==='fly')h+=iP('hf','Fondo cassa da terra',+p.hf>0?p.hf:null,.1,'m',` placeholder="${f(g.base)}" style="width:64px"`)+(+p.hf>0?'':`<span class="info">${/«/.test(g.note)?'Segue l\'altezza del supporto ('+esc(g.note)+'): scrivi un valore per deciderla tu.':'Scrivi l\'altezza del fondo cassa (ora 4 m).'}</span>`);
     const tl=(d.tilt||[0]);h+=`<label class="field">Inclinazione <input data-p="tilt" type="number" step="0.5" value="${f(+p.tilt||0)}" list="tl_${o.id}">° verso il basso</label><datalist id="tl_${o.id}">${tl.map(v=>`<option value="${v}">`).join('')}</datalist>`;
     if(d.tilt&&d.tilt.length>1)h+=`<span class="info">dal costruttore: ${d.tilt.map(v=>fx(v,1)+'°').join(' o ')} sul palo</span>`;
@@ -5359,7 +5513,9 @@ $('pn').addEventListener('change',e=>{
   else if(t.type==='text')p[k]=t.value;
   else{const v=parseFloat(t.value);if(!isNaN(v))p[k]=v}
   if(k==='zt'){const old=Object.values(ZONES).map(z=>z.l);if(!o.l||old.includes(o.l))o.l=ZONES[p.zt].l}
-  if(k==='sup'){const sp=SUPPORTS[p.sup];if(sp&&(sp.t==='stand'||sp.t==='pole'))p.hs=sp.max;if(sp&&sp.t==='pole'&&!subUnder(o))say('Metti la cassa sopra un sub (stessa posizione in pianta) per calcolare l\'altezza col tubo.')}
+  if(k==='sup'){const sp=SUPPORTS[p.sup];if(sp&&(sp.t==='stand'||sp.t==='pole'))p.hs=sp.max;
+    if(sp&&sp.wh){p.supL=sp.nome||sp.l;p.supT=sp.t;p.supMin=sp.min;p.supMax=sp.max;p.supKg=sp.kg||0}else{delete p.supL;delete p.supT;delete p.supMin;delete p.supMax;delete p.supKg}
+if(sp&&sp.t==='pole'&&!subUnder(o))say('Metti la cassa sopra un sub (stessa posizione in pianta) per calcolare l\'altezza col tubo.')}
   if(k==='use'&&p.use==='delay')o.q=1;
   geom(o);
   if(REGEN[k]&&(o.sym==='drums'||o.k==='coro'||CON_OPTS[o.k])){const has=S.some(x=>x.par===o.id&&x.auto);if(has||k==='mics'||k==='con'||(o.k==='coro'&&k==='mode')){applyChildren(o);pn();return}}
@@ -5929,13 +6085,15 @@ function materials(){
         if(laIs(o)){laBom(o,spkGeo(o)).forEach(r=>add(r.cat,r.item,r.q,r.note,r.k||null));break}
         if(typeof RX_IS==='function'&&RX_IS(o)){RX_BOM(o,add);
           const a2=astaTxt(p);if(a2&&p.asta!=='nessuna'&&o.sym!=='iem')add('Audio — microfoni e DI',a2.charAt(0).toUpperCase()+a2.slice(1),1)}
-        else if(/^mic/.test(o.k)||o.sym==='mic'||o.sym==='micw'||o.sym==='michs'||o.sym==='micclip'){add('Audio — microfoni e DI',p.model||c.l,1);
+        else if(/^mic/.test(o.k)||o.sym==='mic'||o.sym==='micw'||o.sym==='michs'||o.sym==='micclip'){add('Audio — microfoni e DI',p.model||c.l,1,'',p.whk||null);
           const a=astaTxt(p);if(a&&p.asta!=='nessuna')add('Audio — microfoni e DI',a.charAt(0).toUpperCase()+a.slice(1),1)}
         else if(o.sym==='di')add('Audio — microfoni e DI','DI '+(p.model||''),1);
         else add(cl,c.l||o.l,1,'',o.k);
         if(p.mnt&&c.cat==='luci'){add('Americane e strutture','Cavo di sicurezza (safety) per i fari',1,'uno per ogni faro in alto');if(p.mnt==='att')add('Americane e strutture','Morsetto (gancio a mezzo giunto) per i fari',1)}
         if(o.sym==='mixer'&&p.card){const cd=(MIX_CARDS.find(x=>x[0]===p.card)||['',p.card])[1].split(' (')[0];add('Audio',`Scheda ${cd} per ${o.l} (porta I/O)`,1)}
-        if(isSpk(o)){const sup=SUPPORTS[p.sup];if(sup&&sup.t!=='floor'&&sup.t!=='fly')add('Audio — supporti casse',sup.l.replace(/ \(.*\)$/,''),1,'','sup:'+p.sup)}}
+        if(isSpk(o)){const sup=SUPPORTS[p.sup];
+          if(sup&&sup.loco)add('Audio — supporti casse','Appoggio che c\'è già sul posto'+(p.supNote?` (${p.supNote})`:''),1,'non lo portiamo noi: c\'è già');
+          else if(sup&&sup.t!=='floor'&&sup.t!=='fly')add('Audio — supporti casse',sup.wh?(sup.nome||sup.l):sup.l.replace(/ \(.*\)$/,''),1,'',sup.wh?p.sup.replace(/^wh_/,'wh_'):'sup:'+p.sup)}}
     }
   });
   Object.keys(TC).forEach(sys=>{const st=stockLens(sys);Object.keys(TC[sys]).map(Number).sort((a,b)=>b-a).forEach(len=>{const q=TC[sys][len];
